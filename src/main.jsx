@@ -16,7 +16,6 @@ const logger = (store) => (next) => (action) => {
 
 const composeAlt = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const componseEnhacers = composeAlt(applyMiddleware(thunk, logger));
-
 const store = legacy_createStore(rootReducer, componseEnhacers);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
