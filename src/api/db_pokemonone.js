@@ -1,4 +1,4 @@
-export const obj = {
+const obj = {
     abilities: [
         {
             ability: {
@@ -12585,3 +12585,5 @@ export const obj = {
     ],
     weight: 225,
 };
+
+export default obj;
