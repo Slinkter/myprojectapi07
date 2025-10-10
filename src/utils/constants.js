@@ -1,10 +1,3 @@
-export const ROUTES = {
-    HOME: "/",
-    ACCOUNT: "/account",
-    BILLING: "/billing",
-    WEB3: "/web3",
-};
-
 export const UI_CONSTANTS = {
     POKEMON_GRID: {
         ITEMS_PER_PAGE: 20,

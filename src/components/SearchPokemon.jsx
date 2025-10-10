@@ -1,21 +1,20 @@
 import { useDispatch } from "react-redux";
 import { setSearchFilter } from "../features/pokemon/pokemonSlice";
-import { Input } from "@material-tailwind/react";
+import { TextField } from "@mui/material";
 
 export const SearchPokemon = () => {
     const dispatch = useDispatch();
     const handleFilterPokemon = (input) => {
-        const text = input.trim().toLowerCase();
+        const text = input.trim();
         dispatch(setSearchFilter(text));
     };
 
     return (
-        <>
-            <Input
-                color="purple"
-                label="Buscar..."
-                onChange={(e) => handleFilterPokemon(e.target.value)}
-            />
-        </>
+        <TextField
+            label="Search Pokémon"
+            variant="outlined"
+            fullWidth
+            onChange={(e) => handleFilterPokemon(e.target.value)}
+        />
     );
 };

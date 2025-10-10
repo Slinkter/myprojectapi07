@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { useDispatch } from "react-redux";
-import { setFavorite } from "../store/slices/dataSlice";
+import { setFavorite } from "../features/pokemon/pokemonSlice";
 
 export const useFavorites = () => {
     const dispatch = useDispatch();
