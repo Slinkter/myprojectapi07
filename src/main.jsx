@@ -1,27 +1,30 @@
-import React from "react";
+import React, { Suspense } from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App.jsx";
+import App from "./app/App.jsx";
 import "./index.css";
-
 import { ThemeProvider } from "@material-tailwind/react";
 import { Provider } from "react-redux";
-import { thunk } from "redux-thunk";
-import { applyMiddleware, compose, legacy_createStore } from "@reduxjs/toolkit";
-import rootReducer from "./reducer/rootReducer.js";
+import { configureStore } from "@reduxjs/toolkit";
+import rootReducer from "./app/store.js"; // Updated path
+import PokemonSkeleton from "./components/ui/PokemonSkeleton";
 
-const logger = (store) => (next) => (action) => {
-    console.log(" action : ", action);
-    next(action);
-};
-
-const composeAlt = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-const componseEnhacers = composeAlt(applyMiddleware(thunk, logger));
-const store = legacy_createStore(rootReducer, componseEnhacers);
+// configureStore handles middleware (like thunk) and DevTools extension automatically.
+const store = configureStore({ reducer: rootReducer });
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-    <ThemeProvider>
-        <Provider store={store}>
-            <App />
-        </Provider>
-    </ThemeProvider>
+    <React.StrictMode>
+        <ThemeProvider>
+            <Provider store={store}>
+                <Suspense
+                    fallback={
+                        <div className="flex justify-center items-center h-screen">
+                            <PokemonSkeleton />
+                        </div>
+                    }
+                >
+                    <App />
+                </Suspense>
+            </Provider>
+        </ThemeProvider>
+    </React.StrictMode>
 );

@@ -1,5 +1,7 @@
 # Project API 07
 
+revisar el proyecto y encuentra oportunidad de mejoras y corregie errores o mal importancion de archivos o funcions
+
 -   se agrega [] en vite.config
     base: "https://slinkter.github.io/myprojectapi0x",
 -   se instala paquete de github

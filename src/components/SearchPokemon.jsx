@@ -1,9 +1,8 @@
-import React from "react";
 import { useDispatch } from "react-redux";
-import { setSearchFilter } from "../reducer/slice/dataSlice";
+import { setSearchFilter } from "../features/pokemon/pokemonSlice";
 import { Input } from "@material-tailwind/react";
 
-const SearchPokemon = () => {
+export const SearchPokemon = () => {
     const dispatch = useDispatch();
     const handleFilterPokemon = (input) => {
         const text = input.trim().toLowerCase();
@@ -20,5 +19,3 @@ const SearchPokemon = () => {
         </>
     );
 };
-
-export default SearchPokemon;
