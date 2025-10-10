@@ -1,4 +1,3 @@
-import React from "react";
 import { Card, Skeleton } from "@mui/material";
 
 export const PokemonSkeleton = () => (

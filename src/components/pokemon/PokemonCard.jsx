@@ -1,12 +1,12 @@
-import React from 'react';
 import { useFavorites } from '../../hooks/useFavorites';
+import PropTypes from 'prop-types';
 
 // Un componente simple para el ícono de estrella
 const StarIcon = (props) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" {...props}>
     <path
       fillRule="evenodd"
-      d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.007z"
+      d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.212l5.404-.433 2.082-5.007z"
       clipRule="evenodd"
     />
   </svg>
@@ -14,13 +14,13 @@ const StarIcon = (props) => (
 
 
 const PokemonCard = ({ id, name, image, favorite }) => {
-  const { toggleFavorite } = useFavorites();
+  const { togglePokemonFavorite } = useFavorites();
 
   // Evita que el click en el botón se propague a la tarjeta
   const handleFavoriteClick = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    toggleFavorite(id);
+    togglePokemonFavorite(id);
   };
 
   return (
@@ -53,6 +53,13 @@ const PokemonCard = ({ id, name, image, favorite }) => {
       </div>
     </div>
   );
+};
+
+PokemonCard.propTypes = {
+  id: PropTypes.number.isRequired,
+  name: PropTypes.string.isRequired,
+  image: PropTypes.string.isRequired,
+  favorite: PropTypes.bool.isRequired,
 };
 
 export default PokemonCard;

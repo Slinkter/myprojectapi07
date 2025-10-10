@@ -6,13 +6,16 @@ const api = axios.create({
 });
 
 export const getPokemonList = async (
+    offset = 0,
     limit = API_CONFIG.DEFAULT_PARAMS.LIMIT
 ) => {
     try {
         const { data } = await api.get(
-            `${API_CONFIG.ENDPOINTS.POKEMON}?limit=${limit}`
+            `${API_CONFIG.ENDPOINTS.POKEMON}?offset=${offset}&limit=${limit}`
         );
-        return Promise.all(
+        
+        // Fetch details for each pokemon in parallel
+        const detailedPokemons = await Promise.all(
             data.results.map(async (pokemon) => {
                 const { data: details } = await api.get(pokemon.url);
                 return {
@@ -20,10 +23,12 @@ export const getPokemonList = async (
                     name: details.name,
                     types: details.types,
                     sprites: details.sprites,
-                    favorite: false,
+                    // favorite: false, // This will be added in App.jsx based on favoritesSlice
                 };
             })
         );
+
+        return { count: data.count, results: detailedPokemons };
     } catch (error) {
         console.error("Error fetching Pokemon:", error);
         throw error;
@@ -38,7 +43,7 @@ export const getPokemonById = async (id) => {
             name: data.name,
             types: data.types,
             sprites: data.sprites,
-            favorite: false,
+            // favorite: false, // This will be added in App.jsx based on favoritesSlice
         };
     } catch (error) {
         console.error(`Error fetching Pokemon with id ${id}:`, error);

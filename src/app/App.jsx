@@ -1,35 +1,64 @@
-import React, { useEffect } from "react";
-import { usePokemon } from "../hooks/usePokemon"; // 1. Importar el hook
+import { useEffect, useMemo } from "react";
+import { usePokemon } from "../hooks/usePokemon";
+import { useSearch } from "../hooks/useSearch";
+import { useFavorites } from "../hooks/useFavorites";
+import { useTheme } from "../hooks/useTheme";
 import { PokemonSkeleton } from "../components/ui/PokemonSkeleton";
 import PokemonList from "../components/pokemon/PokemonList";
 import { SearchPokemon } from "../components/SearchPokemon";
-import { AppBar, Container, Grid, Toolbar, Typography, List, ListItem, Paper, useTheme, useMediaQuery } from "@mui/material";
+import { AppBar, Container, Grid, Toolbar, Typography, List, ListItem, Paper, useMediaQuery, Button } from "@mui/material";
+import { IconButton } from "@material-tailwind/react";
+import { SunIcon, MoonIcon, ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/24/solid";
 import logopokemon from "../assets/logo.svg";
 
 function App() {
-    // 2. El hook se convierte en la única fuente de verdad para los datos y acciones de Pokémon.
-    //    Esto centraliza la lógica y aprovecha los selectores memoizados para un mejor rendimiento.
-    const {
-        isLoading,
-        fetchPokemons,
-        filteredPokemons,
-        favoritePokemons,
-    } = usePokemon();
+    const { pokemons, isLoading, error, fetchPokemons, currentPage, totalPages, goToPage } = usePokemon();
+    const { searchFilter } = useSearch();
+    const { favoriteIds } = useFavorites();
+    const { currentTheme, toggleAppTheme } = useTheme();
 
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+    const isMobile = useMediaQuery("(max-width:600px)");
 
-    // 3. La carga inicial de datos se dispara una vez cuando el componente se monta.
-    //    La función `fetchPokemons` viene del hook.
     useEffect(() => {
         fetchPokemons();
-    }, [fetchPokemons]);
+    }, [fetchPokemons, currentPage]); // Refetch when page changes
+
+    // Combine pokemons with favorite status and apply search filter
+    const processedPokemons = useMemo(() => {
+        return pokemons.map(pokemon => ({
+            ...pokemon,
+            favorite: favoriteIds.includes(pokemon.id),
+        }));
+    }, [pokemons, favoriteIds]);
+
+    const filteredPokemons = useMemo(() => {
+        if (!searchFilter) return processedPokemons;
+        return processedPokemons.filter((p) =>
+            p.name.toLowerCase().includes(searchFilter)
+        );
+    }, [processedPokemons, searchFilter]);
+
+    const favoritePokemons = useMemo(
+        () => processedPokemons.filter((p) => p.favorite),
+        [processedPokemons]
+    );
+
+    const handleRetry = () => {
+        fetchPokemons();
+    };
 
     return (
         <div className="bg-gray-100 dark:bg-gray-900 min-h-screen font-sans">
             <AppBar position="sticky" top={0} color="transparent" elevation={0} className="border-b border-gray-200 dark:border-gray-800 backdrop-blur-sm bg-white/30 dark:bg-gray-900/30">
-                <Toolbar className="flex justify-center">
+                <Toolbar className="flex justify-between items-center">
                     <img src={logopokemon} alt="Logo Pokémon" className="w-32 h-auto" />
+                    <IconButton variant="text" onClick={toggleAppTheme} className="ml-auto">
+                        {currentTheme === 'dark' ? (
+                            <SunIcon className="h-6 w-6 text-yellow-500" />
+                        ) : (
+                            <MoonIcon className="h-6 w-6 text-blue-gray-500" />
+                        )}
+                    </IconButton>
                 </Toolbar>
             </AppBar>
             <Container maxWidth="lg" className="py-4 sm:py-8">
@@ -39,7 +68,7 @@ function App() {
                             Pokédex
                         </Typography>
                         <Typography variant={isMobile ? "body1" : "h6"} className="text-gray-600 dark:text-gray-400 animate-fade-in animation-delay-200">
-                            Gotta Catch 'Em All!
+                            Gotta Catch &apos;Em All!
                         </Typography>
                     </Grid>
 
@@ -52,7 +81,6 @@ function App() {
                                 <Grid item xs={12} md={6}>
                                     <Typography variant="h6" className="font-bold text-gray-800 dark:text-white mb-2">Favorites</Typography>
                                     <List dense>
-                                        {/* 4. Se usan los 'favoritePokemons' memoizados que vienen del hook. */}
                                         {favoritePokemons.length > 0 ? (
                                             favoritePokemons.map((fav) => (
                                                 <ListItem key={fav.id} className="px-0">
@@ -69,8 +97,12 @@ function App() {
                     </Grid>
 
                     <Grid item xs={12}>
-                        {/* 5. El estado `isLoading` ahora viene del `pokemonSlice` a través del hook, que es lo correcto. */}
-                        {isLoading ? (
+                        {error ? (
+                            <div className="text-center p-4 text-red-600 dark:text-red-400">
+                                <Typography variant="h6">Error loading Pokémons: {error}</Typography>
+                                <Button onClick={handleRetry} className="mt-4 btn-primary">Retry</Button>
+                            </div>
+                        ) : isLoading ? (
                             <div className="flex justify-center mt-4 sm:mt-8">
                                 <Grid container spacing={isMobile ? 2 : 4}>
                                     {[...Array(12)].map((_, index) => (
@@ -81,8 +113,30 @@ function App() {
                                 </Grid>
                             </div>
                         ) : (
-                            // 6. La lista ahora recibe los pokémons ya filtrados y memoizados.
-                            <PokemonList pokemons={filteredPokemons} />
+                            <>
+                                <PokemonList pokemons={filteredPokemons} />
+                                <div className="flex justify-center items-center gap-4 mt-8">
+                                    <Button
+                                        variant="outlined"
+                                        onClick={() => goToPage(currentPage - 1)}
+                                        disabled={currentPage === 1 || isLoading}
+                                        className="btn-primary"
+                                    >
+                                        <ArrowLeftIcon className="h-4 w-4 mr-2" /> Previous
+                                    </Button>
+                                    <Typography className="text-gray-700 dark:text-gray-300">
+                                        Page {currentPage} of {totalPages}
+                                    </Typography>
+                                    <Button
+                                        variant="outlined"
+                                        onClick={() => goToPage(currentPage + 1)}
+                                        disabled={currentPage === totalPages || isLoading}
+                                        className="btn-primary"
+                                    >
+                                        Next <ArrowRightIcon className="h-4 w-4 ml-2" />
+                                    </Button>
+                                </div>
+                            </>
                         )}
                     </Grid>
                 </Grid>

@@ -1,16 +1,20 @@
 import { useCallback } from "react";
-import { useDispatch } from "react-redux";
-import { setFavorite } from "../features/pokemon/pokemonSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { toggleFavorite } from "../features/favorites/favoritesSlice";
 
 export const useFavorites = () => {
     const dispatch = useDispatch();
+    const favoriteIds = useSelector((state) => state.favorites.favoriteIds);
 
-    const toggleFavorite = useCallback(
+    const togglePokemonFavorite = useCallback(
         (pokemonId) => {
-            dispatch(setFavorite({ pokemonId }));
+            dispatch(toggleFavorite(pokemonId));
         },
         [dispatch]
     );
 
-    return { toggleFavorite };
+    return {
+        favoriteIds,
+        togglePokemonFavorite,
+    };
 };

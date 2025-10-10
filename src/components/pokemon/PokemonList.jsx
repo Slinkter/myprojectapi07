@@ -1,5 +1,5 @@
-import React from 'react';
 import PokemonCard from './PokemonCard';
+import PropTypes from 'prop-types';
 
 const PokemonList = ({ pokemons }) => {
   return (
@@ -15,6 +15,23 @@ const PokemonList = ({ pokemons }) => {
       ))}
     </div>
   );
+};
+
+PokemonList.propTypes = {
+  pokemons: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      name: PropTypes.string.isRequired,
+      sprites: PropTypes.shape({
+        other: PropTypes.shape({
+          'official-artwork': PropTypes.shape({
+            front_default: PropTypes.string.isRequired,
+          }).isRequired,
+        }).isRequired,
+      }).isRequired,
+      favorite: PropTypes.bool,
+    })
+  ).isRequired,
 };
 
 export default PokemonList;

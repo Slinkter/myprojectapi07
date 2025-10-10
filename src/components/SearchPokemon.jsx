@@ -1,20 +1,27 @@
-import { useDispatch } from "react-redux";
-import { setSearchFilter } from "../features/pokemon/pokemonSlice";
-import { TextField } from "@mui/material";
+import { Input } from '@material-tailwind/react';
+import { useSearch } from '../hooks/useSearch';
 
 export const SearchPokemon = () => {
-    const dispatch = useDispatch();
-    const handleFilterPokemon = (input) => {
-        const text = input.trim();
-        dispatch(setSearchFilter(text));
-    };
+  const { searchFilter, filterPokemons } = useSearch();
 
-    return (
-        <TextField
-            label="Search Pokémon"
-            variant="outlined"
-            fullWidth
-            onChange={(e) => handleFilterPokemon(e.target.value)}
-        />
-    );
+  const handleSearchChange = (e) => {
+    filterPokemons(e.target.value);
+  };
+
+  return (
+    <div className="w-full">
+      <Input
+        label="Buscar Pokémon..."
+        value={searchFilter}
+        onChange={handleSearchChange}
+        className="!border !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10 dark:!border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:!border-white dark:focus:!border-t-white"
+        labelProps={{
+          className: "hidden",
+        }}
+        containerProps={{
+          className: "min-w-[100px]",
+        }}
+      />
+    </div>
+  );
 };
