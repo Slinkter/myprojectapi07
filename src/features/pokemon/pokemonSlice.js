@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { getPokemonList } from "../../services/api/pokemon";
+import { getPokemonList } from "@/services/api/pokemon";
 
 const pokemonSlice = createSlice({
     name: "pokemon",

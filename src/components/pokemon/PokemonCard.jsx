@@ -1,4 +1,4 @@
-import { useFavorites } from '../../hooks/useFavorites';
+import { useFavorites } from '@/features/favorites/useFavorites';
 import PropTypes from 'prop-types';
 
 // Un componente simple para el ícono de estrella

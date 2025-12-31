@@ -1,11 +1,11 @@
 import React, { Suspense } from "react";
 import ReactDOM from "react-dom/client";
-import App from "./app/App.jsx";
-import "./index.css";
+import App from "@/app/App.jsx";
+import "@/index.css";
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
-import rootReducer from "./store";
-import { PokemonSkeleton } from "./components/ui/PokemonSkeleton";
+import rootReducer from "@/store";
+import { PokemonSkeleton } from "@/components/ui/PokemonSkeleton";
 
 const store = configureStore({ reducer: rootReducer });
 

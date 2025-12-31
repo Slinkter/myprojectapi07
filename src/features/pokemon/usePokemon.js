@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchPokemons as fetchPokemonsThunk, setPage } from "../features/pokemon/pokemonSlice";
+import { fetchPokemons as fetchPokemonsThunk, setPage } from "@/features/pokemon/pokemonSlice";
 
 export const usePokemon = () => {
     const dispatch = useDispatch();

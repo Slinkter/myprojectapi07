@@ -1,4 +1,4 @@
-import PokemonCard from './PokemonCard';
+import PokemonCard from '@/components/pokemon/PokemonCard';
 import PropTypes from 'prop-types';
 
 const PokemonList = ({ pokemons }) => {

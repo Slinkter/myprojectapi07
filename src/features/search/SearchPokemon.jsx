@@ -1,5 +1,5 @@
 import { Input } from '@material-tailwind/react';
-import { useSearch } from '../hooks/useSearch';
+import { useSearch } from './useSearch';
 
 export const SearchPokemon = () => {
   const { searchFilter, filterPokemons } = useSearch();

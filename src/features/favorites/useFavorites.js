@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { toggleFavorite } from "../features/favorites/favoritesSlice";
+import { toggleFavorite } from "@/features/favorites/favoritesSlice";
 
 export const useFavorites = () => {
     const dispatch = useDispatch();
