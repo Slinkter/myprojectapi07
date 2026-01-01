@@ -1,14 +1,15 @@
+/**
+ * The main entry point for the React application.
+ * It sets up the Redux store, theme provider, and renders the root App component.
+ */
 import React, { Suspense } from "react";
 import ReactDOM from "react-dom/client";
+import { Provider } from "react-redux";
+import store from "@/store";
+import ThemeWrapper from "@/app/ThemeWrapper.jsx";
+import { PokemonSkeleton } from "@/features/pokemon/components/PokemonSkeleton";
 import App from "@/app/App.jsx";
 import "@/index.css";
-import { Provider } from "react-redux";
-import { configureStore } from "@reduxjs/toolkit";
-import rootReducer from "@/store";
-import { PokemonSkeleton } from "@/components/ui/PokemonSkeleton";
-import ThemeWrapper from "@/app/ThemeWrapper.jsx";
-
-const store = configureStore({ reducer: rootReducer });
 
 ReactDOM.createRoot(document.getElementById("root")).render(
     <React.StrictMode>

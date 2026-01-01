@@ -2,12 +2,14 @@
 import PropTypes from 'prop-types';
 import { useMemo } from 'react';
 import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
-import { useTheme } from '@/features/theme/useTheme';
+import { useTheme } from '@/features/theme/hooks/useTheme';
 
 /**
  * This component acts as a bridge between the Redux theme state and MUI's ThemeProvider.
  * It creates a MUI theme object based on the current mode (light/dark) and provides it
  * to all descendant MUI components. It also includes CssBaseline for style normalization.
+ * @param {object} props - The component props.
+ * @param {React.ReactNode} props.children - The child components to render.
  */
 const ThemeWrapper = ({ children }) => {
   const { currentTheme } = useTheme();

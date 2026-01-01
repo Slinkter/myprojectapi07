@@ -1,6 +1,6 @@
 
 import PropTypes from 'prop-types';
-import { useFavorites } from '@/features/favorites/useFavorites';
+import { useFavorites } from '@/features/favorites/hooks/useFavorites';
 import {
   Card,
   CardContent,
@@ -27,9 +27,24 @@ const cardAnimation = {
   },
 };
 
+/**
+ * A component that displays a single Pokémon card with its details.
+ * @param {object} props - The component props.
+ * @param {number} props.id - The ID of the Pokémon.
+ * @param {string} props.name - The name of the Pokémon.
+ * @param {string} props.image - The URL of the Pokémon's image.
+ * @param {Array<object>} props.types - The types of the Pokémon.
+ * @param {boolean} props.favorite - Whether the Pokémon is a favorite.
+ * @param {number} [props.index=0] - The index of the card for animation delay.
+ * @returns {JSX.Element} The rendered Pokémon card component.
+ */
 const PokemonCard = ({ id, name, image, types, favorite, index = 0 }) => {
   const { togglePokemonFavorite } = useFavorites();
 
+  /**
+   * Handles the click event on the favorite icon.
+   * @param {React.MouseEvent} e - The mouse event.
+   */
   const handleFavoriteClick = (e) => {
     e.preventDefault();
     e.stopPropagation();

@@ -1,8 +1,14 @@
 
 import PropTypes from 'prop-types';
-import PokemonCard from '@/components/pokemon/PokemonCard';
+import PokemonCard from '@/features/pokemon/components/PokemonCard';
 import { Box } from '@mui/material';
 
+/**
+ * A component that displays a grid of Pokémon cards.
+ * @param {object} props - The component props.
+ * @param {Array<object>} props.pokemons - The list of Pokémon to display.
+ * @returns {JSX.Element} The rendered list of Pokémon cards.
+ */
 const PokemonList = ({ pokemons }) => {
   return (
     <Box
@@ -58,3 +64,4 @@ PokemonList.propTypes = {
 };
 
 export default PokemonList;
+

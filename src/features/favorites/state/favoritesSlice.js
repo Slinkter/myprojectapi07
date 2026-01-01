@@ -1,33 +1,33 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-// La clave única para guardar los favoritos en el localStorage.
+// The unique key for storing favorites in localStorage.
 const FAVORITES_STORAGE_KEY = 'pokemon_favorites';
 
 /**
- * Carga los IDs de los Pokémon favoritos desde el localStorage.
- * Es una buena práctica envolver las interacciones con localStorage en un try-catch,
- * ya que puede fallar en algunos navegadores o en modo incógnito.
- * @returns {number[]} Un array con los IDs de los Pokémon favoritos.
+ * Loads the favorite Pokémon IDs from localStorage.
+ * It's good practice to wrap localStorage interactions in a try-catch block,
+ * as it can fail in some browsers or in private browsing mode.
+ * @returns {number[]} An array of favorite Pokémon IDs.
  */
 const getFavoritesFromStorage = () => {
     try {
         const storedFavorites = localStorage.getItem(FAVORITES_STORAGE_KEY);
         return storedFavorites ? JSON.parse(storedFavorites) : [];
     } catch (error) {
-        console.error("No se pudieron cargar los favoritos desde localStorage", error);
+        console.error("Could not load favorites from localStorage", error);
         return [];
     }
 };
 
 /**
- * Guarda un array de IDs de Pokémon favoritos en el localStorage.
- * @param {number[]} favoriteIds - Un array con los IDs de los Pokémon a guardar.
+ * Saves an array of favorite Pokémon IDs to localStorage.
+ * @param {number[]} favoriteIds - An array of Pokémon IDs to save.
  */
 const saveFavoritesToStorage = (favoriteIds) => {
     try {
         localStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify(favoriteIds));
     } catch (error) {
-        console.error("No se pudieron guardar los favoritos en localStorage", error);
+        console.error("Could not save favorites to localStorage", error);
     }
 };
 
@@ -37,6 +37,14 @@ const favoritesSlice = createSlice({
         favoriteIds: getFavoritesFromStorage(),
     },
     reducers: {
+        /**
+         * Toggles the favorite status of a Pokémon.
+         * If the Pokémon is already a favorite, it's removed; otherwise, it's added.
+         * The updated list of favorites is then saved to localStorage.
+         * @param {object} state - The current state.
+         * @param {object} action - The Redux action.
+         * @param {number} action.payload - The ID of the Pokémon to toggle.
+         */
         toggleFavorite: (state, action) => {
             const id = action.payload;
             if (state.favoriteIds.includes(id)) {
@@ -51,3 +59,4 @@ const favoritesSlice = createSlice({
 
 export const { toggleFavorite } = favoritesSlice.actions;
 export default favoritesSlice.reducer;
+
