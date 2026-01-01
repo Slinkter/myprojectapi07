@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { useSearch } from './useSearch';
 import { TextField, InputAdornment } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';

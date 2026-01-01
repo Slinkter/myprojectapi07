@@ -61,5 +61,34 @@ Este documento detalla las decisiones técnicas significativas tomadas durante l
     *   **Claridad:** Hace el propósito de cada componente evidente.
 *   **Impacto:** Requerirá la refactorización de componentes complejos, dividiéndolos en sus partes lógicas y de presentación.
 
+## 5. Adopción de CSS Grid para Layouts de Listas
+
+*   **Fecha:** 31 de Diciembre de 2025
+*   **Problema:** Los layouts de listas, como la de Pokémon, necesitan ser robustos, responsivos y consistentes. El uso de Flexbox, aunque potente, puede ser menos explícito para la creación de grillas con un número de columnas estricto por breakpoint.
+*   **Alternativas Consideradas:**
+    *   Utilizar el componente `<Grid>` de MUI (basado en Flexbox).
+    *   Utilizar CSS Grid nativo.
+*   **Decisión:** Se estableció como **obligatorio el uso de CSS Grid nativo** para los layouts de listas principales. Esto se implementa a través de la prop `sx` en los componentes `<Box>` de MUI.
+*   **Justificación:**
+    *   **Control Explícito:** CSS Grid permite un control declarativo y explícito sobre el número de columnas y el espaciado (`gridTemplateColumns`, `gap`), cumpliendo con las estrictas reglas de diseño del proyecto.
+    *   **Robustez:** Evita problemas de "filas desbalanceadas" que a veces ocurren con Flexbox.
+    *   **Rendimiento:** Es el estándar moderno y más performante para layouts de grillas complejas.
+*   **Impacto:** Se refactorizó `PokemonList.jsx` y el contenedor del esqueleto de carga en `PokedexPage.jsx` para usar `display: 'grid'`.
+
+## 6. Rediseño de Tarjetas para Alto Impacto Visual
+
+*   **Fecha:** 31 de Diciembre de 2025
+*   **Problema:** El diseño inicial de las tarjetas (`PokemonCard`) era funcional pero visualmente "simplón", y la altura inconsistente de las tarjetas creaba un layout desbalanceado.
+*   **Alternativas Consideradas:**
+    *   Mantener el diseño simple.
+    *   Realizar pequeños ajustes cosméticos.
+*   **Decisión:** Se realizó una **reconstrucción completa del componente `PokemonCard`** para elevar su diseño a un nivel profesional.
+*   **Justificación:**
+    *   **Consistencia de Altura:** Se implementó una altura fija con Flexbox interno para asegurar que todas las tarjetas en una fila sean idénticas en tamaño.
+    *   **Jerarquía y Estructura:** Se definió una estructura clara de "Header/Body/Footer" dentro de la tarjeta.
+    *   **Riqueza Visual:** Se añadió información útil (tipos del Pokémon) y se implementaron animaciones de carga escalonada y efectos de hover y active más sofisticados.
+    *   **Alineación con Estándares:** El nuevo diseño cumple con los estándares modernos de UI y está listo para producción.
+*   **Impacto:** `PokemonCard.jsx` y `PokemonSkeleton.jsx` fueron completamente refactorizados, y la lista de Pokémon ahora presenta una apariencia mucho más pulida y profesional.
+
 ---
 *Este documento es generado y mantenido automáticamente como parte de la documentación del proyecto.*

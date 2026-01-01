@@ -1,15 +1,14 @@
-import React, { useEffect, useMemo } from 'react';
-import { usePokemon } from '@/features/pokemon/usePokemon';
-import { useSearch } from '@/features/search/useSearch';
-import { useFavorites } from '@/features/favorites/useFavorites';
-import { useTheme } from '@/features/theme/useTheme';
-import { PokemonSkeleton } from '@/components/ui/PokemonSkeleton';
-import PokemonList from '@/components/pokemon/PokemonList';
-import { SearchPokemon } from '@/features/search/SearchPokemon';
+import { useEffect, useMemo } from "react";
+import { usePokemon } from "@/features/pokemon/usePokemon";
+import { useSearch } from "@/features/search/useSearch";
+import { useFavorites } from "@/features/favorites/useFavorites";
+import { useTheme } from "@/features/theme/useTheme";
+import { PokemonSkeleton } from "@/components/ui/PokemonSkeleton";
+import PokemonList from "@/components/pokemon/PokemonList";
+import { SearchPokemon } from "@/features/search/SearchPokemon";
 import {
   AppBar,
   Container,
-  Grid,
   Toolbar,
   Typography,
   Pagination,
@@ -19,21 +18,21 @@ import {
   Button,
   Stack,
   Paper, // Added
-  Chip,   // Added
+  Chip, // Added
   Avatar, // Added
-} from '@mui/material';
-import { styled } from '@mui/material/styles';
-import Brightness4Icon from '@mui/icons-material/Brightness4';
-import Brightness7Icon from '@mui/icons-material/Brightness7';
-import logopokemon from '@/assets/logo.svg';
+} from "@mui/material";
+import { styled } from "@mui/material/styles";
+import Brightness4Icon from "@mui/icons-material/Brightness4";
+import Brightness7Icon from "@mui/icons-material/Brightness7";
+import logopokemon from "@/assets/logo.svg";
 
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
   backgroundColor:
-    theme.palette.mode === 'dark'
-      ? 'rgba(0, 0, 0, 0.3)'
-      : 'rgba(255, 255, 255, 0.3)',
-  backdropFilter: 'blur(10px)',
-  boxShadow: 'none',
+    theme.palette.mode === "dark"
+      ? "rgba(0, 0, 0, 0.3)"
+      : "rgba(255, 255, 255, 0.3)",
+  backdropFilter: "blur(10px)",
+  boxShadow: "none",
   borderBottom: `1px solid ${theme.palette.divider}`,
 }));
 
@@ -85,9 +84,9 @@ function PokedexPage() {
   return (
     <Box
       sx={{
-        bgcolor: 'background.default',
-        color: 'text.primary',
-        minHeight: '100vh',
+        bgcolor: "background.default",
+        color: "text.primary",
+        minHeight: "100vh",
       }}
     >
       <StyledAppBar position="sticky">
@@ -96,11 +95,15 @@ function PokedexPage() {
             component="img"
             src={logopokemon}
             alt="Logo Pokémon"
-            sx={{ width: 120, height: 'auto' }}
+            sx={{ width: 120, height: "auto" }}
           />
           <Box sx={{ flexGrow: 1 }} />
           <IconButton sx={{ ml: 1 }} onClick={toggleAppTheme} color="inherit">
-            {currentTheme === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
+            {currentTheme === "dark" ? (
+              <Brightness7Icon />
+            ) : (
+              <Brightness4Icon />
+            )}
           </IconButton>
         </Toolbar>
       </StyledAppBar>
@@ -112,8 +115,8 @@ function PokedexPage() {
               variant="h2"
               component="h1"
               sx={{
-                fontWeight: 'bold',
-                fontSize: { xs: '2.5rem', sm: '3.5rem', md: '4rem' },
+                fontWeight: "bold",
+                fontSize: { xs: "2.5rem", sm: "3.5rem", md: "4rem" },
               }}
             >
               Pokédex
@@ -123,7 +126,7 @@ function PokedexPage() {
             </Typography>
           </Box>
 
-          <Box sx={{ width: '100%', maxWidth: 'sm' }}>
+          <Box sx={{ width: "100%", maxWidth: "sm" }}>
             <SearchPokemon />
           </Box>
 
@@ -132,9 +135,9 @@ function PokedexPage() {
             variant="outlined"
             sx={{
               p: 2,
-              width: '100%',
-              maxWidth: 'md',
-              bgcolor: 'background.paper',
+              width: "100%",
+              maxWidth: "md",
+              bgcolor: "background.paper",
             }}
           >
             <Typography variant="h6" component="h3" sx={{ mb: 2 }}>
@@ -142,20 +145,22 @@ function PokedexPage() {
             </Typography>
             <Box
               sx={{
-                display: 'flex',
-                flexWrap: 'wrap',
+                display: "flex",
+                flexWrap: "wrap",
                 gap: 1,
                 minHeight: 40, // Ensure it has height even when empty
-                alignItems: 'center',
+                alignItems: "center",
               }}
             >
               {favoritePokemons.length > 0 ? (
                 favoritePokemons.map((fav) => (
                   <Chip
                     key={fav.id}
-                    avatar={<Avatar src={fav.sprites.front_default} alt={fav.name} />}
+                    avatar={
+                      <Avatar src={fav.sprites.front_default} alt={fav.name} />
+                    }
                     label={fav.name}
-                    sx={{ textTransform: 'capitalize' }}
+                    sx={{ textTransform: "capitalize" }}
                   />
                 ))
               ) : (
@@ -166,7 +171,7 @@ function PokedexPage() {
             </Box>
           </Paper>
 
-          <Box sx={{ width: '100%' }}>
+          <Box sx={{ width: "100%" }}>
             {error ? (
               <Alert
                 severity="error"
@@ -179,13 +184,22 @@ function PokedexPage() {
                 Error al cargar los Pokémon: {error}
               </Alert>
             ) : isLoading ? (
-              <Grid container spacing={2}>
+              <Box
+                sx={{
+                  display: "grid",
+                  gap: { xs: 2, md: 3 },
+                  gridTemplateColumns: {
+                    xs: "repeat(1, 1fr)",
+                    sm: "repeat(2, 1fr)",
+                    md: "repeat(3, 1fr)",
+                    lg: "repeat(4, 1fr)",
+                  },
+                }}
+              >
                 {[...Array(12)].map((_, index) => (
-                  <Grid item xs={6} sm={4} md={3} lg={2.4} xl={2} key={index}>
-                    <PokemonSkeleton />
-                  </Grid>
+                  <PokemonSkeleton key={index} />
                 ))}
-              </Grid>
+              </Box>
             ) : (
               <PokemonList pokemons={filteredPokemons} />
             )}
@@ -201,8 +215,8 @@ function PokedexPage() {
               showFirstButton
               showLastButton
               sx={{
-                '& .MuiPagination-ul': {
-                  justifyContent: 'center',
+                "& .MuiPagination-ul": {
+                  justifyContent: "center",
                 },
               }}
             />

@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   Card,
   CardContent,
@@ -6,6 +5,7 @@ import {
   Box,
   Stack,
   IconButton,
+  Typography, // Import Typography
 } from '@mui/material';
 import StarIcon from '@mui/icons-material/Star';
 
@@ -29,7 +29,10 @@ export const PokemonSkeleton = () => (
         p: 1,
       }}
     >
-      <Skeleton variant="text" width="40px" />
+      {/* Wrap skeleton in Typography to match final component's font metrics */}
+      <Typography variant="caption">
+        <Skeleton variant="text" width="40px" />
+      </Typography>
       <IconButton size="small" disabled>
         <StarIcon fontSize="small" sx={{ color: 'action.disabled' }} />
       </IconButton>
@@ -38,7 +41,10 @@ export const PokemonSkeleton = () => (
     {/* --- SKELETON BODY --- */}
     <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', p: 1 }}>
       <Skeleton variant="rectangular" width={120} height={120} />
-      <Skeleton variant="text" width="80%" sx={{ mt: 2 }} />
+      {/* Wrap skeleton in Typography to match final component's font metrics */}
+      <Typography variant="h6" component="h2" sx={{ mt: 2, width: '80%' }}>
+        <Skeleton variant="text" />
+      </Typography>
     </Box>
 
     {/* --- SKELETON FOOTER --- */}
