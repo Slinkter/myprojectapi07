@@ -1,31 +1,41 @@
-import { useEffect, useMemo } from "react";
-import { usePokemon } from "@/features/pokemon/usePokemon";
-import { useSearch } from "@/features/search/useSearch";
-import { useFavorites } from "@/features/favorites/useFavorites";
-import { useTheme } from "@/features/theme/useTheme";
-import { PokemonSkeleton } from "@/components/ui/PokemonSkeleton";
-import PokemonList from "@/components/pokemon/PokemonList";
-import { SearchPokemon } from "@/features/search/SearchPokemon";
+import React, { useEffect, useMemo } from 'react';
+import { usePokemon } from '@/features/pokemon/usePokemon';
+import { useSearch } from '@/features/search/useSearch';
+import { useFavorites } from '@/features/favorites/useFavorites';
+import { useTheme } from '@/features/theme/useTheme';
+import { PokemonSkeleton } from '@/components/ui/PokemonSkeleton';
+import PokemonList from '@/components/pokemon/PokemonList';
+import { SearchPokemon } from '@/features/search/SearchPokemon';
 import {
   AppBar,
   Container,
   Grid,
   Toolbar,
   Typography,
-  List,
-  ListItem,
-  Paper,
-  useMediaQuery,
+  Pagination,
+  Box,
+  IconButton,
+  Alert,
   Button,
-} from "@mui/material";
-import { IconButton } from "@material-tailwind/react";
-import {
-  SunIcon,
-  MoonIcon,
-  ArrowLeftIcon,
-  ArrowRightIcon,
-} from "@heroicons/react/24/solid";
-import logopokemon from "@/assets/logo.svg";
+  Stack,
+  Paper, // Added
+  Chip,   // Added
+  Avatar, // Added
+} from '@mui/material';
+import { styled } from '@mui/material/styles';
+import Brightness4Icon from '@mui/icons-material/Brightness4';
+import Brightness7Icon from '@mui/icons-material/Brightness7';
+import logopokemon from '@/assets/logo.svg';
+
+const StyledAppBar = styled(AppBar)(({ theme }) => ({
+  backgroundColor:
+    theme.palette.mode === 'dark'
+      ? 'rgba(0, 0, 0, 0.3)'
+      : 'rgba(255, 255, 255, 0.3)',
+  backdropFilter: 'blur(10px)',
+  boxShadow: 'none',
+  borderBottom: `1px solid ${theme.palette.divider}`,
+}));
 
 function PokedexPage() {
   const {
@@ -41,13 +51,10 @@ function PokedexPage() {
   const { favoriteIds } = useFavorites();
   const { currentTheme, toggleAppTheme } = useTheme();
 
-  const isMobile = useMediaQuery("(max-width:600px)");
-
   useEffect(() => {
     fetchPokemons();
-  }, [fetchPokemons, currentPage]); // Refetch when page changes
+  }, [fetchPokemons, currentPage]);
 
-  // Combine pokemons with favorite status and apply search filter
   const processedPokemons = useMemo(() => {
     return pokemons.map((pokemon) => ({
       ...pokemon,
@@ -58,7 +65,7 @@ function PokedexPage() {
   const filteredPokemons = useMemo(() => {
     if (!searchFilter) return processedPokemons;
     return processedPokemons.filter((p) =>
-      p.name.toLowerCase().includes(searchFilter)
+      p.name.toLowerCase().includes(searchFilter.toLowerCase())
     );
   }, [processedPokemons, searchFilter]);
 
@@ -71,134 +78,138 @@ function PokedexPage() {
     fetchPokemons();
   };
 
+  const handlePageChange = (event, value) => {
+    goToPage(value);
+  };
+
   return (
-    <div className="bg-gray-100 dark:bg-gray-900 min-h-screen font-sans">
-      <AppBar
-        position="sticky"
-        top={0}
-        color="transparent"
-        elevation={0}
-        className="border-b border-gray-200 dark:border-gray-800 backdrop-blur-sm bg-white/30 dark:bg-gray-900/30"
-      >
-        <Toolbar className="flex justify-between items-center">
-          <img src={logopokemon} alt="Logo Pokémon" className="w-32 h-auto" />
-          <IconButton
-            variant="text"
-            onClick={toggleAppTheme}
-            className="ml-auto"
-          >
-            {currentTheme === "dark" ? (
-              <SunIcon className="h-6 w-6 text-yellow-500" />
-            ) : (
-              <MoonIcon className="h-6 w-6 text-blue-gray-500" />
-            )}
+    <Box
+      sx={{
+        bgcolor: 'background.default',
+        color: 'text.primary',
+        minHeight: '100vh',
+      }}
+    >
+      <StyledAppBar position="sticky">
+        <Toolbar>
+          <Box
+            component="img"
+            src={logopokemon}
+            alt="Logo Pokémon"
+            sx={{ width: 120, height: 'auto' }}
+          />
+          <Box sx={{ flexGrow: 1 }} />
+          <IconButton sx={{ ml: 1 }} onClick={toggleAppTheme} color="inherit">
+            {currentTheme === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
           </IconButton>
         </Toolbar>
-      </AppBar>
-      <Container maxWidth="lg" className="py-4 sm:py-8">
-        <Grid container spacing={isMobile ? 2 : 4} justifyContent="center">
-          <Grid item xs={12} className="text-center mb-4 sm:mb-8">
+      </StyledAppBar>
+
+      <Container maxWidth="xl" sx={{ py: { xs: 3, md: 5 } }}>
+        <Stack spacing={3} alignItems="center">
+          <Box textAlign="center">
             <Typography
-              variant={isMobile ? "h4" : "h2"}
+              variant="h2"
               component="h1"
-              className="font-bold text-gray-800 dark:text-white animate-fade-in"
+              sx={{
+                fontWeight: 'bold',
+                fontSize: { xs: '2.5rem', sm: '3.5rem', md: '4rem' },
+              }}
             >
               Pokédex
             </Typography>
-            <Typography
-              variant={isMobile ? "body1" : "h6"}
-              className="text-gray-600 dark:text-gray-400 animate-fade-in animation-delay-200"
-            >
+            <Typography variant="h6" color="text.secondary">
               Gotta Catch &apos;Em All!
             </Typography>
-          </Grid>
+          </Box>
 
-          <Grid item xs={12} md={10} lg={8}>
-            <Paper
-              elevation={3}
-              className="p-4 sm:p-6 rounded-lg animate-slide-in"
+          <Box sx={{ width: '100%', maxWidth: 'sm' }}>
+            <SearchPokemon />
+          </Box>
+
+          {/* Favorites Section */}
+          <Paper
+            variant="outlined"
+            sx={{
+              p: 2,
+              width: '100%',
+              maxWidth: 'md',
+              bgcolor: 'background.paper',
+            }}
+          >
+            <Typography variant="h6" component="h3" sx={{ mb: 2 }}>
+              Favoritos
+            </Typography>
+            <Box
+              sx={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: 1,
+                minHeight: 40, // Ensure it has height even when empty
+                alignItems: 'center',
+              }}
             >
-              <Grid container spacing={isMobile ? 2 : 4} alignItems="center">
-                <Grid item xs={12} md={6}>
-                  <SearchPokemon />
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  <Typography
-                    variant="h6"
-                    className="font-bold text-gray-800 dark:text-white mb-2"
-                  >
-                    Favorites
-                  </Typography>
-                  <List dense>
-                    {favoritePokemons.length > 0 ? (
-                      favoritePokemons.map((fav) => (
-                        <ListItem key={fav.id} className="px-0">
-                          <Typography className="capitalize">
-                            {fav.name}
-                          </Typography>
-                        </ListItem>
-                      ))
-                    ) : (
-                      <Typography className="text-gray-500 dark:text-gray-400">
-                        No favorites yet!
-                      </Typography>
-                    )}
-                  </List>
-                </Grid>
-              </Grid>
-            </Paper>
-          </Grid>
-
-          <Grid item xs={12}>
-            {error ? (
-              <div className="text-center p-4 text-red-600 dark:text-red-400">
-                <Typography variant="h6">
-                  Error loading Pokémons: {error}
+              {favoritePokemons.length > 0 ? (
+                favoritePokemons.map((fav) => (
+                  <Chip
+                    key={fav.id}
+                    avatar={<Avatar src={fav.sprites.front_default} alt={fav.name} />}
+                    label={fav.name}
+                    sx={{ textTransform: 'capitalize' }}
+                  />
+                ))
+              ) : (
+                <Typography variant="body2" color="text.secondary">
+                  No has seleccionado ningún Pokémon favorito.
                 </Typography>
-                <Button onClick={handleRetry} className="mt-4 btn-primary">
-                  Retry
-                </Button>
-              </div>
+              )}
+            </Box>
+          </Paper>
+
+          <Box sx={{ width: '100%' }}>
+            {error ? (
+              <Alert
+                severity="error"
+                action={
+                  <Button color="inherit" size="small" onClick={handleRetry}>
+                    Reintentar
+                  </Button>
+                }
+              >
+                Error al cargar los Pokémon: {error}
+              </Alert>
             ) : isLoading ? (
-              <div className="flex justify-center mt-4 sm:mt-8">
-                <Grid container spacing={isMobile ? 2 : 4}>
-                  {[...Array(12)].map((_, index) => (
-                    <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
-                      <PokemonSkeleton />
-                    </Grid>
-                  ))}
-                </Grid>
-              </div>
+              <Grid container spacing={2}>
+                {[...Array(12)].map((_, index) => (
+                  <Grid item xs={6} sm={4} md={3} lg={2.4} xl={2} key={index}>
+                    <PokemonSkeleton />
+                  </Grid>
+                ))}
+              </Grid>
             ) : (
-              <>
-                <PokemonList pokemons={filteredPokemons} />
-                <div className="flex justify-center items-center gap-4 mt-8">
-                  <Button
-                    variant="outlined"
-                    onClick={() => goToPage(currentPage - 1)}
-                    disabled={currentPage === 1 || isLoading}
-                    className="btn-primary"
-                  >
-                    <ArrowLeftIcon className="h-4 w-4 mr-2" /> Previous
-                  </Button>
-                  <Typography className="text-gray-700 dark:text-gray-300">
-                    Page {currentPage} of {totalPages}
-                  </Typography>
-                  <Button
-                    variant="outlined"
-                    onClick={() => goToPage(currentPage + 1)}
-                    disabled={currentPage === totalPages || isLoading}
-                    className="btn-primary"
-                  >
-                    Next <ArrowRightIcon className="h-4 w-4 ml-2" />
-                  </Button>
-                </div>
-              </>
+              <PokemonList pokemons={filteredPokemons} />
             )}
-          </Grid>
-        </Grid>
+          </Box>
+
+          {!isLoading && !error && totalPages > 1 && (
+            <Pagination
+              count={totalPages}
+              page={currentPage}
+              onChange={handlePageChange}
+              color="primary"
+              size="large"
+              showFirstButton
+              showLastButton
+              sx={{
+                '& .MuiPagination-ul': {
+                  justifyContent: 'center',
+                },
+              }}
+            />
+          )}
+        </Stack>
       </Container>
-    </div>
+    </Box>
   );
 }
 

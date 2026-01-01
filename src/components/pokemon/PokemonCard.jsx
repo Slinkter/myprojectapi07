@@ -1,22 +1,35 @@
-import { useFavorites } from '@/features/favorites/useFavorites';
+import React from 'react';
 import PropTypes from 'prop-types';
+import { useFavorites } from '@/features/favorites/useFavorites';
+import {
+  Card,
+  CardContent,
+  CardMedia,
+  Typography,
+  IconButton,
+  Box,
+  Chip,
+  Stack,
+} from '@mui/material';
+import StarIcon from '@mui/icons-material/Star';
 
-// Un componente simple para el ícono de estrella
-const StarIcon = (props) => (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" {...props}>
-    <path
-      fillRule="evenodd"
-      d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.212l5.404-.433 2.082-5.007z"
-      clipRule="evenodd"
-    />
-  </svg>
-);
+// Define animation keyframes at the module level
+const cardAnimation = {
+  '@keyframes fadeInSlideUp': {
+    '0%': {
+      opacity: 0,
+      transform: 'translateY(20px)',
+    },
+    '100%': {
+      opacity: 1,
+      transform: 'translateY(0)',
+    },
+  },
+};
 
-
-const PokemonCard = ({ id, name, image, favorite }) => {
+const PokemonCard = ({ id, name, image, types, favorite, index = 0 }) => {
   const { togglePokemonFavorite } = useFavorites();
 
-  // Evita que el click en el botón se propague a la tarjeta
   const handleFavoriteClick = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -24,34 +37,107 @@ const PokemonCard = ({ id, name, image, favorite }) => {
   };
 
   return (
-    <div className="group relative cursor-pointer rounded-lg border border-gray-200 bg-white p-4 text-center shadow-sm transition-all duration-300 ease-in-out hover:border-blue-500 hover:shadow-xl dark:border-gray-700 dark:bg-gray-800">
-      <button
-        onClick={handleFavoriteClick}
-        className="absolute top-2 right-2 z-20 rounded-full bg-white/30 p-1.5 backdrop-blur-sm transition-opacity duration-300 group-hover:opacity-100 sm:opacity-0"
-        aria-label="Marcar como favorito"
-      >
-        <StarIcon
-          className={`h-6 w-6 transition-colors ${
-            favorite
-              ? 'text-yellow-400'
-              : 'text-gray-300 hover:text-yellow-300'
-          }`}
-        />
-      </button>
+    <Card
+      elevation={2}
+      sx={{
+        ...cardAnimation,
+        height: '100%', // Ensure all cards in a row have the same height
+        display: 'flex',
+        flexDirection: 'column',
+        cursor: 'pointer',
+        border: '1px solid',
+        borderColor: 'divider',
+        transition: 'transform 0.2s ease-in-out, box-shadow 0.3s ease-in-out',
+        opacity: 0,
+        animation: `fadeInSlideUp 0.5s ease-out forwards`,
+        animationDelay: `${index * 70}ms`,
 
-      <img
-        src={image}
-        alt={`Imagen de ${name}`}
-        className="mx-auto h-24 w-24 transition-transform duration-300 group-hover:scale-110 sm:h-28 sm:w-28"
-        loading="lazy"
-      />
-      <div className="mt-3">
-        <p className="text-sm text-gray-500 dark:text-gray-400">#{String(id).padStart(3, '0')}</p>
-        <h3 className="mt-1 text-lg font-bold capitalize text-gray-800 dark:text-white">
+        '&:hover': {
+          transform: 'translateY(-8px)',
+          boxShadow: (theme) =>
+            `${theme.shadows[10]}, 0 0 20px ${
+              theme.palette.mode === 'dark'
+                ? theme.palette.primary.dark
+                : theme.palette.primary.light
+            }`,
+          '& .card-media': {
+            transform: 'scale(1.1)',
+          },
+        },
+        '&:active': {
+          transform: 'scale(0.98) translateY(0)',
+        },
+      }}
+    >
+      {/* --- HEADER --- */}
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          p: 1, // 8px padding
+        }}
+      >
+        <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 'bold' }}>
+          #{String(id).padStart(3, '0')}
+        </Typography>
+        <IconButton
+          aria-label="Marcar como favorito"
+          onClick={handleFavoriteClick}
+          size="small"
+        >
+          <StarIcon
+            fontSize="small"
+            sx={{
+              transition: 'color 0.2s',
+              color: favorite ? 'warning.main' : 'action.disabled',
+            }}
+          />
+        </IconButton>
+      </Box>
+
+      {/* --- BODY --- */}
+      <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', p: 1 }}>
+        <CardMedia
+          component="img"
+          image={image}
+          alt={`Imagen de ${name}`}
+          className="card-media"
+          sx={{
+            height: 120,
+            width: 120,
+            objectFit: 'contain',
+            transition: 'transform 0.35s ease-in-out',
+          }}
+          loading="lazy"
+        />
+        <Typography
+          variant="h6"
+          component="h2"
+          sx={{
+            textTransform: 'capitalize',
+            fontWeight: 'bold',
+            mt: 2, // 16px margin-top
+          }}
+        >
           {name}
-        </h3>
-      </div>
-    </div>
+        </Typography>
+      </Box>
+
+      {/* --- FOOTER --- */}
+      <CardContent sx={{ pt: 1, pb: '16px !important' }}>
+        <Stack direction="row" spacing={1} justifyContent="center">
+          {types.map((typeInfo) => (
+            <Chip
+              key={typeInfo.type.name}
+              label={typeInfo.type.name}
+              size="small"
+              sx={{ textTransform: 'capitalize' }}
+            />
+          ))}
+        </Stack>
+      </CardContent>
+    </Card>
   );
 };
 
@@ -59,7 +145,15 @@ PokemonCard.propTypes = {
   id: PropTypes.number.isRequired,
   name: PropTypes.string.isRequired,
   image: PropTypes.string.isRequired,
+  types: PropTypes.arrayOf(
+    PropTypes.shape({
+      type: PropTypes.shape({
+        name: PropTypes.string.isRequired,
+      }).isRequired,
+    })
+  ).isRequired,
   favorite: PropTypes.bool.isRequired,
+  index: PropTypes.number,
 };
 
 export default PokemonCard;

@@ -7,10 +7,6 @@ export const useTheme = () => {
   const currentTheme = useSelector((state) => state.theme.currentTheme);
 
   useEffect(() => {
-    const root = window.document.documentElement;
-    root.classList.remove(currentTheme === 'dark' ? 'light' : 'dark');
-    root.classList.add(currentTheme);
-
     // Listen for system theme changes
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     const handleChange = (e) => {
@@ -22,7 +18,7 @@ export const useTheme = () => {
     };
     mediaQuery.addEventListener('change', handleChange);
     return () => mediaQuery.removeEventListener('change', handleChange);
-  }, [currentTheme, dispatch]);
+  }, [dispatch]);
 
   const toggleAppTheme = useCallback(() => {
     dispatch(toggleTheme());
