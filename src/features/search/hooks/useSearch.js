@@ -12,8 +12,8 @@ import { setSearchFilter } from "@/features/search/state/searchSlice";
  * }}
  */
 export const useSearch = () => {
-    const dispatch = useDispatch();
     const searchFilter = useSelector((state) => state.search.searchFilter);
+    const dispatch = useDispatch();
 
     /**
      * Updates the search filter in the Redux store.

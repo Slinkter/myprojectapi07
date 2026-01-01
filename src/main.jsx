@@ -10,6 +10,7 @@ import ThemeWrapper from "@/app/ThemeWrapper.jsx";
 import { PokemonSkeleton } from "@/features/pokemon/components/PokemonSkeleton";
 import App from "@/app/App.jsx";
 import "@/index.css";
+import { Box } from "@mui/material";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
     <React.StrictMode>
@@ -17,9 +18,16 @@ ReactDOM.createRoot(document.getElementById("root")).render(
             <ThemeWrapper>
                 <Suspense
                     fallback={
-                        <div className="flex justify-center items-center h-screen">
+                        <Box
+                            sx={{
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                height: "100vh",
+                            }}
+                        >
                             <PokemonSkeleton />
-                        </div>
+                        </Box>
                     }
                 >
                     <App />

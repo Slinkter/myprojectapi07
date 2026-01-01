@@ -27,13 +27,13 @@ import Brightness7Icon from "@mui/icons-material/Brightness7";
 import logopokemon from "@/assets/logo.svg";
 
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
+    boxShadow: "none",
+    backdropFilter: "blur(10px)",
+    borderBottom: `1px solid ${theme.palette.divider}`,
     backgroundColor:
         theme.palette.mode === "dark"
             ? "rgba(0, 0, 0, 0.3)"
             : "rgba(255, 255, 255, 0.3)",
-    backdropFilter: "blur(10px)",
-    boxShadow: "none",
-    borderBottom: `1px solid ${theme.palette.divider}`,
 }));
 
 /**
@@ -112,7 +112,7 @@ function PokedexPage() {
                     />
                     <Box sx={{ flexGrow: 1 }} />
                     <IconButton
-                        sx={{ ml: 1, color: 'red' }}
+                        sx={{ ml: 1, color: "red" }}
                         onClick={toggleAppTheme}
                         color="inherit"
                     >
@@ -125,20 +125,15 @@ function PokedexPage() {
                 </Toolbar>
             </StyledAppBar>
 
-            <Container maxWidth="xl" sx={{ py: { xs: 3, md: 5 } }}>
+            <Container
+                maxWidth="xl"
+                sx={{ py: { xs: 3, md: 5 }, border: "0px solid red" }}
+            >
                 <Stack spacing={3} alignItems="center">
                     <Box textAlign="center">
                         <Typography
                             variant="h2"
-                            component="h1"
-                            sx={{
-                                fontWeight: "bold",
-                                fontSize: {
-                                    xs: "2.5rem",
-                                    sm: "3.5rem",
-                                    md: "4rem",
-                                },
-                            }}
+                            sx={{ color: "text.secondary", fontWeight: "bold" }}
                         >
                             Pokédex
                         </Typography>

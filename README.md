@@ -49,11 +49,13 @@ El código fuente está organizado por "features" (características). Cada featu
 La arquitectura se divide en capas claras, inspiradas en Clean Architecture:
 
 1.  **Capa de UI (Presentación):**
+
     -   **`pages`**: Componentes de alto nivel que representan las páginas de la aplicación (ej. `PokedexPage.jsx`). Componen la UI a partir de componentes de features y layout.
     -   **`components`**: Contiene componentes de UI verdaderamente reutilizables y agnósticos a la lógica de negocio, como `PokemonCard.jsx` o `PokemonSkeleton.jsx`.
     -   **`app`**: El punto de entrada de la aplicación (`App.jsx`) que configura el layout principal y el enrutamiento (si lo hubiera).
 
 2.  **Capa de Lógica de Negocio (Dominio):**
+
     -   **`features`**: Aquí reside el corazón de la lógica de la aplicación. Los custom hooks (ej. `usePokemon.js`) extraen y encapsulan la lógica de negocio y la interacción con el estado, proveyendo una API sencilla a la capa de UI.
     -   **`store`**: Configuración del store de Redux, que actúa como el gestor de estado centralizado.
 
@@ -83,7 +85,8 @@ Los custom hooks actúan como intermediarios, simplificando la interacción de l
 -   **React Redux:** Para conectar los componentes de React con el store de Redux.
 -   **Axios:** Para realizar las peticiones HTTP a la PokéAPI.
 -   **Tailwind CSS:** Para un desarrollo de estilos rápido y personalizable.
--   **Material-UI (MUI) & Material-Tailwind:** Para componentes de layout y UI.
+-   **Material-UI (MUI):** Implementado para componentes de alta complejidad lógica y funcional (ej. Paginación, AppBar, Inputs).
+-   **Material-Tailwind:** Configurado para extender Tailwind CSS con un sistema de diseño Material, utilizado para estilos visuales, temas y layout.
 -   **Heroicons:** Para iconos utilizados en la interfaz.
 -   **ESLint:** Para mantener un código limpio y consistente.
 -   **JSDoc:** Para documentación de código.
