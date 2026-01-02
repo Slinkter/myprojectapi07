@@ -1,8 +1,8 @@
 import { configureStore } from "@reduxjs/toolkit";
-import pokemonReducer from "../features/pokemon/state/pokemonSlice";
-import searchReducer from "../features/search/state/searchSlice";
-import favoritesReducer from "../features/favorites/state/favoritesSlice";
-import themeReducer from "../features/theme/state/themeSlice";
+import { pokemonReducer } from "@/features/pokemon";
+import { searchReducer } from "@/features/search";
+import { favoritesReducer } from "@/features/favorites";
+import { themeReducer } from "@/features/theme";
 
 /**
  * The main Redux store for the application.

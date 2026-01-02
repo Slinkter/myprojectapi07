@@ -1,20 +1,19 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { getPokemonList } from "@/features/pokemon/services/pokemonApi";
+import { pokemonApi } from "@/features/pokemon/api/pokemonApi";
 
 /**
  * Async thunk for fetching a paginated list of Pokémon.
- * @param {{page: number, limit: number}} params - The pagination parameters.
+ * @param {Object} params - The pagination parameters.
  * @param {number} params.page - The current page number.
  * @param {number} params.limit - The number of items per page.
- * @returns {Promise<object>} A promise that resolves to the paginated Pokémon data.
  */
 export const fetchPokemons = createAsyncThunk(
     "pokemon/fetchPokemons",
     async ({ page, limit }, { rejectWithValue }) => {
         try {
             const offset = (page - 1) * limit;
-            const data = await getPokemonList(offset, limit);
-            return data; // This now includes { count, results }
+            const data = await pokemonApi.getPokemons(offset, limit);
+            return data;
         } catch (error) {
             return rejectWithValue(error.message);
         }

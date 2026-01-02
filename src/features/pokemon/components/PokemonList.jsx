@@ -1,7 +1,6 @@
 
 import PropTypes from 'prop-types';
 import PokemonCard from '@/features/pokemon/components/PokemonCard';
-import { Box } from '@mui/material';
 
 /**
  * A component that displays a grid of Pokémon cards.
@@ -11,31 +10,19 @@ import { Box } from '@mui/material';
  */
 const PokemonList = ({ pokemons }) => {
   return (
-    <Box
-      sx={{
-        display: 'grid',
-        gap: { xs: 2, md: 3 }, // 16px or 24px gap
-        // Adhering to the new mandatory grid rules
-        gridTemplateColumns: {
-          xs: 'repeat(1, 1fr)', // mobile: 1 column
-          sm: 'repeat(2, 1fr)', // tablet: 2 columns
-          md: 'repeat(3, 1fr)', // desktop: 3 columns
-          lg: 'repeat(4, 1fr)', // large desktop: 4 columns
-        },
-      }}
-    >
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
       {pokemons.map((pokemon, index) => (
         <PokemonCard
           key={pokemon.id}
           id={pokemon.id}
           name={pokemon.name}
           image={pokemon.sprites.other['official-artwork'].front_default}
-          types={pokemon.types} // Pass the new types prop
+          types={pokemon.types}
           favorite={pokemon.favorite || false}
           index={index}
         />
       ))}
-    </Box>
+    </div>
   );
 };
 
@@ -64,4 +51,3 @@ PokemonList.propTypes = {
 };
 
 export default PokemonList;
-

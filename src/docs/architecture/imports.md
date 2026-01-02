@@ -1,74 +1,45 @@
-# Arquitectura: Rutas Absolutas
+# 🗺️ Gestión de Importaciones y Alias `@`
 
-Este documento detalla la configuración y el uso de rutas absolutas con el alias `@` en el proyecto, una convención **obligatoria** para todas las importaciones de módulos.
+Para mejorar la legibilidad del código y facilitar las refactorizaciones, se ha implementado el uso de **Rutas Absolutas** mediante el alias `@`.
 
-## ¿Qué son las Rutas Absolutas?
+## 1. Configuración del Alias
 
-Una ruta absoluta nos permite importar un módulo desde la raíz del directorio `src/` sin importar en qué parte del proyecto nos encontremos. Utilizamos el alias `@` como un atajo para `src/`.
+El alias `@` apunta directamente a la carpeta `src/`. Esto evita el "Relative Import Hell" (ej. `../../../components`).
 
-**Ejemplo:**
+### Archivos de Configuración:
 
-En lugar de escribir una ruta relativa como esta:
+- **`vite.config.js`:** Configura el bundler para resolver los paths.
+- **`jsconfig.json`:** Proporciona soporte de IntelliSense para VS Code.
 
-```jsx
-// MAL: Difícil de leer y frágil ante cambios
-import { Button } from '../../../components/ui/Button';
-```
+## 2. Convención de Uso
 
-Escribimos una ruta absoluta, clara y directa:
+Todas las importaciones internas deben usar el prefijo `@`.
 
-```jsx
-// BIEN: Limpio, legible y robusto
-import { Button } from '@/components/ui/Button';
-```
-
-## Beneficios
-
-1.  **Mantenibilidad:** Si movemos un archivo de una carpeta a otra, no necesitamos actualizar sus importaciones. Las rutas con `@` siguen siendo válidas.
-2.  **Legibilidad:** Se elimina el "infierno de los `../`", haciendo el código mucho más fácil de leer y entender de un vistazo.
-3.  **Refactorización Sencilla:** Reorganizar la estructura de archivos se vuelve una tarea trivial, ya que las rutas de importación no se rompen.
-
-## Configuración del Proyecto
-
-Las rutas absolutas están habilitadas a través de dos archivos de configuración principales:
-
-### 1. `vite.config.js` (Bundler)
-
-Este archivo le dice a Vite cómo resolver el alias `@` durante el proceso de build.
+**✅ Correcto:**
 
 ```javascript
-// vite.config.js
-import path from "path";
-
-export default {
-  // ...
-  resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "./src"),
-    },
-  },
-};
+import { SearchBar } from "@/features/search";
+import { usePokemon } from "@/features/pokemon";
 ```
 
-### 2. `jsconfig.json` (Editor e IntelliSense)
+**❌ Incorrecto:**
 
-Este archivo le permite a editores como VSCode entender el alias `@`, habilitando el autocompletado y la navegación "Go to Definition".
-
-```json
-// jsconfig.json
-{
-  "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["./src/*"]
-    }
-  },
-  "include": ["src"]
-}
+```javascript
+import { SearchBar } from "../../search/components/SearchBar";
 ```
 
-## Regla de Uso (Obligatoria)
+## 3. Barriles (Index.js)
 
-> Toda importación de un módulo que no se encuentre en el mismo directorio o en un subdirectorio inmediato **debe** utilizar la ruta absoluta con el alias `@`.
+Cada feature y carpeta principal debe tener un archivo `index.js`. Esto permite importar de forma limpia:
 
-Las rutas relativas (`./` o `../`) solo se permiten para importar módulos "hermanos" o "hijos" inmediatos (ej. estilos, componentes auxiliares en la misma carpeta).
+```javascript
+// Exportación en features/pokemon/index.js
+export { default as PokemonCard } from "./components/PokemonCard";
+
+// Uso en otro lugar
+import { PokemonCard } from "@/features/pokemon";
+```
+
+---
+
+[Regresar al README](../../README.md)

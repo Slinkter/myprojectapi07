@@ -1,31 +1,7 @@
 
 import PropTypes from 'prop-types';
 import { useFavorites } from '@/features/favorites/hooks/useFavorites';
-import {
-  Card,
-  CardContent,
-  CardMedia,
-  Typography,
-  IconButton,
-  Box,
-  Chip,
-  Stack,
-} from '@mui/material';
-import StarIcon from '@mui/icons-material/Star';
-
-// Define animation keyframes at the module level
-const cardAnimation = {
-  '@keyframes fadeInSlideUp': {
-    '0%': {
-      opacity: 0,
-      transform: 'translateY(20px)',
-    },
-    '100%': {
-      opacity: 1,
-      transform: 'translateY(0)',
-    },
-  },
-};
+import { HiStar } from "react-icons/hi";
 
 /**
  * A component that displays a single Pokémon card with its details.
@@ -52,107 +28,57 @@ const PokemonCard = ({ id, name, image, types, favorite, index = 0 }) => {
   };
 
   return (
-    <Card
-      elevation={2}
-      sx={{
-        ...cardAnimation,
-        height: '100%', // Ensure all cards in a row have the same height
-        display: 'flex',
-        flexDirection: 'column',
-        cursor: 'pointer',
-        border: '1px solid',
-        borderColor: 'divider',
-        transition: 'transform 0.2s ease-in-out, box-shadow 0.3s ease-in-out',
-        opacity: 0,
-        animation: `fadeInSlideUp 0.5s ease-out forwards`,
-        animationDelay: `${index * 70}ms`,
-
-        '&:hover': {
-          transform: 'translateY(-8px)',
-          boxShadow: (theme) =>
-            `${theme.shadows[10]}, 0 0 20px ${
-              theme.palette.mode === 'dark'
-                ? theme.palette.primary.dark
-                : theme.palette.primary.light
-            }`,
-          '& .card-media': {
-            transform: 'scale(1.1)',
-          },
-        },
-        '&:active': {
-          transform: 'scale(0.98) translateY(0)',
-        },
-      }}
+    <div
+      className="group relative flex flex-col bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl overflow-hidden hover:shadow-xl hover:-translate-y-2 transition-all duration-300 cursor-pointer animate-slide-in"
+      style={{ animationDelay: `${index * 50}ms`, opacity: 0, animationFillMode: 'forwards' }}
     >
       {/* --- HEADER --- */}
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          p: 1, // 8px padding
-        }}
-      >
-        <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 'bold' }}>
+      <div className="flex justify-between items-center p-4">
+        <span className="text-xs font-bold text-gray-400 dark:text-slate-500">
           #{String(id).padStart(3, '0')}
-        </Typography>
-        <IconButton
-          aria-label="Marcar como favorito"
+        </span>
+        <button
           onClick={handleFavoriteClick}
-          size="small"
+          className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors"
+          aria-label="Marcar como favorito"
         >
-          <StarIcon
-            fontSize="small"
-            sx={{
-              transition: 'color 0.2s',
-              color: favorite ? 'warning.main' : 'action.disabled',
-            }}
+          <HiStar
+            className={`h-6 w-6 transition-colors ${
+              favorite ? 'text-yellow-400' : 'text-gray-300 dark:text-slate-600'
+            }`}
           />
-        </IconButton>
-      </Box>
+        </button>
+      </div>
 
       {/* --- BODY --- */}
-      <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', p: 1 }}>
-        <CardMedia
-          component="img"
-          image={image}
-          alt={`Imagen de ${name}`}
-          className="card-media"
-          sx={{
-            height: 120,
-            width: 120,
-            objectFit: 'contain',
-            transition: 'transform 0.35s ease-in-out',
-          }}
-          loading="lazy"
-        />
-        <Typography
-          variant="h6"
-          component="h2"
-          sx={{
-            textTransform: 'capitalize',
-            fontWeight: 'bold',
-            mt: 2, // 16px margin-top
-          }}
-        >
+      <div className="flex-grow flex flex-col items-center px-4 pb-4">
+        <div className="relative w-32 h-32 mb-4 group-hover:scale-110 transition-transform duration-500">
+           <img
+            src={image}
+            alt={name}
+            className="w-full h-full object-contain"
+            loading="lazy"
+          />
+        </div>
+        <h2 className="text-xl font-bold text-gray-900 dark:text-white capitalize tracking-tight">
           {name}
-        </Typography>
-      </Box>
+        </h2>
+      </div>
 
       {/* --- FOOTER --- */}
-      <CardContent sx={{ pt: 1, pb: '16px !important' }}>
-        <Stack direction="row" spacing={1} justifyContent="center">
+      <div className="p-4 bg-gray-50/50 dark:bg-slate-900/50 border-t border-gray-100 dark:border-slate-700">
+        <div className="flex flex-wrap justify-center gap-2">
           {types.map((typeInfo) => (
-            <Chip
+            <span
               key={typeInfo.type.name}
-              label={typeInfo.type.name}
-              size="small"
-              sx={{ textTransform: 'capitalize' }}
-            />
+              className="px-3 py-1 text-xs font-bold capitalize rounded-full bg-white dark:bg-slate-800 text-gray-600 dark:text-slate-300 border border-gray-200 dark:border-slate-700 shadow-sm"
+            >
+              {typeInfo.type.name}
+            </span>
           ))}
-        </Stack>
-      </CardContent>
-    </Card>
+        </div>
+      </div>
+    </div>
   );
 };
 

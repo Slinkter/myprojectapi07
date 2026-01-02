@@ -1,6 +1,6 @@
-import { useSearch } from "@/features/search/hooks/useSearch";
-import { TextField, InputAdornment } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
+
+import { useSearch } from "@/features/search";
+import { HiSearch } from "react-icons/hi";
 
 /**
  * A component that provides a text input for searching Pokémon.
@@ -18,19 +18,17 @@ export const SearchBar = () => {
     };
 
     return (
-        <TextField
-            label="Buscar Pokémon"
-            variant="outlined"
-            fullWidth
-            value={searchFilter}
-            onChange={handleSearchChange}
-            InputProps={{
-                startAdornment: (
-                    <InputAdornment position="start">
-                        <SearchIcon />
-                    </InputAdornment>
-                ),
-            }}
-        />
+        <div className="relative group">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <HiSearch className="h-5 w-5 text-gray-400 group-focus-within:text-primary transition-colors" />
+            </div>
+            <input
+                type="text"
+                placeholder="Buscar Pokémon..."
+                className="block w-full pl-10 pr-3 py-3 border border-gray-300 dark:border-slate-700 rounded-xl leading-5 bg-white dark:bg-slate-800 text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary sm:text-sm transition-all shadow-sm"
+                value={searchFilter}
+                onChange={handleSearchChange}
+            />
+        </div>
     );
 };

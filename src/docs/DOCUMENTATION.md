@@ -1,67 +1,40 @@
-# Documentación Técnica General del Proyecto: myprojectapi07
+# 📄 Documentación Técnica Detallada
 
-Bienvenido a la documentación técnica del proyecto `myprojectapi07`. Este documento sirve como punto de partida y mapa para explorar los diversos aspectos técnicos y arquitectónicos de la aplicación.
+## 1. Requerimientos del Sistema
 
-## Visión General del Proyecto
+- **Node.js:** v18.0.0 o superior.
+- **Pnpm:** v9.0.0 o superior (recomendado para eficiencia de disco).
 
-`myprojectapi07` es una aplicación web interactiva desarrollada con React y Material UI, diseñada para explorar y gestionar una base de datos de Pokémon. Su objetivo es demostrar una arquitectura Frontend robusta, escalable y mantenible, aplicando principios de Clean Architecture y patrones de diseño modernos.
+## 2. Sistema de Diseño
 
-## Fases de Desarrollo y Auditoría
+El sistema de diseño se basa en **Tailwind CSS**. No se utilizan librerías de componentes pre-estilizados con lógica de runtime.
 
-Este proyecto ha pasado por un proceso de auditoría y refactorización estructurado en las siguientes fases:
+### Colores de Marca:
 
-1.  **Fase 1: Análisis del Codebase (Diagnóstico)**
-    *   **Objetivo:** Identificar problemas críticos, moderados y oportunidades de mejora organizacional.
-    *   **Resultado:** Un diagnóstico exhaustivo de la deuda técnica y las inconsistencias existentes.
-2.  **Fase 2: Arquitectura y Estándares (Propuesta)**
-    *   **Objetivo:** Proponer una arquitectura clara basada en features y el patrón Container/Presentation.
-    *   **Resultado:** Definición de una nueva estructura de directorios y principios arquitectónicos.
-3.  **Fase 3: Convenciones de Código (Definición)**
-    *   **Objetivo:** Establecer guías claras para la escritura del código (nomenclatura, validaciones, estilos, etc.).
-    *   **Resultado:** Un manual de convenciones que asegura la consistencia y legibilidad.
-4.  **Fase 4: Rutas Absolutas (Implementación y Documentación)**
-    *   **Objetivo:** Configurar y asegurar el uso de rutas absolutas para las importaciones de módulos.
-    *   **Resultado:** Proyecto 100% compatible con `@` alias y documentación de su uso.
-5.  **Fase 5: Documentación de Software (Estructuración)**
-    *   **Objetivo:** Analizar la documentación existente, proponer una estructura organizada y definir todos los entregables.
-    *   **Resultado:** La estructura de documentos que está leyendo ahora mismo.
-6.  **Fase 6: Generación de Documentos (Creación)**
-    *   **Objetivo:** Crear el contenido inicial de todos los documentos técnicos según la estructura definida.
-    *   **Resultado:** La suite completa de documentación técnica del proyecto.
+- **Primary:** `#EF4444` (Pokéball Red)
+- **Secondary:** `#3B82F6` (Water Blue)
+- **Dark Background:** `#0F172A` (Slate 900)
 
-## Índice de Contenidos
+## 3. Lógica de Negocio
 
-Utiliza los siguientes enlaces para navegar por la documentación detallada del proyecto:
+Toda la lógica de negocio reside en los **Slices de Redux Toolkit** y en los **Custom Hooks** de cada funcionalidad.
 
-### 1. Inicio y Alcance
-*   [README del Proyecto](README.md)
-*   [Glosario de Términos](glossary.md)
+### Dominio de Pokémon:
 
-### 2. Requerimientos
-*   [Requerimientos Funcionales](requirements/functional.md)
-*   [Requerimientos No Funcionales](requirements/non-functional.md)
+- Gestiona la paginación global.
+- Coordina el filtrado del lado del cliente basado en la carga actual.
+- Transforma los datos crudos de la PokéAPI en objetos ligeros para la UI.
 
-### 3. Arquitectura y Diseño
-*   [Visión General de la Arquitectura](architecture/overview.md)
-*   [Rutas Absolutas (Alias `@`)](architecture/imports.md)
-*   [Patrones de Diseño Aplicados](architecture/patterns.md)
-*   [Registro de Decisiones Técnicas](architecture/decisions.md)
+## 4. Persistencia
 
-### 4. Desarrollo e Implementación
-*   [Convenciones de Código](development/conventions.md)
-*   [Setup del Entorno de Desarrollo](development/setup.md)
-*   [Gestión del Estado (Redux Toolkit)](development/state-management.md)
-*   [Integración con API](development/api-integration.md)
+La funcionalidad de **Favoritos** utiliza `localStorage` para persistir la selección del usuario. La sincronización ocurre de forma automática al despachar la acción `toggleFavorite`.
 
-### 5. Calidad, Seguridad y Despliegue
-*   [Estrategia de Testing](quality/testing.md)
-*   [Guías de Seguridad](security/guidelines.md)
-*   [Proceso de Despliegue](deployment/process.md)
+## 5. Rendimiento
 
-### 6. Cierre y Mantenimiento
-*   [Guía de Resolución de Problemas](maintenance/troubleshooting.md)
-*   [Hoja de Ruta y Mejoras Futuras](maintenance/roadmap.md)
-*   [Tutorial Completo de Desarrollo](tutorial_completo.md)
+- **Code Splitting:** Implementado a nivel de rutas mediante `React.lazy`.
+- **Image Optimization:** Uso de `loading="lazy"` para todas las imágenes de los Pokémon.
+- **Memoization:** Implementación de `useMemo` en el filtrado de listas para evitar cálculos costosos.
 
 ---
-*Este documento es generado y mantenido automáticamente como parte de la documentación del proyecto.*
+
+[Regresar al README](../../README.md)

@@ -1,49 +1,19 @@
-import { useEffect, useMemo } from "react";
-import { usePokemon } from "@/features/pokemon/hooks/usePokemon";
-import { useSearch } from "@/features/search/hooks/useSearch";
-import { useFavorites } from "@/features/favorites/hooks/useFavorites";
-import { useTheme } from "@/features/theme/hooks/useTheme";
-import { PokemonSkeleton } from "@/features/pokemon/components/PokemonSkeleton";
-import PokemonList from "@/features/pokemon/components/PokemonList";
-import { SearchBar } from "@/features/search/components/SearchBar";
-import {
-    AppBar,
-    Container,
-    Toolbar,
-    Typography,
-    Pagination,
-    Box,
-    IconButton,
-    Alert,
-    Button,
-    Stack,
-    Paper, // Added
-    Chip, // Added
-    Avatar, // Added
-} from "@mui/material";
-import { styled } from "@mui/material/styles";
-import Brightness4Icon from "@mui/icons-material/Brightness4";
-import Brightness7Icon from "@mui/icons-material/Brightness7";
-import logopokemon from "@/assets/logo.svg";
 
-const StyledAppBar = styled(AppBar)(({ theme }) => ({
-    boxShadow: "none",
-    backdropFilter: "blur(10px)",
-    borderBottom: `1px solid ${theme.palette.divider}`,
-    backgroundColor:
-        theme.palette.mode === "dark"
-            ? "rgba(0, 0, 0, 0.3)"
-            : "rgba(255, 255, 255, 0.3)",
-}));
+import { useEffect } from "react";
+import { usePokemon, PokedexHeader, PokemonContent } from "@/features/pokemon";
+import { SearchBar } from "@/features/search";
+import { FavoritesBar } from "@/features/favorites";
+import Navbar from "@/components/layout/Navbar";
+import { HiChevronLeft, HiChevronRight, HiChevronDoubleLeft, HiChevronDoubleRight } from "react-icons/hi";
 
 /**
  * The main page component for the Pokédex application.
  * It integrates all the features like Pokémon listing, search, favorites, and theme switching.
- * @returns {JSX.Element} The rendered Pokedex page.
  */
 function PokedexPage() {
     const {
         pokemons,
+        favoritePokemons,
         isLoading,
         error,
         fetchPokemons,
@@ -51,205 +21,88 @@ function PokedexPage() {
         totalPages,
         goToPage,
     } = usePokemon();
-    const { searchFilter } = useSearch();
-    const { favoriteIds } = useFavorites();
-    const { currentTheme, toggleAppTheme } = useTheme();
 
     useEffect(() => {
         fetchPokemons();
     }, [fetchPokemons, currentPage]);
 
-    const processedPokemons = useMemo(() => {
-        return pokemons.map((pokemon) => ({
-            ...pokemon,
-            favorite: favoriteIds.includes(pokemon.id),
-        }));
-    }, [pokemons, favoriteIds]);
-
-    const filteredPokemons = useMemo(() => {
-        if (!searchFilter) return processedPokemons;
-        return processedPokemons.filter((p) =>
-            p.name.toLowerCase().includes(searchFilter.toLowerCase())
-        );
-    }, [processedPokemons, searchFilter]);
-
-    const favoritePokemons = useMemo(
-        () => processedPokemons.filter((p) => p.favorite),
-        [processedPokemons]
-    );
-
-    /**
-     * Handles the retry action when fetching Pokémon fails.
-     */
-    const handleRetry = () => {
-        fetchPokemons();
-    };
-
     /**
      * Handles the page change event from the pagination component.
-     * @param {React.ChangeEvent<unknown>} event - The event source of the callback.
      * @param {number} value - The new page number.
      */
-    const handlePageChange = (event, value) => {
-        goToPage(value);
+    const handlePageChange = (value) => {
+        if (value >= 1 && value <= totalPages) {
+            goToPage(value);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
     };
 
     return (
-        <Box
-            sx={{
-                bgcolor: "background.default",
-                color: "text.primary",
-                minHeight: "100vh",
-            }}
-        >
-            <StyledAppBar position="sticky">
-                <Toolbar>
-                    <Box
-                        component="img"
-                        src={logopokemon}
-                        alt="Logo Pokémon"
-                        sx={{ width: 120, height: "auto" }}
-                    />
-                    <Box sx={{ flexGrow: 1 }} />
-                    <IconButton
-                        sx={{ ml: 1, color: "red" }}
-                        onClick={toggleAppTheme}
-                        color="inherit"
-                    >
-                        {currentTheme === "dark" ? (
-                            <Brightness7Icon />
-                        ) : (
-                            <Brightness4Icon />
-                        )}
-                    </IconButton>
-                </Toolbar>
-            </StyledAppBar>
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-900 transition-colors duration-300">
+            <Navbar />
 
-            <Container
-                maxWidth="xl"
-                sx={{ py: { xs: 3, md: 5 }, border: "0px solid red" }}
-            >
-                <Stack spacing={3} alignItems="center">
-                    <Box textAlign="center">
-                        <Typography
-                            variant="h2"
-                            sx={{ color: "text.secondary", fontWeight: "bold" }}
-                        >
-                            Pokédex
-                        </Typography>
-                        <Typography variant="h6" color="text.secondary">
-                            Gotta Catch &apos;Em All!
-                        </Typography>
-                    </Box>
+            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+                <div className="flex flex-col items-center space-y-12">
+                    <PokedexHeader />
 
-                    <Box sx={{ width: "100%", maxWidth: "sm" }}>
+                    <div className="w-full max-w-xl">
                         <SearchBar />
-                    </Box>
+                    </div>
 
-                    {/* Favorites Section */}
-                    <Paper
-                        variant="outlined"
-                        sx={{
-                            p: 2,
-                            width: "100%",
-                            maxWidth: "md",
-                            bgcolor: "background.paper",
-                        }}
-                    >
-                        <Typography variant="h6" component="h3" sx={{ mb: 2 }}>
-                            Favoritos
-                        </Typography>
-                        <Box
-                            sx={{
-                                display: "flex",
-                                flexWrap: "wrap",
-                                gap: 1,
-                                minHeight: 40, // Ensure it has height even when empty
-                                alignItems: "center",
-                            }}
-                        >
-                            {favoritePokemons.length > 0 ? (
-                                favoritePokemons.map((fav) => (
-                                    <Chip
-                                        key={fav.id}
-                                        avatar={
-                                            <Avatar
-                                                src={fav.sprites.front_default}
-                                                alt={fav.name}
-                                            />
-                                        }
-                                        label={fav.name}
-                                        sx={{ textTransform: "capitalize" }}
-                                    />
-                                ))
-                            ) : (
-                                <Typography
-                                    variant="body2"
-                                    color="text.secondary"
-                                >
-                                    No has seleccionado ningún Pokémon favorito.
-                                </Typography>
-                            )}
-                        </Box>
-                    </Paper>
+                    <FavoritesBar favoritePokemons={favoritePokemons} />
 
-                    <Box sx={{ width: "100%" }}>
-                        {error ? (
-                            <Alert
-                                severity="error"
-                                action={
-                                    <Button
-                                        color="inherit"
-                                        size="small"
-                                        onClick={handleRetry}
-                                    >
-                                        Reintentar
-                                    </Button>
-                                }
-                            >
-                                Error al cargar los Pokémon: {error}
-                            </Alert>
-                        ) : isLoading ? (
-                            <Box
-                                sx={{
-                                    display: "grid",
-                                    gap: { xs: 2, md: 3 },
-                                    gridTemplateColumns: {
-                                        xs: "repeat(1, 1fr)",
-                                        sm: "repeat(2, 1fr)",
-                                        md: "repeat(3, 1fr)",
-                                        lg: "repeat(4, 1fr)",
-                                    },
-                                }}
-                            >
-                                {[...Array(12)].map((_, index) => (
-                                    <PokemonSkeleton key={index} />
-                                ))}
-                            </Box>
-                        ) : (
-                            <PokemonList pokemons={filteredPokemons} />
-                        )}
-                    </Box>
+                    <div className="w-full">
+                        <PokemonContent
+                            isLoading={isLoading}
+                            error={error}
+                            pokemons={pokemons}
+                            onRetry={fetchPokemons}
+                        />
+                    </div>
 
                     {!isLoading && !error && totalPages > 1 && (
-                        <Pagination
-                            count={totalPages}
-                            page={currentPage}
-                            onChange={handlePageChange}
-                            color="primary"
-                            size="large"
-                            showFirstButton
-                            showLastButton
-                            sx={{
-                                "& .MuiPagination-ul": {
-                                    justifyContent: "center",
-                                },
-                            }}
-                        />
+                        <div className="flex flex-wrap justify-center items-center gap-2 py-8">
+                            {/* Mobile Pagination simple buttons would be better, but let's do a full one */}
+                            <button
+                                onClick={() => handlePageChange(1)}
+                                disabled={currentPage === 1}
+                                className="p-2 rounded-lg bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-600 dark:text-slate-400 disabled:opacity-30 hover:bg-gray-50 dark:hover:bg-slate-700 transition-all active:scale-90"
+                            >
+                                <HiChevronDoubleLeft className="w-5 h-5" />
+                            </button>
+                            <button
+                                onClick={() => handlePageChange(currentPage - 1)}
+                                disabled={currentPage === 1}
+                                className="p-2 rounded-lg bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-600 dark:text-slate-400 disabled:opacity-30 hover:bg-gray-50 dark:hover:bg-slate-700 transition-all active:scale-90"
+                            >
+                                <HiChevronLeft className="w-5 h-5" />
+                            </button>
+                            
+                            <div className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg shadow-sm">
+                                <span className="text-sm font-bold text-primary">{currentPage}</span>
+                                <span className="text-sm text-gray-400">/</span>
+                                <span className="text-sm font-medium text-gray-600 dark:text-slate-400">{totalPages}</span>
+                            </div>
+
+                            <button
+                                onClick={() => handlePageChange(currentPage + 1)}
+                                disabled={currentPage === totalPages}
+                                className="p-2 rounded-lg bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-600 dark:text-slate-400 disabled:opacity-30 hover:bg-gray-50 dark:hover:bg-slate-700 transition-all active:scale-90"
+                            >
+                                <HiChevronRight className="w-5 h-5" />
+                            </button>
+                            <button
+                                onClick={() => handlePageChange(totalPages)}
+                                disabled={currentPage === totalPages}
+                                className="p-2 rounded-lg bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-600 dark:text-slate-400 disabled:opacity-30 hover:bg-gray-50 dark:hover:bg-slate-700 transition-all active:scale-90"
+                            >
+                                <HiChevronDoubleRight className="w-5 h-5" />
+                            </button>
+                        </div>
                     )}
-                </Stack>
-            </Container>
-        </Box>
+                </div>
+            </main>
+        </div>
     );
 }
 

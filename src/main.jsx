@@ -1,3 +1,4 @@
+
 /**
  * The main entry point for the React application.
  * It sets up the Redux store, theme provider, and renders the root App component.
@@ -7,10 +8,9 @@ import ReactDOM from "react-dom/client";
 import { Provider } from "react-redux";
 import store from "@/store";
 import ThemeWrapper from "@/app/ThemeWrapper.jsx";
-import { PokemonSkeleton } from "@/features/pokemon/components/PokemonSkeleton";
+import { PokemonSkeleton } from "@/features/pokemon";
 import App from "@/app/App.jsx";
 import "@/index.css";
-import { Box } from "@mui/material";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
     <React.StrictMode>
@@ -18,16 +18,11 @@ ReactDOM.createRoot(document.getElementById("root")).render(
             <ThemeWrapper>
                 <Suspense
                     fallback={
-                        <Box
-                            sx={{
-                                display: "flex",
-                                justifyContent: "center",
-                                alignItems: "center",
-                                height: "100vh",
-                            }}
-                        >
-                            <PokemonSkeleton />
-                        </Box>
+                        <div className="flex justify-center items-center h-screen bg-slate-50 dark:bg-slate-900">
+                             <div className="w-full max-w-sm p-4">
+                                <PokemonSkeleton />
+                             </div>
+                        </div>
                     }
                 >
                     <App />

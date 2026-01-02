@@ -1,12 +1,13 @@
-import PokedexPage from "@/pages/PokedexPage";
+
+import AppRoutes from '@/routes/AppRoutes';
 
 /**
  * The main application component.
- * It renders the PokedexPage.
+ * Orquestrates the global layout and routing.
  * @returns {JSX.Element} The rendered App component.
  */
 function App() {
-    return <PokedexPage />;
+    return <AppRoutes />;
 }
 
 export default App;

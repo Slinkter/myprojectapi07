@@ -1,76 +1,35 @@
-import {
-    Card,
-    CardContent,
-    Skeleton,
-    Box,
-    Stack,
-    IconButton,
-    Typography, // Import Typography
-} from "@mui/material";
-import StarIcon from "@mui/icons-material/Star";
+
+import { HiStar } from "react-icons/hi";
 
 /**
  * A component that displays a skeleton loader for a Pokémon card.
  * It's used to provide a visual placeholder while the actual Pokémon data is loading.
  * @returns {JSX.Element} The rendered Pokémon skeleton card component.
  */
-export const PokemonSkeleton = () => (
-    <Card
-        elevation={2}
-        sx={{
-            height: "100%",
-            display: "flex",
-            flexDirection: "column",
-            border: "1px solid",
-            borderColor: "divider",
-        }}
-    >
+const PokemonSkeleton = () => (
+    <div className="h-full flex flex-col bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl overflow-hidden animate-pulse">
         {/* --- SKELETON HEADER --- */}
-        <Box
-            sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                p: 1,
-            }}
-        >
-            {/* Wrap skeleton in Typography to match final component's font metrics */}
-            <Typography variant="caption">
-                <Skeleton variant="text" width="40px" />
-            </Typography>
-            <IconButton size="small" disabled>
-                <StarIcon fontSize="small" sx={{ color: "action.disabled" }} />
-            </IconButton>
-        </Box>
+        <div className="flex justify-between items-center p-4">
+            <div className="h-4 w-10 bg-gray-200 dark:bg-slate-700 rounded-md"></div>
+            <div className="p-1">
+                <HiStar className="h-5 w-5 text-gray-200 dark:bg-slate-700 rounded-full" />
+            </div>
+        </div>
 
         {/* --- SKELETON BODY --- */}
-        <Box
-            sx={{
-                flexGrow: 1,
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-                p: 1,
-            }}
-        >
-            <Skeleton variant="rectangular" width={120} height={120} />
-            {/* Wrap skeleton in Typography to match final component's font metrics */}
-            <Typography
-                variant="h6"
-                component="h2"
-                sx={{ mt: 2, width: "80%" }}
-            >
-                <Skeleton variant="text" />
-            </Typography>
-        </Box>
+        <div className="flex-grow flex flex-col justify-center items-center py-4 px-6">
+            <div className="h-32 w-32 bg-gray-200 dark:bg-slate-700 rounded-xl mb-4"></div>
+            <div className="h-6 w-3/4 bg-gray-200 dark:bg-slate-700 rounded-md"></div>
+        </div>
 
         {/* --- SKELETON FOOTER --- */}
-        <CardContent sx={{ pt: 1, pb: "16px !important" }}>
-            <Stack direction="row" spacing={1} justifyContent="center">
-                <Skeleton variant="rounded" width={60} height={24} />
-                <Skeleton variant="rounded" width={60} height={24} />
-            </Stack>
-        </CardContent>
-    </Card>
+        <div className="p-4 border-t border-gray-100 dark:border-slate-700">
+            <div className="flex flex-wrap justify-center gap-2">
+                <div className="h-6 w-16 bg-gray-200 dark:bg-slate-700 rounded-full"></div>
+                <div className="h-6 w-16 bg-gray-200 dark:bg-slate-700 rounded-full"></div>
+            </div>
+        </div>
+    </div>
 );
+
+export default PokemonSkeleton;

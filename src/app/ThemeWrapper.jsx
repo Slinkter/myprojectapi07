@@ -1,37 +1,30 @@
 
 import PropTypes from 'prop-types';
-import { useMemo } from 'react';
-import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
+import { useEffect } from 'react';
 import { useTheme } from '@/features/theme/hooks/useTheme';
 
 /**
- * This component acts as a bridge between the Redux theme state and MUI's ThemeProvider.
- * It creates a MUI theme object based on the current mode (light/dark) and provides it
- * to all descendant MUI components. It also includes CssBaseline for style normalization.
+ * This component acts as a bridge between the Redux theme state and Tailwind CSS dark mode.
+ * It adds/removes the 'dark' class to the document element based on the current theme mode.
  * @param {object} props - The component props.
  * @param {React.ReactNode} props.children - The child components to render.
  */
 const ThemeWrapper = ({ children }) => {
   const { currentTheme } = useTheme();
 
-  const theme = useMemo(
-    () =>
-      createTheme({
-        palette: {
-          mode: currentTheme,
-        },
-        // Here you can add other theme customizations
-        // typography: { ... },
-        // components: { ... },
-      }),
-    [currentTheme]
-  );
+  useEffect(() => {
+    const root = window.document.documentElement;
+    if (currentTheme === 'dark') {
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
+    }
+  }, [currentTheme]);
 
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
+    <div className="min-h-screen bg-white dark:bg-slate-900 transition-colors duration-300">
       {children}
-    </ThemeProvider>
+    </div>
   );
 };
 
