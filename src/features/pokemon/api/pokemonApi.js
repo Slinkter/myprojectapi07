@@ -24,10 +24,10 @@ import { API_CONFIG } from "@/services/api/config";
  * @returns {object} Objeto Pokémon limpio con id, nombre, tipos y sprites.
  */
 const transformPokemonData = (data) => ({
-    id: data.id,
-    name: data.name,
-    types: data.types,
-    sprites: data.sprites,
+  id: data.id,
+  name: data.name,
+  types: data.types,
+  sprites: data.sprites,
 });
 
 /**
@@ -41,77 +41,74 @@ const transformPokemonData = (data) => ({
  * @returns {Promise<object>} Datos transformados.
  */
 const fetchPokemonDetailByUrl = async (url) => {
-    // REFACTOR: Usar httpClient.get en lugar de axios.get directo para mantener interceptores.
-    // Nota: Como la URL es absoluta, axios la respeta sobre baseURL.
-    const { data } = await httpClient.get(url);
-    return transformPokemonData(data);
+  // Nota: Como la URL que provee la API es absoluta, la instancia de httpClient
+  // la respeta e ignora la `baseURL` configurada, lo cual es el comportamiento esperado.
+  const { data } = await httpClient.get(url);
+  return transformPokemonData(data);
 };
 
 export const pokemonApi = {
-    /**
-     * @ARCHITECTURAL_NOTE (Performance Bottleneck - N+1 Problem)
-     * 
-     * This function currently suffers from the "N+1" request problem. It first makes
-     * 1 request to get the list of Pokémon, and then makes N additional requests (one for each
-     * Pokémon) to fetch their individual details.
-     *
-     * Example: For a page with 20 Pokémon, this function makes 1 + 20 = 21 total HTTP requests.
-     *
-     * While `Promise.all` runs these N requests in parallel, it's still highly inefficient
-     * and can lead to:
-     *   - Slower load times, especially on mobile or poor network conditions.
-     *   - Increased server load.
-     *   - Potential rate-limiting from the API provider.
-     *
-     * @IDEAL_SOLUTION
-     *
-     * The best solution would be to have a dedicated backend endpoint that returns the
-     * list of Pokémon with all the necessary details (name, image, types) in a *single* response.
-     * This would reduce the number of requests from N+1 to just 1.
-     *
-     * If modifying the primary API is not possible, a secondary solution is to implement a
-     * "Backend-for-Frontend" (BFF). This is a dedicated service that would sit between this
-     * frontend application and the Pokémon API, aggregating the data on the server-side and
-     * exposing a single, optimized endpoint for the client to consume.
-     */
-    /**
-     * Obtiene una lista paginada de Pokémon con detalles completos.
-     *
-     * **Flujo de interacción:**
-     * 1. Solicita la lista base (nombres y urls) al endpoint `/pokemon`.
-     * 2. Itera sobre los resultados y realiza peticiones paralelas (`Promise.all`) para obtener detalles (imágenes, tipos).
-     * 3. Retorna la estructura combinada para que la UI no tenga que hacer waterfalls.
-     *
-     * @param {number} [offset=0] - Desplazamiento para paginación.
-     * @param {number} [limit=20] - Cantidad de items a recuperar.
-     * @returns {Promise<{count: number, results: Array<object>}>} Total de registros y lista detallada.
-     */
-    getPokemons: async (
-        offset = 0,
-        limit = API_CONFIG.DEFAULT_PARAMS.LIMIT,
-    ) => {
-        const { data } = await httpClient.get(API_CONFIG.ENDPOINTS.POKEMON, {
-            params: { offset, limit },
-        });
+  /**
+   * @ARCHITECTURAL_NOTE (Performance Bottleneck - N+1 Problem)
+   *
+   * This function currently suffers from the "N+1" request problem. It first makes
+   * 1 request to get the list of Pokémon, and then makes N additional requests (one for each
+   * Pokémon) to fetch their individual details.
+   *
+   * Example: For a page with 20 Pokémon, this function makes 1 + 20 = 21 total HTTP requests.
+   *
+   * While `Promise.all` runs these N requests in parallel, it's still highly inefficient
+   * and can lead to:
+   *   - Slower load times, especially on mobile or poor network conditions.
+   *   - Increased server load.
+   *   - Potential rate-limiting from the API provider.
+   *
+   * @IDEAL_SOLUTION
+   *
+   * The best solution would be to have a dedicated backend endpoint that returns the
+   * list of Pokémon with all the necessary details (name, image, types) in a *single* response.
+   * This would reduce the number of requests from N+1 to just 1.
+   *
+   * If modifying the primary API is not possible, a secondary solution is to implement a
+   * "Backend-for-Frontend" (BFF). This is a dedicated service that would sit between this
+   * frontend application and the Pokémon API, aggregating the data on the server-side and
+   * exposing a single, optimized endpoint for the client to consume.
+   */
+  /**
+   * Obtiene una lista paginada de Pokémon con detalles completos.
+   *
+   * **Flujo de interacción:**
+   * 1. Solicita la lista base (nombres y urls) al endpoint `/pokemon`.
+   * 2. Itera sobre los resultados y realiza peticiones paralelas (`Promise.all`) para obtener detalles (imágenes, tipos).
+   * 3. Retorna la estructura combinada para que la UI no tenga que hacer waterfalls.
+   *
+   * @param {number} [offset=0] - Desplazamiento para paginación.
+   * @param {number} [limit=20] - Cantidad de items a recuperar.
+   * @returns {Promise<{count: number, results: Array<object>}>} Total de registros y lista detallada.
+   */
+  getPokemons: async (offset = 0, limit = API_CONFIG.DEFAULT_PARAMS.LIMIT) => {
+    const { data } = await httpClient.get(API_CONFIG.ENDPOINTS.POKEMON, {
+      params: { offset, limit },
+    });
 
-        // Optimización: Fetch paralelo de detalles
-        const results = await Promise.all(
-            data.results.map((pokemon) => fetchPokemonDetailByUrl(pokemon.url)),
-        );
+    // Optimización: Fetch paralelo de detalles
+    const results = await Promise.all(
+      data.results.map((pokemon) => fetchPokemonDetailByUrl(pokemon.url)),
+    );
 
-        return { count: data.count, results };
-    },
+    return { count: data.count, results };
+  },
 
-    /**
-     * Obtiene detalles de un Pokémon específico por ID o Nombre.
-     *
-     * @param {string|number} idOrName - Identificador.
-     * @returns {Promise<object>} Detalle transformado.
-     */
-    getPokemonDetails: async (idOrName) => {
-        const { data } = await httpClient.get(
-            `${API_CONFIG.ENDPOINTS.POKEMON}/${idOrName}`,
-        );
-        return transformPokemonData(data);
-    },
+  /**
+   * Obtiene detalles de un Pokémon específico por ID o Nombre.
+   *
+   * @param {string|number} idOrName - Identificador.
+   * @returns {Promise<object>} Detalle transformado.
+   */
+  getPokemonDetails: async (idOrName) => {
+    const { data } = await httpClient.get(
+      `${API_CONFIG.ENDPOINTS.POKEMON}/${idOrName}`,
+    );
+    return transformPokemonData(data);
+  },
 };
