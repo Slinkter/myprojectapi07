@@ -86,16 +86,17 @@ El flujo de datos en la aplicación es **unidireccional**, una de las caracterí
 **Ciclo de Flujo de Datos Típico (Cargar Pokémon):**
 
 1.  El componente `PokedexPage` se renderiza.
-2.  El `useEffect` en `PokedexPage` detecta un cambio en `currentPage`.
-3.  Llama a la función `fetchPokemons()` obtenida del hook `usePokemon()`.
+2.  El `useEffect` en `PokedexPage` detecta un cambio en `currentPage` (obtenido del hook `usePagination`).
+3.  Llama a la función `fetchPokemons()` (obtenida del hook `usePokemon`).
 4.  `fetchPokemons()` despacha un **thunk asíncrono** (`fetchPokemonsThunk`).
 5.  El thunk realiza la llamada a la API a través del servicio `pokemonApi`.
-6.  La API devuelve los datos.
+6.  La API devuelve los datos crudos.
 7.  El thunk despacha una acción de Redux (`fulfilled`) con los datos recibidos.
 8.  El `pokemonSlice` (reducer) intercepta la acción y actualiza su estado en el **Store de Redux**.
 9.  React-Redux detecta un cambio en el estado del store.
-10. Los componentes suscritos a ese estado (como `PokedexPage`, a través del `useSelector` dentro de `usePokemon`) se vuelven a renderizar con los nuevos datos.
-11. La UI muestra la lista de Pokémon actualizada.
+10. Un **selector memoizado** (`selectProcessedPokemons`) que está suscrito a los cambios del estado, se recalcula. Combina los datos de `pokemonSlice`, `favoritesSlice` y `searchSlice` para crear la lista final de Pokémon a mostrar.
+11. El componente `PokedexPage`, que está suscrito al selector a través de `useSelector`, recibe los nuevos datos ya procesados y se vuelve a renderizar.
+12. La UI muestra la lista de Pokémon actualizada.
 
 El siguiente diagrama de secuencia ilustra este flujo:
 
@@ -107,14 +108,16 @@ sequenceDiagram
     participant Redux_Thunk
     participant Pokemon_API
     participant Redux_Store
-
+    participant Memoized_Selector
+    
     User->>PokedexPage: Carga la página / Cambia de página
     PokedexPage->>usePokemon_Hook: Llama a fetchPokemons()
     usePokemon_Hook->>Redux_Thunk: dispatch(fetchPokemonsThunk)
     Redux_Thunk->>Pokemon_API: GET /api/v2/pokemon
-    Pokemon_API-->>Redux_Thunk: Responde con datos de Pokémon
+    Pokemon_API-->>Redux_Thunk: Responde con datos crudos
     Redux_Thunk->>Redux_Store: dispatch({ type: 'fulfilled', payload: datos })
-    Redux_Store->>PokedexPage: El estado cambia, provoca re-render
+    Redux_Store->>Memoized_Selector: El estado cambia, el selector se recalcula
+    Memoized_Selector-->>PokedexPage: Provee el estado derivado (datos procesados)
     PokedexPage->>User: Muestra la lista de Pokémon
 ```
 
