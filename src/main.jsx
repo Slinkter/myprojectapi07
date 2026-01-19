@@ -1,15 +1,14 @@
 /**
  * The main entry point for the React application.
- * It sets up the Redux store, theme provider, and renders the root App component.
+ * It sets up the Redux store, theme provider, router, and renders the routes.
  */
-import React, { Suspense } from "react";
+import React from "react";
 import ReactDOM from "react-dom/client";
 import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
 import store from "@/store";
-import ThemeWrapper from "@/app/ThemeWrapper.jsx";
-import { PokemonSkeleton } from "@/features/pokemon";
-import App from "@/app/App.jsx";
+import ThemeWrapper from "@/components/theme/ThemeWrapper.jsx";
+import AppRoutes from "@/routes/AppRoutes.jsx";
 import "@/index.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
@@ -17,17 +16,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     <Provider store={store}>
       <ThemeWrapper>
         <BrowserRouter basename="/myprojectapi07">
-          <Suspense
-            fallback={
-              <div className="flex justify-center items-center h-screen bg-slate-50 dark:bg-slate-900">
-                <div className="w-full max-w-sm p-4">
-                  <PokemonSkeleton />
-                </div>
-              </div>
-            }
-          >
-            <App />
-          </Suspense>
+          <AppRoutes />
         </BrowserRouter>
       </ThemeWrapper>
     </Provider>
