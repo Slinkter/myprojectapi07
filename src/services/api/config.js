@@ -1,29 +1,31 @@
 /**
- * API_CONFIG provides a centralized place for managing API-related constants
- * throughout the application, such as the base URL, API endpoints, and default parameters.
- * This approach enhances maintainability and consistency for API interactions.
+ * Configuración `API_CONFIG`.
+ *
+ * **Responsabilidad:**
+ * * Almacena constantes globales inmutables para la comunicación con APIs externas.
+ * * Previene "magic strings" dispersos por el código (URL hardcodeadas).
+ *
+ * **Motivo de existencia:**
+ * * Facilita el mantenimiento: si la URL de la API cambia, solo se edita aquí.
+ *
+ * **Relación con otros módulos:**
+ * * Importado por: `httpClient` (Base URL), `pokemonApi` (Endpoints).
+ *
  * @namespace API_CONFIG
  */
 export const API_CONFIG = {
-    /**
-     * The base URL for the Pokémon API.
-     * @memberof API_CONFIG
-     * @type {string}
-     */
+    /** ULR Base de la PokéAPI v2 (Sin trailing slash). */
     BASE_URL: "https://pokeapi.co/api/v2",
+
     /**
-     * API endpoints used in the application.
-     * @memberof API_CONFIG
-     * @property {string} POKEMON - The endpoint for Pokémon-related data.
+     * Mapa de endpoints relativos.
+     * Uso: `BASE_URL + ENDPOINTS.POKEMON`
      */
     ENDPOINTS: {
         POKEMON: "/pokemon",
     },
-    /**
-     * Default parameters for API requests.
-     * @memberof API_CONFIG
-     * @property {number} LIMIT - The default limit for fetching data.
-     */
+
+    /** Configuración por defecto para paginación y límites. */
     DEFAULT_PARAMS: {
         LIMIT: 20,
     },

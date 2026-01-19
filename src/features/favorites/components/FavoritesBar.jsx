@@ -1,10 +1,18 @@
-
 import PropTypes from "prop-types";
 
 /**
- * FavoritesBar component to display selected favorite Pokémon.
- * @param {Object} props - Component props.
- * @param {Array} props.favoritePokemons - List of favorite Pokémon objects.
+ * Componente `FavoritesBar`.
+ *
+ * **Responsabilidad:**
+ * * Visualiza un resumen rápido de los Pokémon marcados como favoritos.
+ * * Muestra pills (cápsulas) con la imagen y nombre de cada favorito.
+ *
+ * **Propósito:**
+ * * Feedback visual inmediato al usuario sobre su selección.
+ * * Acceso rápido (visual) a la colección personal.
+ *
+ * @param {Object} props
+ * @param {Array} props.favoritePokemons - Subconjunto filtrado de Pokémon favoritos.
  */
 const FavoritesBar = ({ favoritePokemons }) => {
     return (
@@ -47,7 +55,7 @@ FavoritesBar.propTypes = {
             sprites: PropTypes.shape({
                 front_default: PropTypes.string,
             }).isRequired,
-        })
+        }),
     ).isRequired,
 };
 

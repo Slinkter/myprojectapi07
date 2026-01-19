@@ -1,4 +1,3 @@
-
 /**
  * The main entry point for the React application.
  * It sets up the Redux store, theme provider, and renders the root App component.
@@ -19,9 +18,9 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                 <Suspense
                     fallback={
                         <div className="flex justify-center items-center h-screen bg-slate-50 dark:bg-slate-900">
-                             <div className="w-full max-w-sm p-4">
+                            <div className="w-full max-w-sm p-4">
                                 <PokemonSkeleton />
-                             </div>
+                            </div>
                         </div>
                     }
                 >
@@ -29,5 +28,5 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                 </Suspense>
             </ThemeWrapper>
         </Provider>
-    </React.StrictMode>
+    </React.StrictMode>,
 );

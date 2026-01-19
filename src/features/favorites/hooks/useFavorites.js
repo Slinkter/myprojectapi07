@@ -3,27 +3,39 @@ import { useDispatch, useSelector } from "react-redux";
 import { toggleFavorite } from "@/features/favorites/state/favoritesSlice";
 
 /**
- * Custom hook for managing Pokémon favorites.
- * It provides access to the list of favorite Pokémon IDs and a function to toggle a Pokémon's favorite status.
+ * Hook personalizado `useFavorites`.
+ *
+ * **Funcionalidad:**
+ * * Gestiona la lista de IDs de Pokémon marcados como favoritos.
+ * * Abstrae la lógica de despacho de acciones de Redux para favoritos.
+ *
+ * **Flujo de interacción / ejecución:**
+ * 1. Obtiene el array `favoriteIds` desde el store.
+ * 2. Provee `togglePokemonFavorite` para añadir/quitar un ID.
+ * 3. La persistencia (LocalStorage) suele estar manejada en el middleware o reducer, no aquí directamente.
+ *
+ * **Estado y efectos secundarios:**
+ * * Interactúa con `state.favorites`.
  *
  * @returns {{
  *   favoriteIds: number[],
  *   togglePokemonFavorite: (pokemonId: number) => void
- * }}
+ * }} Datos y acciones de favoritos.
  */
 export const useFavorites = () => {
     const dispatch = useDispatch();
     const favoriteIds = useSelector((state) => state.favorites.favoriteIds);
 
     /**
-     * Toggles the favorite status of a Pokémon.
-     * @param {number} pokemonId - The ID of the Pokémon to toggle.
+     * Alterna el estado de favorito para un Pokémon dado.
+     *
+     * @param {number} pokemonId - ID numérico del Pokémon.
      */
     const togglePokemonFavorite = useCallback(
         (pokemonId) => {
             dispatch(toggleFavorite(pokemonId));
         },
-        [dispatch]
+        [dispatch],
     );
 
     return {

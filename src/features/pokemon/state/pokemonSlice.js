@@ -2,10 +2,21 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { pokemonApi } from "@/features/pokemon/api/pokemonApi";
 
 /**
- * Async thunk for fetching a paginated list of Pokémon.
- * @param {Object} params - The pagination parameters.
- * @param {number} params.page - The current page number.
- * @param {number} params.limit - The number of items per page.
+ * Acción Asíncrona (Thunk) `fetchPokemons`.
+ *
+ * **Responsabilidad:**
+ * * Orquesta la llamada a la API y el manejo de estados de carga/éxito/error.
+ * * Calcula el offset basado en la página solicitada.
+ *
+ * **Flujo:**
+ * 1. Dispara `pending`.
+ * 2. Llama a `pokemonApi.getPokemons`.
+ * 3. Si éxito: Dispara `fulfilled` con datos.
+ * 4. Si error: Dispara `rejected` con mensaje.
+ *
+ * @param {Object} params - Parámetros de paginación
+ * @param {number} params.page - Número de página (1-based index).
+ * @param {number} params.limit - Items por página.
  */
 export const fetchPokemons = createAsyncThunk(
     "pokemon/fetchPokemons",
@@ -17,9 +28,22 @@ export const fetchPokemons = createAsyncThunk(
         } catch (error) {
             return rejectWithValue(error.message);
         }
-    }
+    },
 );
 
+/**
+ * Slice Redux `pokemonSlice`.
+ *
+ * **Responsabilidad:**
+ * * Gestiona el estado global de la lista de Pokémon visible.
+ * * Maneja los estados transicionales de red (loading, error, success).
+ * * Controla la paginación del lado del cliente/estado.
+ *
+ * **Estado inicial:**
+ * * `pokemons`: Array de objetos Pokémon resumidos.
+ * * `isLoading`, `isError`, `error`: Flags de estado de red.
+ * * `currentPage`, `totalCount`: Metadatos de paginación.
+ */
 const pokemonSlice = createSlice({
     name: "pokemon",
     initialState: {
@@ -28,15 +52,16 @@ const pokemonSlice = createSlice({
         isError: false,
         error: null,
         currentPage: 1,
-        itemsPerPage: 20, // Default items per page
-        totalCount: 0, // Total number of pokemons available from API
+        itemsPerPage: 20,
+        totalCount: 0,
     },
     reducers: {
         /**
-         * Sets the current page number for pagination.
-         * @param {object} state - The current state.
-         * @param {object} action - The Redux action.
-         * @param {number} action.payload - The new page number.
+         * Actualiza el número de página actual.
+         *
+         * @param {object} state - Estado actual del slice.
+         * @param {object} action - Acción de Redux.
+         * @param {number} action.payload - Nuevo número de página.
          */
         setPage: (state, action) => {
             state.currentPage = action.payload;
@@ -67,4 +92,3 @@ const pokemonSlice = createSlice({
 
 export const { setPage } = pokemonSlice.actions;
 export default pokemonSlice.reducer;
-

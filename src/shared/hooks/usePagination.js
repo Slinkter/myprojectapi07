@@ -1,7 +1,6 @@
-
-import { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { setPage } from '@/features/pokemon/state/pokemonSlice';
+import { useCallback } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setPage } from "@/features/pokemon/state/pokemonSlice";
 
 /**
  * @typedef {object} PaginationResult
@@ -14,60 +13,75 @@ import { setPage } from '@/features/pokemon/state/pokemonSlice';
  */
 
 /**
- * Hook personalizado y reutilizable para gestionar la lógica de paginación.
- * Se integra con el store de Redux para obtener el estado de paginación
- * y despachar acciones para modificarlo.
+ * Hook personalizado `usePagination`.
  *
- * @param {object} params - Parámetros de configuración para el hook.
- * @param {number} params.totalCount - El número total de elementos a paginar.
- * @returns {PaginationResult} Un objeto que contiene el estado y las funciones de la paginación.
+ * **Funcionalidad:**
+ * * Controla la lógica de paginación conectada a Redux.
+ * * Calcula el número total de páginas basado en el conteo total de items.
+ * * Provee métodos seguros de navegación (prev, next, goTo).
+ *
+ * **Flujo de interacción / ejecución:**
+ * 1. Recibe `totalCount` como prop para cálculos locales.
+ * 2. Lee `currentPage` y `itemsPerPage` del store global.
+ * 3. `goToPage` valida que la página destino sea válida antes de despachar.
+ * 4. Al cambiar de página, hace scroll suave al inicio de la ventana.
+ *
+ * **Estado y efectos secundarios:**
+ * * Modifica `state.pokemon.currentPage`.
+ * * Ejecuta `window.scrollTo` como efecto visual.
+ *
+ * @param {object} params - Parámetros de configuración.
+ * @param {number} params.totalCount - Cantidad total de registros remotos.
+ * @returns {PaginationResult} API de paginación lista para consumir por UI.
  */
 export const usePagination = ({ totalCount }) => {
-  const dispatch = useDispatch();
+    const dispatch = useDispatch();
 
-  const { currentPage, itemsPerPage } = useSelector((state) => state.pokemon);
+    const { currentPage, itemsPerPage } = useSelector((state) => state.pokemon);
 
-  const totalPages = Math.ceil(totalCount / itemsPerPage) || 1;
+    const totalPages = Math.ceil(totalCount / itemsPerPage) || 1;
 
-  /**
-   * Navega a una página específica, asegurándose de que esté dentro de los límites.
-   * También desplaza la vista al inicio de la página.
-   */
-  const goToPage = useCallback(
-    (pageNumber) => {
-      const targetPage = Math.max(1, Math.min(pageNumber, totalPages));
-      if (targetPage !== currentPage) {
-        dispatch(setPage(targetPage));
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
-    },
-    [dispatch, currentPage, totalPages]
-  );
+    /**
+     * Navega a una página específica.
+     * Valida rangos y realiza scroll to top.
+     *
+     * @param {number} pageNumber - Número de página destino.
+     */
+    const goToPage = useCallback(
+        (pageNumber) => {
+            const targetPage = Math.max(1, Math.min(pageNumber, totalPages));
+            if (targetPage !== currentPage) {
+                dispatch(setPage(targetPage));
+                window.scrollTo({ top: 0, behavior: "smooth" });
+            }
+        },
+        [dispatch, currentPage, totalPages],
+    );
 
-  /**
-   * Navega a la página siguiente si no es la última.
-   */
-  const nextPage = useCallback(() => {
-    if (currentPage < totalPages) {
-      goToPage(currentPage + 1);
-    }
-  }, [currentPage, totalPages, goToPage]);
+    /**
+     * Navega a la página siguiente si no es la última.
+     */
+    const nextPage = useCallback(() => {
+        if (currentPage < totalPages) {
+            goToPage(currentPage + 1);
+        }
+    }, [currentPage, totalPages, goToPage]);
 
-  /**
-   * Navega a la página anterior si no es la primera.
-   */
-  const prevPage = useCallback(() => {
-    if (currentPage > 1) {
-      goToPage(currentPage - 1);
-    }
-  }, [currentPage, goToPage]);
+    /**
+     * Navega a la página anterior si no es la primera.
+     */
+    const prevPage = useCallback(() => {
+        if (currentPage > 1) {
+            goToPage(currentPage - 1);
+        }
+    }, [currentPage, goToPage]);
 
-  return {
-    currentPage,
-    totalPages,
-    itemsPerPage,
-    goToPage,
-    nextPage,
-    prevPage,
-  };
+    return {
+        currentPage,
+        totalPages,
+        itemsPerPage,
+        goToPage,
+        nextPage,
+        prevPage,
+    };
 };

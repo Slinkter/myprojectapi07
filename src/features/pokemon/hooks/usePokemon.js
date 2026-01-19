@@ -1,7 +1,6 @@
-
-import { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchPokemons as fetchPokemonsThunk } from '@/features/pokemon/state/pokemonSlice';
+import { useCallback } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchPokemons as fetchPokemonsThunk } from "@/features/pokemon/state/pokemonSlice";
 
 /**
  * @typedef {import('@/features/pokemon/state/pokemonSlice').Pokemon} Pokemon
@@ -18,35 +17,54 @@ import { fetchPokemons as fetchPokemonsThunk } from '@/features/pokemon/state/po
  */
 
 /**
- * Hook personalizado para interactuar con el estado de Pokémon en Redux.
- * Su única responsabilidad es proporcionar acceso a los datos de Pokémon
- * y a la acción para cargarlos. No contiene lógica de filtrado,
- * paginación o favoritos.
+ * Hook personalizado `usePokemon`.
  *
- * @returns {PokemonState} Un objeto con el estado y las acciones relacionadas con los Pokémon.
+ * **Funcionalidad:**
+ * * Encapsula la interacción con el slice de Redux `pokemonSlice`.
+ * * Expone selectores de estado (lista, loading, errores) y acciones de carga.
+ * * Sirve como fachada para evitar que los componentes accedan directamente a `useDispatch` o `useSelector` para esta feature.
+ *
+ * **Flujo de interacción / ejecución:**
+ * 1. Lee el estado actual (`pokemons`, `isLoading`, etc.) mediante `useSelector`.
+ * 2. Prepara la función `fetchPokemons` memoizada para ser consumida por componentes.
+ * 3. Al invocar `fetchPokemons`, despacha la acción asíncrona (thunk) usando los parámetros de paginación actuales.
+ *
+ * **Estado y efectos secundarios:**
+ * * Lee del estado global.
+ * * Despacha acciones que causan efectos secundarios de red (API calls).
+ *
+ * @returns {PokemonState} Objeto con estado y acciones de la feature Pokémon.
  */
 export const usePokemon = () => {
-  const dispatch = useDispatch();
+    const dispatch = useDispatch();
 
-  // Selecciona los datos crudos del slice de Pokémon
-  const { pokemons, isLoading, isError, error, currentPage, itemsPerPage, totalCount } =
-    useSelector((state) => state.pokemon);
+    // Selecciona los datos crudos del slice de Pokémon
+    const {
+        pokemons,
+        isLoading,
+        isError,
+        error,
+        currentPage,
+        itemsPerPage,
+        totalCount,
+    } = useSelector((state) => state.pokemon);
 
-  /**
-   * Dispara el thunk `fetchPokemonsThunk` con los parámetros de paginación
-   * actuales del estado de Redux.
-   */
-  const fetchPokemons = useCallback(() => {
-    dispatch(fetchPokemonsThunk({ page: currentPage, limit: itemsPerPage }));
-  }, [dispatch, currentPage, itemsPerPage]);
+    /**
+     * Dispara el thunk `fetchPokemonsThunk` con los parámetros de paginación
+     * actuales del estado de Redux.
+     */
+    const fetchPokemons = useCallback(() => {
+        dispatch(
+            fetchPokemonsThunk({ page: currentPage, limit: itemsPerPage }),
+        );
+    }, [dispatch, currentPage, itemsPerPage]);
 
-  return {
-    pokemons,
-    isLoading,
-    isError,
-    error,
-    totalCount,
-    fetchPokemons,
-  };
+    return {
+        pokemons,
+        isLoading,
+        isError,
+        error,
+        totalCount,
+        fetchPokemons,
+    };
 };
-

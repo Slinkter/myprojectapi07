@@ -1,10 +1,17 @@
-
 import { useSearch } from "@/features/search";
 import { HiSearch } from "react-icons/hi";
 
 /**
- * A component that provides a text input for searching Pokémon.
- * @returns {JSX.Element} The rendered search bar component.
+ * Componente `SearchBar`.
+ *
+ * **Responsabilidad:**
+ * * Provee la interfaz de entrada para el filtrado global de Pokémon.
+ * * Conecta el input de texto directamente con el hook `useSearch`.
+ *
+ * **Interacción:**
+ * * Al escribir (`onChange`), dispara inmediatamente la actualización del filtro global.
+ *
+ * @returns {JSX.Element} Input estilizado con icono de búsqueda.
  */
 export const SearchBar = () => {
     const { searchFilter, filterPokemons } = useSearch();
