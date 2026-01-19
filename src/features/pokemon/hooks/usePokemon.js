@@ -44,20 +44,21 @@ export const usePokemon = () => {
         isLoading,
         isError,
         error,
-        currentPage,
-        itemsPerPage,
         totalCount,
     } = useSelector((state) => state.pokemon);
 
     /**
      * Dispara el thunk `fetchPokemonsThunk` con los parámetros de paginación
-     * actuales del estado de Redux.
+     * proporcionados.
+     * @param {object} params - Parámetros de paginación.
+     * @param {number} params.page - La página a solicitar.
+     * @param {number} params.limit - El número de items por página.
      */
-    const fetchPokemons = useCallback(() => {
+    const fetchPokemons = useCallback(({ page, limit = 20 }) => {
         dispatch(
-            fetchPokemonsThunk({ page: currentPage, limit: itemsPerPage }),
+            fetchPokemonsThunk({ page, limit }),
         );
-    }, [dispatch, currentPage, itemsPerPage]);
+    }, [dispatch]);
 
     return {
         pokemons,

@@ -1,5 +1,7 @@
 import { Suspense, lazy } from "react";
+import { Routes, Route } from "react-router-dom";
 import { PokemonSkeleton } from "@/features/pokemon";
+import MainLayout from "@/components/layout/MainLayout";
 
 // Lazy loading for pages
 const PokedexPage = lazy(() => import("@/pages/PokedexPage"));
@@ -8,38 +10,35 @@ const PokedexPage = lazy(() => import("@/pages/PokedexPage"));
  * Componente AppRoutes.
  *
  * **Funcionalidad:**
- * * Define la estructura de navegación de la aplicación.
+ * * Define la estructura de navegación de la aplicación usando `react-router-dom`.
+ * * Utiliza un `MainLayout` para rutas que comparten una estructura común (ej. Navbar).
  * * Gestiona la carga perezosa (Lazy Loading) de las vistas para mejorar el rendimiento inicial.
  * * Provee un fallback visual (Skeleton) mientras se cargan los chunks de código.
  *
- * **Flujo de interacción / ejecución:**
- * 1. Importa dinámicamente `PokedexPage` usando `React.lazy`.
- * 2. Envuelve la renderización en `<Suspense>` para capturar el estado de carga del módulo.
- * 3. Renderiza `PokemonSkeleton` centrado como indicador de carga inicial.
- * 4. Muestra la página principal una vez el bundle JS ha sido descargado.
- *
- * **Estado y efectos secundarios:**
- * * No maneja estado propio. Depende del ciclo de vida de carga de módulos de React/Vite.
- *
- * @returns {JSX.Element} Contenedor de rutas con soporte para Suspense.
+ * @returns {JSX.Element} El componente de enrutamiento principal de la aplicación.
  */
 const AppRoutes = () => {
-    return (
-        <Suspense
-            fallback={
-                <div className="flex justify-center items-center h-screen bg-slate-50 dark:bg-slate-900">
-                    <div className="w-full max-w-sm p-4">
-                        <PokemonSkeleton />
-                    </div>
-                </div>
-            }
-        >
-            {/* Since there's no router library installed yet (react-router-dom), 
-          we render the main page directly. This stays scalable for when 
-          the USER decides to add more routes. */}
-            <PokedexPage />
-        </Suspense>
-    );
+  return (
+    <Suspense
+      fallback={
+        <div className="flex justify-center items-center h-screen bg-slate-50 dark:bg-slate-900">
+          <div className="w-full max-w-sm p-4">
+            <PokemonSkeleton />
+          </div>
+        </div>
+      }
+    >
+      <Routes>
+        <Route path="/" element={<MainLayout />}>
+          <Route index element={<PokedexPage />} />
+          {/* Aquí se pueden añadir más rutas que compartan el MainLayout,
+              por ejemplo: /pokemon/:id, /favorites, etc. */}
+        </Route>
+        {/* Aquí se podrían añadir otras rutas con layouts diferentes,
+            por ejemplo: /login, /404, etc. */}
+      </Routes>
+    </Suspense>
+  );
 };
 
 export default AppRoutes;

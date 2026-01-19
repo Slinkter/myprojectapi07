@@ -9,4 +9,4 @@ export { default as PokemonSkeleton } from "./components/PokemonSkeleton";
 export { default as PokedexHeader } from "./components/PokedexHeader";
 
 // Export state logic
-export { default as pokemonReducer, fetchPokemons, setPage } from "./state/pokemonSlice";
+export { default as pokemonReducer, fetchPokemons } from "./state/pokemonSlice";

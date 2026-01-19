@@ -1,6 +1,5 @@
-import { useCallback } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { setPage } from "@/features/pokemon/state/pokemonSlice";
+import { useState, useMemo, useCallback } from "react";
+import { useSearchParams } from "react-router-dom";
 
 /**
  * @typedef {object} PaginationResult
@@ -8,80 +7,53 @@ import { setPage } from "@/features/pokemon/state/pokemonSlice";
  * @property {number} totalPages - El número total de páginas disponibles.
  * @property {number} itemsPerPage - El número de elementos por página.
  * @property {function(number): void} goToPage - Función para navegar a una página específica.
- * @property {function(): void} nextPage - Función para navegar a la página siguiente.
- * @property {function(): void} prevPage - Función para navegar a la página anterior.
  */
+
+const ITEMS_PER_PAGE = 20;
 
 /**
  * Hook personalizado `usePagination`.
  *
  * **Funcionalidad:**
- * * Controla la lógica de paginación conectada a Redux.
- * * Calcula el número total de páginas basado en el conteo total de items.
- * * Provee métodos seguros de navegación (prev, next, goTo).
+ * * Controla la lógica de paginación de forma autocontenida.
+ * * Sincroniza el estado de la página con los query params de la URL (`?page=...`).
+ * * Calcula el número total de páginas y provee métodos de navegación.
  *
  * **Flujo de interacción / ejecución:**
- * 1. Recibe `totalCount` como prop para cálculos locales.
- * 2. Lee `currentPage` y `itemsPerPage` del store global.
- * 3. `goToPage` valida que la página destino sea válida antes de despachar.
+ * 1. Lee el `page` del query param de la URL como fuente de verdad inicial.
+ * 2. Almacena la página actual en un estado local de React.
+ * 3. `goToPage` actualiza el estado y el query param de la URL.
  * 4. Al cambiar de página, hace scroll suave al inicio de la ventana.
  *
- * **Estado y efectos secundarios:**
- * * Modifica `state.pokemon.currentPage`.
- * * Ejecuta `window.scrollTo` como efecto visual.
- *
  * @param {object} params - Parámetros de configuración.
- * @param {number} params.totalCount - Cantidad total de registros remotos.
+ * @param {number} params.totalCount - Cantidad total de registros.
  * @returns {PaginationResult} API de paginación lista para consumir por UI.
  */
 export const usePagination = ({ totalCount }) => {
-    const dispatch = useDispatch();
+    const [searchParams, setSearchParams] = useSearchParams();
+    const [currentPage, setCurrentPage] = useState(
+        Number(searchParams.get("page") || 1),
+    );
 
-    const { currentPage, itemsPerPage } = useSelector((state) => state.pokemon);
+    const totalPages = useMemo(
+        () => Math.ceil(totalCount / ITEMS_PER_PAGE) || 1,
+        [totalCount],
+    );
 
-    const totalPages = Math.ceil(totalCount / itemsPerPage) || 1;
-
-    /**
-     * Navega a una página específica.
-     * Valida rangos y realiza scroll to top.
-     *
-     * @param {number} pageNumber - Número de página destino.
-     */
     const goToPage = useCallback(
         (pageNumber) => {
             const targetPage = Math.max(1, Math.min(pageNumber, totalPages));
-            if (targetPage !== currentPage) {
-                dispatch(setPage(targetPage));
-                window.scrollTo({ top: 0, behavior: "smooth" });
-            }
+            setCurrentPage(targetPage);
+            setSearchParams({ page: targetPage });
+            window.scrollTo({ top: 0, behavior: "smooth" });
         },
-        [dispatch, currentPage, totalPages],
+        [totalPages, setSearchParams],
     );
-
-    /**
-     * Navega a la página siguiente si no es la última.
-     */
-    const nextPage = useCallback(() => {
-        if (currentPage < totalPages) {
-            goToPage(currentPage + 1);
-        }
-    }, [currentPage, totalPages, goToPage]);
-
-    /**
-     * Navega a la página anterior si no es la primera.
-     */
-    const prevPage = useCallback(() => {
-        if (currentPage > 1) {
-            goToPage(currentPage - 1);
-        }
-    }, [currentPage, goToPage]);
 
     return {
         currentPage,
         totalPages,
-        itemsPerPage,
+        itemsPerPage: ITEMS_PER_PAGE,
         goToPage,
-        nextPage,
-        prevPage,
     };
 };

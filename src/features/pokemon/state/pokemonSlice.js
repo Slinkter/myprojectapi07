@@ -51,22 +51,9 @@ const pokemonSlice = createSlice({
         isLoading: false,
         isError: false,
         error: null,
-        currentPage: 1,
-        itemsPerPage: 20,
         totalCount: 0,
     },
-    reducers: {
-        /**
-         * Actualiza el número de página actual.
-         *
-         * @param {object} state - Estado actual del slice.
-         * @param {object} action - Acción de Redux.
-         * @param {number} action.payload - Nuevo número de página.
-         */
-        setPage: (state, action) => {
-            state.currentPage = action.payload;
-        },
-    },
+    reducers: {},
     extraReducers: (builder) => {
         builder
             .addCase(fetchPokemons.pending, (state) => {
@@ -90,5 +77,4 @@ const pokemonSlice = createSlice({
     },
 });
 
-export const { setPage } = pokemonSlice.actions;
 export default pokemonSlice.reducer;
