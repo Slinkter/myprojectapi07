@@ -2,94 +2,94 @@
 
 * * *
 
-**Pokédex API 07** is a modern web application, built with **React** and **Vite**, that allows users to explore the world of Pokémon. The application consumes the [PokéAPI v2](https://pokeapi.co/) and presents the data in a clean, fast, and fully responsive user interface.
+**Pokédex API 07** es una aplicación web moderna, construida con **React** y **Vite**, que permite a los usuarios explorar el mundo de los Pokémon. La aplicación consume la [PokéAPI v2](https://pokeapi.co/) y presenta los datos en una interfaz de usuario limpia, rápida y totalmente responsive.
 
-This project not only serves as a functional tool for Pokémon fans but also as an advanced case study in frontend software architecture. It demonstrates Clean Architecture principles through patterns like **Feature-Sliced Design**, a clear **Routing** system, **reusable Presentational Components**, and robust global state management with **Redux Toolkit** and **memoized selectors**.
+Este proyecto no solo sirve como una herramienta funcional para los fans de Pokémon, sino también como un caso de estudio avanzado en arquitectura de software frontend. Demuestra principios de Arquitectura Limpia a través de patrones como el **Diseño Orientado a Características (Feature-Sliced Design)**, un sistema de **Enrutamiento** claro, **Componentes de Presentación** reutilizables, y una robusta gestión de estado global con **Redux Toolkit** y **selectores memoizados**.
 
 ![Project Screenshot](api07.png)
 
-## ✨ Key Features
+## ✨ Características Principales
 
--   **Pokémon Catalogue & Pagination:** Browse the complete Pokémon list with an efficient pagination system.
--   **Real-time Search:** Instantly filter Pokémon by name.
--   **Favorites Management:** Mark your favorite Pokémon and see them in a dedicated section.
--   **Dark Mode:** Switch between light and dark themes for visual comfort.
--   **Fully Responsive Design:** Enjoy an optimal user experience on any device.
--   **Smooth Animations & Transitions:** The UI is enhanced with animations that improve user experience without sacrificing performance.
+-   **Catálogo y Paginación de Pokémon:** Explora la lista completa de Pokémon con un sistema de paginación eficiente.
+-   **Búsqueda en Tiempo Real:** Filtra Pokémon por nombre al instante.
+-   **Gestión de Favoritos:** Marca tus Pokémon favoritos y visualízalos en una sección dedicada.
+-   **Modo Oscuro:** Cambia entre temas claro y oscuro para una mayor comodidad visual.
+-   **Diseño Totalmente Responsive:** Disfruta de una experiencia de usuario óptima en cualquier dispositivo.
+-   **Animaciones y Transiciones Suaves:** La interfaz está mejorada con animaciones que mejoran la experiencia de usuario sin sacrificar el rendimiento.
 
-## 🚀 Tech Stack
+## 🚀 Pila Tecnológica
 
 -   **Framework:** [React 18](https://reactjs.org/)
--   **Build Tool:** [Vite](https://vitejs.dev/)
--   **Routing:** [React Router](https://reactrouter.com/)
--   **Language:** JavaScript (ES6+)
--   **Styling:** [Tailwind CSS](https://tailwindcss.com/)
--   **Global State Management:** [Redux Toolkit](https://redux-toolkit.js.org/)
--   **HTTP Client:** [Axios](https://axios-http.com/)
--   **Icons:** [React Icons](https://react-icons.github.io/react-icons/)
--   **Deployment:** [GitHub Pages](https://pages.github.com/)
+-   **Herramienta de Construcción:** [Vite](https://vitejs.dev/)
+-   **Enrutamiento:** [React Router](https://reactrouter.com/)
+-   **Lenguaje:** JavaScript (ES6+)
+-   **Estilos:** [Tailwind CSS](https://tailwindcss.com/)
+-   **Gestión de Estado Global:** [Redux Toolkit](https://redux-toolkit.js.org/)
+-   **Cliente HTTP:** [Axios](https://axios-http.com/)
+-   **Iconos:** [React Icons](https://react-icons.github.io/react-icons/)
+-   **Despliegue:** [GitHub Pages](https://pages.github.com/)
 
 ---
 
-## 🏛️ Applied Architecture
+## 🏛️ Arquitectura Aplicada
 
-The project's architecture is designed to be modular, scalable, and maintainable, adhering to **Clean Architecture** and **SOLID** principles.
+La arquitectura del proyecto está diseñada para ser modular, escalable y mantenible, adhiriéndose a los principios de **Arquitectura Limpia** y **SOLID**.
 
-### Core Principles
+### Principios Fundamentales
 
--   **Feature-Sliced Design:** The codebase is organized by features (e.g., `pokemon`, `search`, `favorites`). Each feature is a self-contained module that encapsulates its own UI (components), logic (hooks), state (Redux slice), and API services. This promotes low coupling and high cohesion.
--   **Separation of Concerns:** A strict separation is maintained between different layers of the application:
-    -   **Components (UI):** Dumb/Presentational components are used for rendering UI, while smart/Container components orchestrate logic.
-    -   **Hooks (Stateful Logic):** Custom hooks encapsulate reusable stateful logic (e.g., `usePagination`).
-    -   **Redux (Global State):** Redux Toolkit manages global state. Business logic that involves multiple features is handled by **memoized selectors** (`createSelector`) to compute derived data efficiently.
-    -   **Services (API):** A dedicated API layer (`pokemonApi.js`) handles all network requests, abstracting away the implementation details from the rest of the app.
+-   **Diseño Orientado a Características (Feature-Sliced Design):** El código base está organizado por características (ej., `pokemon`, `search`, `favorites`). Cada característica es un módulo autocontenido que encapsula su propia UI (componentes), lógica (hooks), estado (slice de Redux) y servicios de API. Esto promueve un bajo acoplamiento y una alta cohesión.
+-   **Separación de Preocupaciones:** Se mantiene una estricta separación entre las diferentes capas de la aplicación:
+    -   **Componentes (UI):** Se utilizan componentes "tontos" o de presentación para renderizar la UI, mientras que los componentes "inteligentes" o contenedores orquestan la lógica.
+    -   **Hooks (Lógica con Estado):** Los hooks personalizados encapsulan la lógica con estado reutilizable (ej., `usePagination`).
+    -   **Redux (Estado Global):** Redux Toolkit gestiona el estado global. La lógica de negocio que involucra múltiples características se maneja mediante **selectores memoizados** (`createSelector`) para calcular datos derivados de manera eficiente.
+    -   **Servicios (API):** Una capa de API dedicada (`pokemonApi.js`) gestiona todas las solicitudes de red, abstrayendo los detalles de implementación del resto de la aplicación.
 
-### Key Architectural Patterns
+### Patrones Arquitectónicos Clave
 
-1.  **Layout & Routing:**
-    -   A declarative routing system is managed by **`react-router-dom`**.
-    -   A `MainLayout` component provides a consistent UI shell (Navbar, background) for all main pages.
-    -   The `AppRoutes` component defines the application's page structure, using `<Outlet>` to render content within the layout.
+1.  **Layout y Enrutamiento:**
+    -   Un sistema de enrutamiento declarativo es gestionado por **`react-router-dom`**.
+    -   Un componente `MainLayout` proporciona una estructura de interfaz de usuario consistente (barra de navegación, fondo) para todas las páginas principales.
+    -   El componente `AppRoutes` define la estructura de las páginas de la aplicación, utilizando `<Outlet>` para renderizar el contenido dentro del layout.
 
-2.  **Reusable Components:**
-    -   Common, stateless UI elements are located in `src/components/common` (e.g., `Pagination.jsx`). These components are designed to be highly reusable and receive all their data and callbacks via props.
+2.  **Componentes Reutilizables:**
+    -   Los elementos de UI comunes y sin estado se encuentran en `src/components/common` (ej., `Pagination.jsx`). Estos componentes están diseñados para ser altamente reutilizables y reciben todos sus datos y callbacks a través de props.
 
-3.  **State Management & Data Flow:**
-    -   **Single Source of Truth:** Global state is managed by Redux. For local or UI-specific state, React's native hooks (`useState`, `useCallback`) are used, as seen in `usePagination`.
-    -   **Unidirectional Data Flow:** Data flows from Redux or hooks down to components. Events flow up from components via callbacks.
-    -   **Memoized Selectors:** To prevent unnecessary re-renders and keep business logic out of components, `createSelector` is used to compute derived state (e.g., filtering and mapping Pokémon lists). Components subscribe to this processed data, not the raw state.
+3.  **Gestión de Estado y Flujo de Datos:**
+    -   **Única Fuente de Verdad:** El estado global es gestionado por Redux. Para el estado local o específico de la UI, se utilizan los hooks nativos de React (`useState`, `useCallback`), como se ve en `usePagination`.
+    -   **Flujo de Datos Unidireccional:** Los datos fluyen de Redux o hooks hacia los componentes. Los eventos fluyen desde los componentes a través de callbacks.
+    -   **Selectores Memoizados:** Para evitar re-renders innecesarios y mantener la lógica de negocio fuera de los componentes, se utiliza `createSelector` para calcular el estado derivado (ej., filtrar y mapear listas de Pokémon). Los componentes se suscriben a estos datos procesados, no al estado crudo.
 
 ---
 
-## 📦 Installation and Setup
+## 📦 Instalación y Configuración
 
-To run this project in your local environment, follow these steps:
+Para ejecutar este proyecto en tu entorno local, sigue estos pasos:
 
-1.  **Clone the repository:**
+1.  **Clonar el repositorio:**
     ```bash
     git clone https://github.com/slinkter/myprojectapi07.git
     cd myprojectapi07
     ```
 
-2.  **Install dependencies:**
-    It is recommended to use `pnpm` for efficient package management.
+2.  **Instalar dependencias:**
+    Se recomienda usar `pnpm` para una gestión eficiente de los paquetes.
     ```bash
     pnpm install
     ```
 
-3.  **Run the development server:**
+3.  **Ejecutar el servidor de desarrollo:**
     ```bash
     pnpm run dev
     ```
-    The application will be available at `http://localhost:5173` (or the port indicated by Vite).
+    La aplicación estará disponible en `http://localhost:5173` (o el puerto que indique Vite).
 
-##  NPM Scripts
+## Scripts NPM
 
--   `pnpm dev`: Starts the Vite development server.
--   `pnpm build`: Compiles the application for production.
--   `pnpm lint`: Analyzes the code with ESLint.
--   `pnpm preview`: Serves the production build locally for preview.
+-   `pnpm dev`: Inicia el servidor de desarrollo de Vite.
+-   `pnpm build`: Compila la aplicación para producción.
+-   `pnpm lint`: Analiza el código con ESLint.
+-   `pnpm preview`: Sirve la compilación de producción localmente para previsualización.
 
-## 📄 Additional Documentation
+## 📄 Documentación Adicional
 
-Detailed project documentation, including architectural decisions and diagrams, can be found in the [`/src/docs`](./src/docs/) directory.
+La documentación detallada del proyecto, incluyendo decisiones arquitectónicas y diagramas, se encuentra en el directorio [`/src/docs`](./src/docs/).
