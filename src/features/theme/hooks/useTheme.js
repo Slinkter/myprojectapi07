@@ -3,41 +3,46 @@ import { useDispatch, useSelector } from "react-redux";
 import { toggleTheme, setTheme } from "@/features/theme/state/themeSlice";
 
 /**
- * Custom hook for managing the application's theme.
- * It provides the current theme and a function to toggle it.
- * It also listens for system theme changes and updates the theme accordingly
- * if the user has not explicitly set a theme.
+ * @hook useTheme
+ * @description Un hook personalizado que encapsula toda la lógica para la gestión del tema de la aplicación.
+ *
+ * @details
+ * Este hook actúa como una fachada (Facade) sobre el estado del tema en Redux. Sus responsabilidades son:
+ * 1.  Proporcionar el tema actual (`currentTheme`).
+ * 2.  Proporcionar una función para alternar el tema (`toggleAppTheme`).
+ * 3.  (Efecto secundario) Escuchar los cambios del tema preferido del sistema operativo y
+ *     actualizar el estado de la aplicación si el usuario no ha hecho una selección manual.
  *
  * @returns {{
- *   currentTheme: 'light' | 'dark',
+ *   currentTheme: ('light' | 'dark'),
  *   toggleAppTheme: () => void
- * }}
+ * }} Un objeto que contiene el tema actual y la función para alternarlo.
  */
 export const useTheme = () => {
   const dispatch = useDispatch();
   const currentTheme = useSelector((state) => state.theme.currentTheme);
 
   useEffect(() => {
-    // Listen for system theme changes
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    
+    // Escucha los cambios del tema del sistema
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+
     /**
-     * Handles system theme changes.
-     * @param {MediaQueryListEvent} e - The media query event.
+     * Maneja los cambios del tema del sistema.
+     * @param {MediaQueryListEvent} e - El evento de media query.
      */
     const handleChange = (e) => {
-      const systemTheme = e.matches ? 'dark' : 'light';
-      // Only update if the user hasn't explicitly set a theme
-      if (!localStorage.getItem('app_theme')) {
+      const systemTheme = e.matches ? "dark" : "light";
+      // Solo actualiza si el usuario no ha establecido explícitamente un tema
+      if (!localStorage.getItem("app_theme")) {
         dispatch(setTheme(systemTheme));
       }
     };
-    mediaQuery.addEventListener('change', handleChange);
-    return () => mediaQuery.removeEventListener('change', handleChange);
+    mediaQuery.addEventListener("change", handleChange);
+    return () => mediaQuery.removeEventListener("change", handleChange);
   }, [dispatch]);
 
   /**
-   * Toggles the application theme between 'light' and 'dark'.
+   * Alterna el tema de la aplicación entre 'light' y 'dark'.
    */
   const toggleAppTheme = useCallback(() => {
     dispatch(toggleTheme());

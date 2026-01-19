@@ -2,9 +2,18 @@
 import { HiStar } from "react-icons/hi";
 
 /**
- * A component that displays a skeleton loader for a Pokémon card.
- * It's used to provide a visual placeholder while the actual Pokémon data is loading.
- * @returns {JSX.Element} The rendered Pokémon skeleton card component.
+ * @component PokemonSkeleton
+ * @description
+ * Un componente de presentación que renderiza un "esqueleto" o "placeholder" visual
+ * con la forma de una `PokemonCard`.
+ *
+ * **Propósito (UX):**
+ * Se utiliza para indicar un estado de carga. En lugar de mostrar un spinner, muestra
+ * una versión simplificada y sin contenido de la tarjeta, lo que ayuda a gestionar las
+ * expectativas del usuario sobre la estructura del contenido que está por aparecer y
+ * reduce la percepción del tiempo de carga.
+ *
+ * @returns {JSX.Element} Un `div` que representa la tarjeta de esqueleto.
  */
 const PokemonSkeleton = () => (
     <div className="h-full flex flex-col bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl overflow-hidden animate-pulse">

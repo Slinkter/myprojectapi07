@@ -3,22 +3,21 @@ import logoPokemon from "@/assets/logo.svg";
 import { HiSun, HiMoon } from "react-icons/hi";
 
 /**
- * Componente Navbar.
+ * @component Navbar
+ * @description
+ * El componente de la barra de navegación principal de la aplicación. Es una barra
+ * persistente que se muestra en la parte superior de las páginas que utilizan `MainLayout`.
  *
- * **Funcionalidad:**
- * * Renderiza la barra de navegación superior de la aplicación.
- * * Contiene el logotipo de la marca y el control de cambio de tema.
- * * Proporciona acceso rápido a configuraciones globales persistentes como el modo oscuro.
+ * **Responsabilidades:**
+ * 1.  **Identidad de Marca:** Muestra el logotipo de la aplicación.
+ * 2.  **Controles Globales:** Proporciona controles para acciones que afectan a toda la aplicación,
+ *     como el botón para alternar entre el tema claro y oscuro.
  *
- * **Flujo de interacción / ejecución:**
- * 1. Obtiene el estado del tema (`currentTheme`) y la función toggle (`toggleAppTheme`) desde `useTheme`.
- * 2. Renderiza una estructura `nav` sticky que permanece visible al hacer scroll.
- * 3. Al hacer clic en el botón del sol/luna, invoca `toggleAppTheme` para cambiar el contexto global de estilos.
+ * **Interacción:**
+ * - Consume el hook `useTheme` para obtener el tema actual y la función para alternarlo.
+ * - Al hacer clic en el botón de tema, invoca `toggleAppTheme` para cambiar el estado global del tema.
  *
- * **Estado y efectos secundarios:**
- * * Consume el contexto de tema (`ThemeContext`). No maneja estado local propio.
- *
- * @returns {JSX.Element} Elemento de navegación con logo y switch de tema.
+ * @returns {JSX.Element} El elemento `<nav>` que representa la barra de navegación.
  */
 const Navbar = () => {
     const { currentTheme, toggleAppTheme } = useTheme();

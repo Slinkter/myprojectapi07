@@ -1,6 +1,11 @@
 
 /**
- * PokedexHeader component for the main title and subtitle.
+ * @component PokedexHeader
+ * @description
+ * Un componente de presentación estático que renderiza el encabezado principal
+ * de la página Pokédex, incluyendo el título y el subtítulo.
+ *
+ * @returns {JSX.Element} Un `div` con el título y subtítulo de la página.
  */
 const PokedexHeader = () => {
     return (

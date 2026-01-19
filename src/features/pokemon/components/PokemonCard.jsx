@@ -3,31 +3,30 @@ import { useFavorites } from "@/features/favorites/hooks/useFavorites";
 import { HiStar } from "react-icons/hi";
 
 /**
- * Componente PokemonCard.
+ * @component PokemonCard
+ * @description
+ * Un componente de presentación que muestra la información resumida de un Pokémon en
+ * un formato de tarjeta interactiva. Es el "átomo" visual de la cuadrícula de Pokémon.
  *
- * **Funcionalidad:**
- * * Presenta la información resumida de un Pokémon en formato de tarjeta.
- * * Permite la interacción directa para marcar/desmarcar como favorito.
- * * Gestiona animaciones de entrada progresiva (staggered animation) basado en su índice.
+ * **Responsabilidades:**
+ * 1.  **Presentación de Datos:** Renderiza el ID, nombre, imagen y tipos de un Pokémon.
+ * 2.  **Interactividad:** Permite al usuario marcar/desmarcar el Pokémon como favorito a través
+ *     de un botón de estrella. La lógica se delega al hook `useFavorites`.
+ * 3.  **Animación:** Implementa una animación de entrada escalonada (`staggered animation`)
+ *     basada en su prop `index` para un efecto visual agradable.
  *
- * **Flujo de interacción / ejecución:**
- * 1. Recibe datos crudos del Pokémon (id, nombre, imagen, tipos).
- * 2. Determina visualmente si es favorito mediante la prop boolean `favorite`.
- * 3. El botón de estrella intercepta el evento de clic (`stopPropagation`) para evitar conflictos si la tarjeta completa fuera clickeable.
- * 4. Invoca `togglePokemonFavorite` del hook `useFavorites` al interactuar con la estrella.
- *
- * **Estado y efectos secundarios:**
- * * Utiliza el hook `useFavorites` para comunicar la intención del usuario de modificar la lista de favoritos.
- * * Aplica una animación CSS (`animate-slide-in`) con un `animationDelay` calculado dinámicamente.
+ * **Optimización:**
+ * - Las imágenes de los Pokémon utilizan `loading="lazy"` para mejorar el rendimiento de carga de la página.
+ * - Los eventos de clic en el botón de favorito usan `stopPropagation` para prevenir conflictos.
  *
  * @param {object} props - Propiedades del componente.
- * @param {number} props.id - Identificador único nacional del Pokémon.
- * @param {string} props.name - Nombre del Pokémon (será capitalizado por CSS).
- * @param {string} props.image - URL absoluta de la imagen (sprite) del Pokémon.
- * @param {Array<object>} props.types - Lista de objetos de tipo ({ type: { name: string } }).
- * @param {boolean} props.favorite - Estado actual de favorito (true/false).
- * @param {number} [props.index=0] - Índice numérico en el listado para calcular el delay de animación.
- * @returns {JSX.Element} Tarjeta interactiva del Pokémon.
+ * @param {number} props.id - El ID nacional del Pokémon.
+ * @param {string} props.name - El nombre del Pokémon.
+ * @param {string} props.image - La URL de la imagen (artwork oficial).
+ * @param {Array<object>} props.types - La lista de tipos del Pokémon.
+ * @param {boolean} props.favorite - `true` si el Pokémon está marcado como favorito.
+ * @param {number} [props.index=0] - El índice de la tarjeta en la lista, usado para la animación.
+ * @returns {JSX.Element} Un `div` que representa la tarjeta del Pokémon.
  */
 const PokemonCard = ({ id, name, image, types, favorite, index = 0 }) => {
     const { togglePokemonFavorite } = useFavorites();

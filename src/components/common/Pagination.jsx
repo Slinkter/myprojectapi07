@@ -7,15 +7,19 @@ import {
 } from "react-icons/hi";
 
 /**
- * A reusable component for displaying pagination controls.
- * It is a presentational component that relies on parent components
- * to provide its state and handle events.
+ * @component Pagination
+ * @description Un componente de presentación reutilizable que muestra controles de paginación.
+ * Es un componente controlado, lo que significa que la lógica de estado y los manejadores de eventos
+ * deben ser proporcionados por el componente padre a través de props.
+ * No se renderiza si el número total de páginas es 1 o menos.
  *
- * @param {object} props - The component props.
- * @param {number} props.currentPage - The currently active page.
- * @param {number} props.totalPages - The total number of pages.
- * @param {function} props.onPageChange - Callback function invoked when a page button is clicked. It receives the new page number as an argument.
- * @returns {JSX.Element|null} The rendered pagination controls, or null if there's only one page.
+ * @param {object} props - Las props del componente.
+ * @param {number} props.currentPage - El número de la página activa actualmente.
+ * @param {number} props.totalPages - El número total de páginas disponibles.
+ * @param {function(number): void} props.onPageChange - Una función de callback que se invoca cuando
+ * el usuario interactúa con los controles. Recibe el nuevo número de página como su único argumento.
+ *
+ * @returns {JSX.Element | null} El conjunto de controles de paginación o `null` si no es necesario.
  */
 const Pagination = ({ currentPage, totalPages, onPageChange }) => {
   if (totalPages <= 1) {
@@ -28,7 +32,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
         onClick={() => onPageChange(1)}
         disabled={currentPage === 1}
         className="p-2 rounded-lg bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-600 dark:text-slate-400 disabled:opacity-30 hover:bg-gray-50 dark:hover:bg-slate-700 transition-all active:scale-90"
-        aria-label="Go to first page"
+        aria-label="Ir a la primera página"
       >
         <HiChevronDoubleLeft className="w-5 h-5" />
       </button>
@@ -36,7 +40,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
         className="p-2 rounded-lg bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-600 dark:text-slate-400 disabled:opacity-30 hover:bg-gray-50 dark:hover:bg-slate-700 transition-all active:scale-90"
-        aria-label="Go to previous page"
+        aria-label="Ir a la página anterior"
       >
         <HiChevronLeft className="w-5 h-5" />
       </button>
@@ -53,7 +57,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
         className="p-2 rounded-lg bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-600 dark:text-slate-400 disabled:opacity-30 hover:bg-gray-50 dark:hover:bg-slate-700 transition-all active:scale-90"
-        aria-label="Go to next page"
+        aria-label="Ir a la página siguiente"
       >
         <HiChevronRight className="w-5 h-5" />
       </button>
@@ -61,7 +65,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
         onClick={() => onPageChange(totalPages)}
         disabled={currentPage === totalPages}
         className="p-2 rounded-lg bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-600 dark:text-slate-400 disabled:opacity-30 hover:bg-gray-50 dark:hover:bg-slate-700 transition-all active:scale-90"
-        aria-label="Go to last page"
+        aria-label="Ir a la última página"
       >
         <HiChevronDoubleRight className="w-5 h-5" />
       </button>

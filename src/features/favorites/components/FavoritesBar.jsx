@@ -1,18 +1,22 @@
 import PropTypes from "prop-types";
 
 /**
- * Componente `FavoritesBar`.
+ * @component FavoritesBar
+ * @description
+ * Un componente de presentación que muestra una lista visual de los Pokémon
+ * que han sido marcados como favoritos.
  *
- * **Responsabilidad:**
- * * Visualiza un resumen rápido de los Pokémon marcados como favoritos.
- * * Muestra pills (cápsulas) con la imagen y nombre de cada favorito.
+ * **Responsabilidades:**
+ * 1.  **Visualización de Favoritos:** Renderiza una "píldora" (pill) para cada Pokémon
+ *     en la lista `favoritePokemons`, mostrando su imagen y nombre.
+ * 2.  **Manejo del Estado Vacío:** Si la lista de `favoritePokemons` está vacía, muestra
+ *     un mensaje indicando que no se han seleccionado favoritos.
  *
- * **Propósito:**
- * * Feedback visual inmediato al usuario sobre su selección.
- * * Acceso rápido (visual) a la colección personal.
+ * @param {object} props - Las props del componente.
+ * @param {Array<object>} props.favoritePokemons - Un array de objetos Pokémon que han sido
+ *   filtrados previamente como favoritos.
  *
- * @param {Object} props
- * @param {Array} props.favoritePokemons - Subconjunto filtrado de Pokémon favoritos.
+ * @returns {JSX.Element} Un `div` que contiene la barra de favoritos.
  */
 const FavoritesBar = ({ favoritePokemons }) => {
     return (

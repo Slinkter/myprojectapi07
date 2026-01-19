@@ -3,14 +3,14 @@ import PropTypes from "prop-types";
 import { useTheme } from "@/features/theme";
 
 /**
- * A component that applies the current theme to the application.
- * It listens to the theme state from the Redux store and adds or removes
- * the 'dark' class from the root `<html>` element to apply Tailwind CSS's
- * dark mode styles.
+ * @component ThemeWrapper
+ * @description Un componente "efector" que aplica el tema (claro/oscuro) a la aplicación.
+ * No renderiza ninguna UI propia, sino que sincroniza el estado del tema de Redux con el DOM
+ * para que los estilos de TailwindCSS (clase 'dark') se apliquen globalmente.
  *
- * @param {object} props - The component props.
- * @param {React.ReactNode} props.children - The child components to render.
- * @returns {JSX.Element} The rendered child components.
+ * @param {object} props - Las props del componente.
+ * @param {React.ReactNode} props.children - Los nodos hijos que este componente envolverá.
+ * @returns {React.ReactNode} Devuelve los hijos sin modificarlos.
  */
 const ThemeWrapper = ({ children }) => {
   const { currentTheme } = useTheme();

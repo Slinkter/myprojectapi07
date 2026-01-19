@@ -3,10 +3,13 @@ import PropTypes from 'prop-types';
 import PokemonCard from '@/features/pokemon/components/PokemonCard';
 
 /**
- * A component that displays a grid of Pokémon cards.
- * @param {object} props - The component props.
- * @param {Array<object>} props.pokemons - The list of Pokémon to display.
- * @returns {JSX.Element} The rendered list of Pokémon cards.
+ * @component PokemonList
+ * @description Un componente de presentación que renderiza una lista de Pokémon en una cuadrícula.
+ * Itera sobre una lista de objetos Pokémon y renderiza un componente `PokemonCard` para cada uno.
+ * @param {object} props - Las props del componente.
+ * @param {Array<object>} props.pokemons - La lista de objetos Pokémon a mostrar. Cada objeto debe
+ * contener los datos necesarios para el componente `PokemonCard` (id, name, sprites, types, favorite).
+ * @returns {JSX.Element} Un elemento `div` que contiene la cuadrícula de tarjetas de Pokémon.
  */
 const PokemonList = ({ pokemons }) => {
   return (

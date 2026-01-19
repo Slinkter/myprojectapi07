@@ -2,23 +2,19 @@ import { useSearch } from "@/features/search";
 import { HiSearch } from "react-icons/hi";
 
 /**
- * Componente `SearchBar`.
+ * @component SearchBar
+ * @description Un componente que proporciona una barra de búsqueda para filtrar Pokémon.
+ * Utiliza el hook `useSearch` para obtener el valor actual del filtro y la función para actualizarlo.
+ * El estado se actualiza en cada cambio del input.
  *
- * **Responsabilidad:**
- * * Provee la interfaz de entrada para el filtrado global de Pokémon.
- * * Conecta el input de texto directamente con el hook `useSearch`.
- *
- * **Interacción:**
- * * Al escribir (`onChange`), dispara inmediatamente la actualización del filtro global.
- *
- * @returns {JSX.Element} Input estilizado con icono de búsqueda.
+ * @returns {JSX.Element} Un elemento `div` que contiene un input de texto estilizado para la búsqueda.
  */
 export const SearchBar = () => {
     const { searchFilter, filterPokemons } = useSearch();
 
     /**
-     * Handles the change event of the search input.
-     * @param {React.ChangeEvent<HTMLInputElement>} e - The change event.
+     * Maneja el evento de cambio del input de búsqueda.
+     * @param {React.ChangeEvent<HTMLInputElement>} e - El evento de cambio.
      */
     const handleSearchChange = (e) => {
         filterPokemons(e.target.value);

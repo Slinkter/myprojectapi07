@@ -1,6 +1,20 @@
 /**
- * The main entry point for the React application.
- * It sets up the Redux store, theme provider, router, and renders the routes.
+ * @file main.jsx
+ * @description
+ * Punto de entrada principal y raíz de la aplicación React.
+ *
+ * **Responsabilidades:**
+ * 1.  **Renderizado Raíz:** Utiliza `ReactDOM.createRoot` para montar la aplicación en el
+ *     elemento `<div id="root">` del `index.html`.
+ * 2.  **Configuración de Providers:** Envuelve toda la aplicación en un conjunto de "Providers"
+ *     esenciales que habilitan funcionalidades globales:
+ *
+ *     - `<React.StrictMode>`: Activa chequeos y advertencias adicionales en modo de desarrollo
+ *       para detectar problemas potenciales.
+ *     - `<Provider store={store}>`: Conecta la aplicación con el store de Redux, haciendo que el
+ *       estado global esté disponible para todos los componentes.
+ *     - `<ThemeWrapper>`: Componente que aplica el tema (claro/oscuro) a toda la aplicación.
+ *     - `<BrowserRouter>`: Habilita el enrutamiento del lado del cliente con React Router DOM.
  */
 import React from "react";
 import ReactDOM from "react-dom/client";
@@ -20,5 +34,5 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         </BrowserRouter>
       </ThemeWrapper>
     </Provider>
-  </React.StrictMode>,
+  </React.StrictMode>
 );

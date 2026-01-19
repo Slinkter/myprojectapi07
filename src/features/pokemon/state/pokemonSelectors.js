@@ -1,34 +1,70 @@
 import { createSelector } from "@reduxjs/toolkit";
 
-// Input selectors
+/**
+ * @module pokemonSelectors
+ * @description
+ * Este módulo contiene selectores de Redux relacionados con la feature de Pokémon.
+ * Los selectores son funciones que extraen y transforman datos del estado global de Redux,
+ * y `createSelector` los memoiza para optimizar el rendimiento.
+ */
+
+/**
+ * @function selectPokemons
+ * @description Selector de entrada para obtener la lista cruda de Pokémon del estado.
+ * @param {object} state - El estado global de Redux.
+ * @returns {Array<object>} La lista de Pokémon.
+ */
 const selectPokemons = (state) => state.pokemon.pokemons;
+
+/**
+ * @function selectFavoriteIds
+ * @description Selector de entrada para obtener la lista de IDs de favoritos del estado.
+ * @param {object} state - El estado global de Redux.
+ * @returns {number[]} La lista de IDs de Pokémon favoritos.
+ */
 const selectFavoriteIds = (state) => state.favorites.favoriteIds;
+
+/**
+ * @function selectSearchFilter
+ * @description Selector de entrada para obtener el término de búsqueda actual.
+ * @param {object} state - El estado global de Redux.
+ * @returns {string} El filtro de búsqueda.
+ */
 const selectSearchFilter = (state) => state.search.searchFilter;
 
 /**
- * Memoized selector that processes the raw pokemon list.
- * It performs two main operations:
- * 1. Merges the `favoriteIds` to add a `favorite` boolean to each pokemon.
- * 2. Filters the list based on the `searchFilter`.
+ * @function selectProcessedPokemons
+ * @summary Selector memoizado para obtener la lista de Pokémon procesada.
+ * @description
+ * Este selector complejo realiza dos tareas clave de forma optimizada:
+ * 1.  **Enriquecimiento de datos:** Combina `state.pokemon.pokemons` con `state.favorites.favoriteIds`
+ *     para añadir una propiedad `favorite: boolean` a cada objeto de Pokémon.
+ * 2.  **Filtrado:** Filtra la lista de Pokémon enriquecida basándose en el
+ *     `state.search.searchFilter`.
  *
- * This selector is efficient because it will only re-calculate its output if
- * one of its inputs (`pokemons`, `favoriteIds`, or `searchFilter`) changes.
+ * Gracias a la memoización de `createSelector`, estos cálculos costosos solo se
+ * volverán a ejecutar si los datos de entrada (`pokemons`, `favoriteIds`, o `searchFilter`) cambian,
+ * previniendo re-renders innecesarios en la UI.
+ *
+ * @returns {Array<object>} La lista de Pokémon procesada, lista para ser renderizada.
  */
 export const selectProcessedPokemons = createSelector(
   [selectPokemons, selectFavoriteIds, selectSearchFilter],
   (pokemons, favoriteIds, searchFilter) => {
-    // First, add the 'favorite' status to each Pokémon
+    // Primero, añade el estado de 'favorite' a cada Pokémon
     const favoritedPokemons = pokemons.map((pokemon) => ({
       ...pokemon,
       favorite: favoriteIds.includes(pokemon.id),
     }));
 
-    // Then, filter by the search term if it exists
+    // Luego, filtra por el término de búsqueda si existe
     if (!searchFilter) {
       return favoritedPokemons;
     }
+
+    const lowercasedFilter = searchFilter.toLowerCase();
     return favoritedPokemons.filter((p) =>
-      p.name.toLowerCase().includes(searchFilter.toLowerCase())
+      p.name.toLowerCase().includes(lowercasedFilter)
     );
   }
 );

@@ -1,45 +1,41 @@
 import { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setSearchFilter } from "@/features/search/state/searchSlice";
+import { setSearchFilter } from "@/features/search";
 
 /**
- * Hook personalizado `useSearch`.
+ * @hook useSearch
+ * @description
+ * Un hook personalizado que actúa como una "Fachada" (Facade) para interactuar con el estado
+ * de búsqueda en Redux (`searchSlice`).
  *
- * **Funcionalidad:**
- * * Maneja el término de búsqueda global de la aplicación.
- * * Conecta la barra de búsqueda con el store de Redux.
- *
- * **Flujo de interacción / ejecución:**
- * 1. Se suscribe al valor `searchFilter` en el store.
- * 2. Expone `filterPokemons` que despacha la acción `setSearchFilter`.
- * 3. Cualquier cambio aquí afectará reactivamente a las listas que filtren por este término.
- *
- * **Estado y efectos secundarios:**
- * * Lectura/Escritura en `state.search.searchFilter`.
+ * @details
+ * Encapsula la lógica de acceso al estado de búsqueda:
+ * 1.  **Selecciona el estado:** Usa `useSelector` para obtener el `searchFilter` actual.
+ * 2.  **Abstrae acciones:** Expone una función `filterPokemons` que internamente despacha la
+ *     acción `setSearchFilter`, ocultando la complejidad de `dispatch`.
  *
  * @returns {{
  *   searchFilter: string,
  *   filterPokemons: (searchTerm: string) => void
- * }} Objeto con el filtro actual y función de actualización.
+ * }} Un objeto que contiene el filtro de búsqueda actual y la función para actualizarlo.
  */
 export const useSearch = () => {
-    const searchFilter = useSelector((state) => state.search.searchFilter);
-    const dispatch = useDispatch();
+  const searchFilter = useSelector((state) => state.search.searchFilter);
+  const dispatch = useDispatch();
 
-    /**
-     * Actualiza el filtro de búsqueda en el Store.
-     *
-     * @param {string} searchTerm - Nuevo término de búsqueda.
-     */
-    const filterPokemons = useCallback(
-        (searchTerm) => {
-            dispatch(setSearchFilter(searchTerm));
-        },
-        [dispatch],
-    );
+  /**
+   * Actualiza el filtro de búsqueda en el store de Redux.
+   * @param {string} searchTerm - El nuevo término de búsqueda.
+   */
+  const filterPokemons = useCallback(
+    (searchTerm) => {
+      dispatch(setSearchFilter(searchTerm));
+    },
+    [dispatch]
+  );
 
-    return {
-        searchFilter,
-        filterPokemons,
-    };
+  return {
+    searchFilter,
+    filterPokemons,
+  };
 };

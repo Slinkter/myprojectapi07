@@ -1,59 +1,54 @@
 import { useState, useMemo, useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
+import { UI_CONSTANTS } from "@/utils/constants";
 
 /**
- * @typedef {object} PaginationResult
- * @property {number} currentPage - La página actual.
- * @property {number} totalPages - El número total de páginas disponibles.
- * @property {number} itemsPerPage - El número de elementos por página.
- * @property {function(number): void} goToPage - Función para navegar a una página específica.
+ * @hook usePagination
+ * @description Un hook reutilizable que encapsula toda la lógica de paginación,
+ * sincronizando el estado con los query params de la URL.
+ *
+ * @param {object} options - Opciones de configuración para la paginación.
+ * @param {number} options.totalCount - El número total de items a paginar. Es obligatorio.
+ * @param {number} [options.itemsPerPage=UI_CONSTANTS.POKEMON_GRID.ITEMS_PER_PAGE] - El número de items por página.
+ *
+ * @returns {{
+ *   currentPage: number,
+ *   totalPages: number,
+ *   itemsPerPage: number,
+ *   goToPage: (pageNumber: number) => void
+ * }} Un objeto con el estado de la paginación y las funciones para controlarla.
  */
+export const usePagination = ({
+  totalCount,
+  itemsPerPage = UI_CONSTANTS.POKEMON_GRID.ITEMS_PER_PAGE,
+}) => {
+  const [searchParams, setSearchParams] = useSearchParams();
 
-const ITEMS_PER_PAGE = 20;
+  // Se usa una función en useState para que el cálculo inicial solo se ejecute una vez.
+  const [currentPage, setCurrentPage] = useState(() =>
+    Number(searchParams.get("page") || 1)
+  );
 
-/**
- * Hook personalizado `usePagination`.
- *
- * **Funcionalidad:**
- * * Controla la lógica de paginación de forma autocontenida.
- * * Sincroniza el estado de la página con los query params de la URL (`?page=...`).
- * * Calcula el número total de páginas y provee métodos de navegación.
- *
- * **Flujo de interacción / ejecución:**
- * 1. Lee el `page` del query param de la URL como fuente de verdad inicial.
- * 2. Almacena la página actual en un estado local de React.
- * 3. `goToPage` actualiza el estado y el query param de la URL.
- * 4. Al cambiar de página, hace scroll suave al inicio de la ventana.
- *
- * @param {object} params - Parámetros de configuración.
- * @param {number} params.totalCount - Cantidad total de registros.
- * @returns {PaginationResult} API de paginación lista para consumir por UI.
- */
-export const usePagination = ({ totalCount }) => {
-    const [searchParams, setSearchParams] = useSearchParams();
-    const [currentPage, setCurrentPage] = useState(
-        Number(searchParams.get("page") || 1),
-    );
+  const totalPages = useMemo(
+    () => Math.ceil(totalCount / itemsPerPage) || 1,
+    [totalCount, itemsPerPage]
+  );
 
-    const totalPages = useMemo(
-        () => Math.ceil(totalCount / ITEMS_PER_PAGE) || 1,
-        [totalCount],
-    );
+  const goToPage = useCallback(
+    (pageNumber) => {
+      // Asegura que el número de página esté dentro de los límites válidos.
+      const targetPage = Math.max(1, Math.min(pageNumber, totalPages));
+      setCurrentPage(targetPage);
+      setSearchParams({ page: String(targetPage) });
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    },
+    [totalPages, setSearchParams]
+  );
 
-    const goToPage = useCallback(
-        (pageNumber) => {
-            const targetPage = Math.max(1, Math.min(pageNumber, totalPages));
-            setCurrentPage(targetPage);
-            setSearchParams({ page: targetPage });
-            window.scrollTo({ top: 0, behavior: "smooth" });
-        },
-        [totalPages, setSearchParams],
-    );
-
-    return {
-        currentPage,
-        totalPages,
-        itemsPerPage: ITEMS_PER_PAGE,
-        goToPage,
-    };
+  return {
+    currentPage,
+    totalPages,
+    itemsPerPage,
+    goToPage,
+  };
 };

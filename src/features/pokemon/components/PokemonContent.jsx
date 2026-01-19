@@ -1,26 +1,32 @@
+import { UI_CONSTANTS } from "@/utils/constants";
 import PropTypes from "prop-types";
 import { HiExclamationCircle, HiRefresh } from "react-icons/hi";
 import PokemonSkeleton from "./PokemonSkeleton";
 import PokemonList from "./PokemonList";
 
 /**
- * Componente `PokemonContent`.
+ * @component PokemonContent
+ * @description
+ * Un componente de presentación que gestiona y renderiza la UI correspondiente
+ * a los diferentes estados de una petición de datos (carga, error, éxito, vacío).
  *
- * **Responsabilidad:**
- * * Maneja los estados visuales principales de la lista de contenido: Carga, Error, Vacío y Éxito.
- * * Decide qué componente hijo renderizar basándose en el estado de la petición (Pattern Matching visual).
+ * **Arquitectura (UI State Management):**
+ * Este componente implementa un "pattern matching" visual para decidir qué renderizar:
+ * 1.  **Si hay `error`:** Muestra una tarjeta de error con un mensaje y un botón de reintento.
+ * 2.  **Si `isLoading` es `true`:** Muestra una cuadrícula de componentes `PokemonSkeleton` para
+ *     indicar que el contenido se está cargando.
+ * 3.  **Si no hay error ni carga, pero `pokemons` está vacío:** Muestra un mensaje de estado vacío
+ *     (ej. "No se encontraron resultados").
+ * 4.  **Si hay datos:** Delega el renderizado de la lista al componente `PokemonList`.
  *
- * **Flujo:**
- * 1. Si `error` existe -> Muestra UI de Error con botón de reintento.
- * 2. Si `isLoading` es true -> Muestra Grid de Skeletons.
- * 3. Si `pokemons` está vacío -> Muestra estado Empty.
- * 4. Si todo OK -> Renderiza `PokemonList`.
+ * @param {object} props - Las props del componente.
+ * @param {boolean} props.isLoading - Indica si los datos se están cargando.
+ * @param {string|null} props.error - Contiene un mensaje de error si la carga falló.
+ * @param {Array<object>} props.pokemons - El array de datos de Pokémon a mostrar.
+ * @param {() => void} props.onRetry - Una función de callback para ser invocada cuando el usuario
+ *   hace clic en el botón "Reintentar" en el estado de error.
  *
- * @param {object} props
- * @param {boolean} props.isLoading - Bandera de carga.
- * @param {string|null} props.error - Mensaje de error si existe.
- * @param {Array} props.pokemons - Lista de datos a mostrar.
- * @param {Function} props.onRetry - Callback para reintentar la acción fallida.
+ * @returns {JSX.Element} La UI correspondiente al estado actual de los datos.
  */
 const PokemonContent = ({ isLoading, error, pokemons, onRetry }) => {
     if (error) {
@@ -49,7 +55,7 @@ const PokemonContent = ({ isLoading, error, pokemons, onRetry }) => {
     if (isLoading) {
         return (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
-                {[...Array(12)].map((_, index) => (
+                {[...Array(UI_CONSTANTS.POKEMON_GRID.SKELETON_COUNT)].map((_, index) => (
                     <PokemonSkeleton key={index} />
                 ))}
             </div>

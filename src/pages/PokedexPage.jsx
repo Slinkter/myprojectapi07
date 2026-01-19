@@ -1,27 +1,37 @@
 import { useEffect, useMemo } from "react";
 import { useSelector } from "react-redux";
-import { usePokemon, PokedexHeader, PokemonContent } from "@/features/pokemon";
+import {
+  usePokemon,
+  PokedexHeader,
+  PokemonContent,
+  selectProcessedPokemons,
+} from "@/features/pokemon";
 import { usePagination } from "@/shared/hooks/usePagination";
 import { SearchBar } from "@/features/search";
 import { FavoritesBar } from "@/features/favorites";
 import Pagination from "@/components/common/Pagination";
-import { selectProcessedPokemons } from "@/features/pokemon/state/pokemonSelectors";
+
 
 /**
- * Componente PokedexPage (Orquestador).
+ * @component PokedexPage
+ * @description
+ * Componente de página que actúa como el **Orquestador** principal de la Pokédex.
+ * Su responsabilidad es conectar y coordinar las diferentes _features_ (hooks, estado de Redux,
+ * componentes de UI) para construir la vista completa.
  *
- * **Funcionalidad:**
- * * Actúa como el controlador principal de la vista de Pokédex.
- * * Orquesta la obtención de datos y delega la lógica de negocio y de presentación.
+ * **Flujo de Orquestación:**
+ * 1.  **Consume Hooks:** Llama a `usePokemon` y `usePagination` para obtener el estado de la API y
+ *     la lógica de paginación.
+ * 2.  **Selecciona Estado Procesado:** Usa `useSelector` con el selector memoizado `selectProcessedPokemons`
+ *     para obtener la lista de Pokémon ya filtrada y con el estado de favorito aplicado,
+ *     sin necesidad de realizar esa lógica aquí.
+ * 3.  **Dispara Efectos:** Un `useEffect` observa los cambios en `currentPage` y llama a `fetchPokemons`
+ *     para cargar los datos de la página correspondiente.
+ * 4.  **Delega el Renderizado:** Pasa los datos y el estado (`isLoading`, `error`, `pokemons`, etc.)
+ *     a componentes de presentación "tontos" que se encargan de renderizar la UI
+ *     (`PokemonContent`, `FavoritesBar`, `Pagination`).
  *
- * **Flujo de interacción / ejecución:**
- * 1. Inicializa hooks para la paginación (`usePagination`) y para obtener acciones de pokemon (`usePokemon`).
- * 2. Utiliza `useSelector` con un selector memoizado (`selectProcessedPokemons`) para obtener la lista de Pokémon ya procesada (con favoritos y filtro de búsqueda aplicados).
- * 3. `useEffect` dispara `fetchPokemons` cada vez que cambia la página actual.
- * 4. `useMemo` (`favoritePokemons`) deriva una sub-lista solo con los favoritos para la barra superior.
- * 5. Pasa los datos procesados a los componentes presentacionales hijos.
- *
- * @returns {JSX.Element} Layout completo de la página principal.
+ * @returns {JSX.Element} El layout completo y funcional de la página Pokédex.
  */
 function PokedexPage() {
   // 1. Consumo de Hooks y Selectores
