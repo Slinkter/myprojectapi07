@@ -20,22 +20,22 @@ import { toggleFavorite } from "@/features/favorites";
  * }} Un objeto que contiene la lista de IDs favoritos y la función para alternar un favorito.
  */
 export const useFavorites = () => {
-  const dispatch = useDispatch();
-  const favoriteIds = useSelector((state) => state.favorites.favoriteIds);
+    const favoriteIds = useSelector((state) => state.favorites.favoriteIds);
+    const dispatch = useDispatch();
 
-  /**
-   * Alterna el estado de favorito para un Pokémon específico por su ID.
-   * @param {number} pokemonId - El ID del Pokémon a añadir o quitar de favoritos.
-   */
-  const togglePokemonFavorite = useCallback(
-    (pokemonId) => {
-      dispatch(toggleFavorite(pokemonId));
-    },
-    [dispatch]
-  );
+    /**
+     * Alterna el estado de favorito para un Pokémon específico por su ID.
+     * @param {number} pokemonId - El ID del Pokémon a añadir o quitar de favoritos.
+     */
+    const togglePokemonFavorite = useCallback(
+        (pokemonId) => {
+            dispatch(toggleFavorite(pokemonId));
+        },
+        [dispatch],
+    );
 
-  return {
-    favoriteIds,
-    togglePokemonFavorite,
-  };
+    return {
+        favoriteIds,
+        togglePokemonFavorite,
+    };
 };
