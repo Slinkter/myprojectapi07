@@ -8,11 +8,13 @@ import { toggleFavorite } from "@/features/favorites";
  * Un hook personalizado que actúa como una "Fachada" (Facade) para interactuar con el estado
  * de los Pokémon favoritos en Redux (`favoritesSlice`).
  *
- * @details
- * Encapsula la lógica de acceso al estado de favoritos:
- * 1.  **Selecciona el estado:** Usa `useSelector` para obtener el array `favoriteIds` actual.
- * 2.  **Abstrae acciones:** Expone una función `togglePokemonFavorite` que internamente despacha la
- *     acción `toggleFavorite` correspondiente, ocultando la complejidad de `dispatch`.
+ *
+ * **Responsabilidades:**
+ * 1.  **Acceso al Estado:** Selecciona y devuelve la lista de IDs de favoritos desde el store de Redux.
+ * 2.  **Abstracción de Acciones:** Proporciona una función simplificada `togglePokemonFavorite` para modificar los favoritos, ocultando el uso de `dispatch`.
+ *
+ * **Efectos Secundarios:**
+ * - Al invocar `togglePokemonFavorite`, se despacha una acción que modifica el estado global de Redux y actualiza el `localStorage` (a través del reducer).
  *
  * @returns {{
  *   favoriteIds: number[],

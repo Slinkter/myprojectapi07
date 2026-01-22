@@ -1,4 +1,3 @@
-
 import { HiStar } from "react-icons/hi";
 
 /**

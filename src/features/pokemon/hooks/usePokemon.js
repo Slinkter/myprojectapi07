@@ -9,13 +9,12 @@ import { UI_CONSTANTS } from "@/utils/constants";
  * Un hook personalizado que actúa como una "Fachada" (Facade) para interactuar con el estado
  * de Pokémon en Redux.
  *
- * @details
- * Encapsula toda la lógica de acceso al `pokemonSlice`:
- * 1.  **Selecciona el estado:** Usa `useSelector` para obtener `pokemons`, `isLoading`, `isError`, etc.
- * 2.  **Abstrae acciones:** Expone una función `fetchPokemons` que internamente despacha el `thunk`
- *     asíncrono correspondiente, ocultando la complejidad de `dispatch`.
+ * **Responsabilidades:**
+ * 1.  **Selección de Estado:** Provee acceso directo a los datos de Pokémon (`pokemons`, `isLoading`, etc.) desde el store.
+ * 2.  **Abstracción de Acciones:** Expone la función `fetchPokemons` para cargar datos, encapsulando el despacho del thunk asíncrono.
  *
- * Esto desacopla los componentes de la implementación de Redux.
+ * **Efectos Secundarios:**
+ * - `fetchPokemons`: Despacha `fetchPokemonsThunk`, que inicia una petición de red asíncrona y actualiza el estado de Redux (loading, success, error) en múltiples pasos.
  *
  * @returns {{
  *   pokemons: Array<object>,
@@ -27,29 +26,29 @@ import { UI_CONSTANTS } from "@/utils/constants";
  * }} Un objeto con el estado y las acciones de la feature de Pokémon.
  */
 export const usePokemon = () => {
-  const dispatch = useDispatch();
+    const dispatch = useDispatch();
 
-  const { pokemons, isLoading, isError, error, totalCount } = useSelector(
-    (state) => state.pokemon,
-  );
+    const { pokemons, isLoading, isError, error, totalCount } = useSelector(
+        (state) => state.pokemon,
+    );
 
-  /**
-   * Dispara el thunk para cargar los Pokémon de una página específica.
-   * @type {({ page, limit }: { page: number, limit?: number }) => void}
-   */
-  const fetchPokemons = useCallback(
-    ({ page, limit = UI_CONSTANTS.POKEMON_GRID.ITEMS_PER_PAGE }) => {
-      dispatch(fetchPokemonsThunk({ page, limit }));
-    },
-    [dispatch],
-  );
+    /**
+     * Dispara el thunk para cargar los Pokémon de una página específica.
+     * @type {({ page, limit }: { page: number, limit?: number }) => void}
+     */
+    const fetchPokemons = useCallback(
+        ({ page, limit = UI_CONSTANTS.POKEMON_GRID.ITEMS_PER_PAGE }) => {
+            dispatch(fetchPokemonsThunk({ page, limit }));
+        },
+        [dispatch],
+    );
 
-  return {
-    pokemons,
-    isLoading,
-    isError,
-    error,
-    totalCount,
-    fetchPokemons,
-  };
+    return {
+        pokemons,
+        isLoading,
+        isError,
+        error,
+        totalCount,
+        fetchPokemons,
+    };
 };

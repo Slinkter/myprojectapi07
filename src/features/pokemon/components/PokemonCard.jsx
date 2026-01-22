@@ -19,6 +19,9 @@ import { HiStar } from "react-icons/hi";
  * - Las imágenes de los Pokémon utilizan `loading="lazy"` para mejorar el rendimiento de carga de la página.
  * - Los eventos de clic en el botón de favorito usan `stopPropagation` para prevenir conflictos.
  *
+ * **Efectos Secundarios:**
+ * - Al interactuar con el botón de favorito, invoca `togglePokemonFavorite` del hook `useFavorites`, causando una actualización en el store de Redux y en `localStorage`.
+ *
  * @param {object} props - Propiedades del componente.
  * @param {number} props.id - El ID nacional del Pokémon.
  * @param {string} props.name - El nombre del Pokémon.

@@ -12,18 +12,15 @@ const PokedexPage = lazy(() => import("@/pages/PokedexPage"));
  * @description
  * Componente central de enrutamiento que define la estructura de navegación de la aplicación.
  *
- * **Arquitectura y Responsabilidades:**
- * 1.  **Definición de Rutas:** Utiliza `<Routes>` y `<Route>` de `react-router-dom` para mapear
- *     URLs a componentes de página específicos.
- * 2.  **Layouts Compartidos:** Implementa el patrón de layout anidado. La ruta principal `/`
- *     renderiza `MainLayout`, y todas las rutas hijas (como la `PokedexPage`) se renderizan
- *     dentro de `MainLayout`, compartiendo así una UI consistente (ej. Navbar).
- * 3.  **Code Splitting (Lazy Loading):** Las páginas (ej. `PokedexPage`) se cargan de forma perezosa
- *     usando `React.lazy()`. Esto mejora el rendimiento inicial de la aplicación, ya que el
- *     navegador solo descarga el código de la página cuando es estrictamente necesario.
- * 4.  **UI de Carga (Suspense):** Envuelve las rutas en un componente `<Suspense>` que muestra
- *     una UI de `fallback` (un skeleton) mientras el código de la página se está cargando,
- *     mejorando la experiencia del usuario.
+ * **Responsabilidades:**
+ * 1.  **Mapa de Rutas:** Define la relación entre URLs y componentes.
+ * 2.  **Estructura Jerárquica:** Implementa layouts anidados (`MainLayout`).
+ * 3.  **Optimización:** Gestiona la carga perezosa (Lazy Loading) de las páginas.
+ *
+ * **Efectos Secundarios:**
+ * - Carga asíncrona de archivos JavaScript (chunks) al navegar a rutas lazy.
+ *
+ * @returns {JSX.Element} El sistema de enrutamiento principal de la aplicación.
  *
  * @returns {JSX.Element} El sistema de enrutamiento principal de la aplicación.
  */

@@ -13,6 +13,9 @@ import FavoritePokemon from "./FavoritePokemon";
  * 2.  **Manejo del Estado Vacío:** Si la lista de `favoritePokemons` está vacía, muestra
  *     un mensaje indicando que no se han seleccionado favoritos.
  *
+ * **Efectos Secundarios:**
+ * - No tiene efectos secundarios a otros archivos o funciones (es un componente puro de presentación).
+ *
  * @param {object} props - Las props del componente.
  * @param {Array<object>} props.favoritePokemons - Un array de objetos Pokémon que han sido
  *   filtrados previamente como favoritos.
@@ -27,8 +30,8 @@ const FavoritesBar = ({ favoritePokemons }) => {
             </h3>
             <div className="flex flex-wrap gap-2 min-h-[40px] items-center">
                 {favoritePokemons.length > 0 ? (
-                    favoritePokemons.map((fav, index) => (
-                        <FavoritePokemon key={index} fav={fav} />
+                    favoritePokemons.map((fav) => (
+                        <FavoritePokemon key={fav.id} fav={fav} />
                     ))
                 ) : (
                     <p className="text-sm text-gray-500 dark:text-slate-400">

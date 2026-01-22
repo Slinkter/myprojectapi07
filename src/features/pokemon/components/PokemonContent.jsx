@@ -10,14 +10,12 @@ import PokemonList from "./PokemonList";
  * Un componente de presentación que gestiona y renderiza la UI correspondiente
  * a los diferentes estados de una petición de datos (carga, error, éxito, vacío).
  *
- * **Arquitectura (UI State Management):**
- * Este componente implementa un "pattern matching" visual para decidir qué renderizar:
- * 1.  **Si hay `error`:** Muestra una tarjeta de error con un mensaje y un botón de reintento.
- * 2.  **Si `isLoading` es `true`:** Muestra una cuadrícula de componentes `PokemonSkeleton` para
- *     indicar que el contenido se está cargando.
- * 3.  **Si no hay error ni carga, pero `pokemons` está vacío:** Muestra un mensaje de estado vacío
- *     (ej. "No se encontraron resultados").
- * 4.  **Si hay datos:** Delega el renderizado de la lista al componente `PokemonList`.
+ * **Responsabilidades:**
+ * 1.  **Manejo de Estados de UI:** Determina qué vista mostrar basada en el estado de la petición (Carga, Error, Vacío, Datos).
+ * 2.  **Delegación de Renderizado:** Pasa los datos a `PokemonList` o muestra componentes de feedback visual correspondientes.
+ *
+ * **Efectos Secundarios:**
+ * - Al hacer clic en "Reintentar", ejecuta la función `onRetry` proporcionada por el padre (que usualmente dispara una nueva petición de red).
  *
  * @param {object} props - Las props del componente.
  * @param {boolean} props.isLoading - Indica si los datos se están cargando.
@@ -37,10 +35,7 @@ const PokemonContent = ({ isLoading, error, pokemons, onRetry }) => {
                     <h3 className="text-red-800 dark:text-red-400 font-bold text-lg">
                         Error de Carga
                     </h3>
-                    <p className="text-red-700 dark:text-red-500/80">
-                        {" "}
-                        {error}
-                    </p>
+                    <p className="text-red-700 dark:text-red-500/80">{error}</p>
                 </div>
                 <button
                     onClick={onRetry}
@@ -55,9 +50,11 @@ const PokemonContent = ({ isLoading, error, pokemons, onRetry }) => {
     if (isLoading) {
         return (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
-                {[...Array(UI_CONSTANTS.POKEMON_GRID.SKELETON_COUNT)].map((_, index) => (
-                    <PokemonSkeleton key={index} />
-                ))}
+                {[...Array(UI_CONSTANTS.POKEMON_GRID.SKELETON_COUNT)].map(
+                    (_, index) => (
+                        <PokemonSkeleton key={index} />
+                    ),
+                )}
             </div>
         );
     }

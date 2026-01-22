@@ -9,13 +9,11 @@ import { HiSun, HiMoon } from "react-icons/hi";
  * persistente que se muestra en la parte superior de las páginas que utilizan `MainLayout`.
  *
  * **Responsabilidades:**
- * 1.  **Identidad de Marca:** Muestra el logotipo de la aplicación.
- * 2.  **Controles Globales:** Proporciona controles para acciones que afectan a toda la aplicación,
- *     como el botón para alternar entre el tema claro y oscuro.
+ * 1.  **Identidad de Marca:** Muestra el logotipo y nombre de la aplicación.
+ * 2.  **Controles Globales:** Proporciona acceso rápido a configuraciones globales (tema).
  *
- * **Interacción:**
- * - Consume el hook `useTheme` para obtener el tema actual y la función para alternarlo.
- * - Al hacer clic en el botón de tema, invoca `toggleAppTheme` para cambiar el estado global del tema.
+ * **Efectos Secundarios:**
+ * - Invoca `toggleAppTheme`, que modifica el estado de Redux y el `localStorage`.
  *
  * @returns {JSX.Element} El elemento `<nav>` que representa la barra de navegación.
  */

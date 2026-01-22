@@ -7,11 +7,14 @@ import Navbar from "@/shared/components/layout/Navbar.jsx";
  * Un componente de layout que proporciona una estructura visual consistente para las páginas
  * principales de la aplicación, como la barra de navegación.
  *
- * **Arquitectura (Patrón de Layout de Rutas):**
- * Este componente está diseñado para ser usado en la prop `element` de una `<Route>` de
- * `react-router-dom`. Renderiza una UI común (ej. `<Navbar />`) y luego utiliza el
- * componente `<Outlet />` para renderizar el componente de la ruta anidada que coincida
- * con la URL actual.
+ * **Responsabilidades:**
+ * 1.  **Estructura Base:** Define el layout visual padre (Navbar + Contenido).
+ * 2.  **Enrutamiento Anidado:** Renderiza las rutas hijas a través de `<Outlet />`.
+ *
+ * **Efectos Secundarios:**
+ * - No tiene efectos secundarios propios.
+ *
+ * @example
  *
  * @example
  * ```jsx
@@ -26,14 +29,14 @@ import Navbar from "@/shared/components/layout/Navbar.jsx";
  * @returns {JSX.Element} Un `div` que envuelve la Navbar y el contenido de la página actual.
  */
 const MainLayout = () => {
-  return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 transition-colors duration-300">
-      <Navbar />
-      <main>
-        <Outlet />
-      </main>
-    </div>
-  );
+    return (
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-900 transition-colors duration-300">
+            <Navbar />
+            <main>
+                <Outlet />
+            </main>
+        </div>
+    );
 };
 
 export default MainLayout;

@@ -4,6 +4,12 @@
  * Este módulo exporta constantes centralizadas para ser utilizadas en toda la aplicación.
  * El propósito es evitar "números mágicos" y strings duplicadas en el código,
  * mejorando la mantenibilidad y la consistencia.
+ *
+ * **Responsabilidades:**
+ * 1.  Definir valores inmutables compartidos.
+ *
+ * **Efectos Secundarios:**
+ * - No tiene efectos secundarios.
  */
 
 /**

@@ -14,21 +14,13 @@ import { themeReducer } from "@/features/theme";
 
 /**
  * @constant {import('@reduxjs/toolkit').Store} store
- * @summary El store principal de Redux de la aplicación.
- * @description
- * Creado con `configureStore`, este objeto combina todos los reducers de las diferentes
- * features en un único árbol de estado. `configureStore` automáticamente añade middlewares
- * útiles como `redux-thunk` y habilita la integración con las Redux DevTools.
+ * **Responsabilidades:**
+ * 1.  **Fuente de Verdad:** Centraliza el estado global de la aplicación.
+ * 2.  **Configuración:** Combina todos los reducers de las features (Pokemon, Search, Favorites, Theme).
+ * 3.  **Middleware:** Aplica middlewares predeterminados (Thunk, DevTools).
  *
- * La forma del estado global es:
- * ```
- * {
- *   pokemon: PokemonState,
- *   search: SearchState,
- *   favorites: FavoritesState,
- *   theme: ThemeState
- * }
- * ```
+ * **Efectos Secundarios:**
+ * - Inicializa el estado de la aplicación al cargar.
  */
 const store = configureStore({
     reducer: {

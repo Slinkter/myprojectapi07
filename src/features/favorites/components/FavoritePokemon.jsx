@@ -1,9 +1,15 @@
-
 /**
  * @component FavoritePokemon
  * @description
  * Un componente de presentación que muestra un Pokémon favorito individual
  * con su imagen y nombre, diseñado para ser parte de una lista de favoritos.
+ *
+ * **Responsabilidades:**
+ * 1. **Visualización:** Muestra la imagen y el nombre de un Pokémon favorito.
+ * 2. **Estilo:** Aplica estilos para que parezca una "píldora" o etiqueta.
+ *
+ * **Efectos Secundarios:**
+ * - No tiene efectos secundarios a otros archivos o funciones (es un componente puro de presentación).
  *
  * @param {object} props - Las propiedades del componente.
  * @param {object} props.fav - El objeto Pokémon favorito a mostrar.
@@ -14,14 +20,16 @@
  *
  * @returns {JSX.Element} Un `div` estilizado que contiene la imagen y el nombre del Pokémon.
  */
-const FavoritePokemon = (fav) => {
+import PropTypes from "prop-types";
+
+const FavoritePokemon = ({ fav }) => {
     return (
         <div
             key={fav.id}
             className="inline-flex items-center gap-2 bg-gray-100 dark:bg-slate-700 hover:bg-gray-200 dark:hover:bg-slate-600 border border-transparent rounded-full px-3 py-1 transition-colors group cursor-default"
         >
             <img
-                src={fav.sprites?.front_default || '/placeholder-pokemon.png'}
+                src={fav.sprites?.front_default || "/placeholder-pokemon.png"}
                 alt={fav.name}
                 className="w-6 h-6 object-contain"
             />
@@ -30,6 +38,16 @@ const FavoritePokemon = (fav) => {
             </span>
         </div>
     );
+};
+
+FavoritePokemon.propTypes = {
+    fav: PropTypes.shape({
+        id: PropTypes.number.isRequired,
+        name: PropTypes.string.isRequired,
+        sprites: PropTypes.shape({
+            front_default: PropTypes.string,
+        }).isRequired,
+    }).isRequired,
 };
 
 export default FavoritePokemon;

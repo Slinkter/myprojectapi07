@@ -12,16 +12,22 @@ import { API_CONFIG } from "@/services/api/config";
  * @constant {import('axios').AxiosInstance} httpClient
  * @summary Instancia única y pre-configurada de Axios.
  * @description Esta instancia de Axios está configurada con la URL base y cabeceras por defecto
- * para todas las llamadas a la API. Utiliza interceptores para manejar de forma
- * centralizada la autenticación, los logs y los errores.
+ *
+ * **Responsabilidades:**
+ * 1.  **Configuración HTTP:** Define URL base, timeouts y headers comunes.
+ * 2.  **Intercepción:** Centraliza el manejo de peticiones y respuestas (auth, logs, errores).
+ *
+ * **Efectos Secundarios:**
+ * - Los interceptores generan logs en `console.error` cuando ocurren fallos.
+ *
  * @see {@link https://axios-http.com/docs/instance}
  */
 const httpClient = axios.create({
-  baseURL: API_CONFIG.BASE_URL,
-  timeout: 10000,
-  headers: {
-    "Content-Type": "application/json",
-  },
+    baseURL: API_CONFIG.BASE_URL,
+    timeout: 10000,
+    headers: {
+        "Content-Type": "application/json",
+    },
 });
 
 /**
@@ -34,19 +40,19 @@ const httpClient = axios.create({
  * @returns {import('axios').InternalAxiosRequestConfig | Promise<import('axios').InternalAxiosRequestConfig>} La configuración de la petición modificada o sin cambios.
  */
 httpClient.interceptors.request.use(
-  (config) => {
-    // Ejemplo: Añadir un token de autenticación a todas las peticiones
-    // const token = localStorage.getItem('authToken');
-    // if (token) {
-    //   config.headers.Authorization = `Bearer ${token}`;
-    // }
-    return config;
-  },
-  (error) => {
-    // Este error se dispara si algo sale mal en la configuración de la petición
-    console.error("[Request Interceptor Error]:", error);
-    return Promise.reject(error);
-  }
+    (config) => {
+        // Ejemplo: Añadir un token de autenticación a todas las peticiones
+        // const token = localStorage.getItem('authToken');
+        // if (token) {
+        //   config.headers.Authorization = `Bearer ${token}`;
+        // }
+        return config;
+    },
+    (error) => {
+        // Este error se dispara si algo sale mal en la configuración de la petición
+        console.error("[Request Interceptor Error]:", error);
+        return Promise.reject(error);
+    },
 );
 
 /**
@@ -59,22 +65,24 @@ httpClient.interceptors.request.use(
  * @returns {import('axios').AxiosResponse} La respuesta de la API.
  */
 httpClient.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    const message =
-      error.response?.data?.message || error.message || "Error de conexión";
+    (response) => response,
+    (error) => {
+        const message =
+            error.response?.data?.message ||
+            error.message ||
+            "Error de conexión";
 
-    console.error(`[API Error]: ${message}`, {
-      url: error.config?.url,
-      method: error.config?.method,
-      data: error.config?.data,
-      status: error.response?.status,
-    });
+        console.error(`[API Error]: ${message}`, {
+            url: error.config?.url,
+            method: error.config?.method,
+            data: error.config?.data,
+            status: error.response?.status,
+        });
 
-    // Rechaza la promesa con un error estandarizado para que el código que
-    // hizo la llamada pueda manejarlo (ej. en un bloque catch).
-    return Promise.reject(new Error(message));
-  }
+        // Rechaza la promesa con un error estandarizado para que el código que
+        // hizo la llamada pueda manejarlo (ej. en un bloque catch).
+        return Promise.reject(new Error(message));
+    },
 );
 
 export default httpClient;

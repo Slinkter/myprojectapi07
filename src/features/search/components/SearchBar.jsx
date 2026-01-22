@@ -7,6 +7,13 @@ import { HiSearch } from "react-icons/hi";
  * Utiliza el hook `useSearch` para obtener el valor actual del filtro y la función para actualizarlo.
  * El estado se actualiza en cada cambio del input.
  *
+ * **Responsabilidades:**
+ * 1.  **Entrada de Usuario:** Captura el texto introducido por el usuario.
+ * 2.  **Sincronización:** Actualiza el estado global de búsqueda en tiempo real via `useSearch`.
+ *
+ * **Efectos Secundarios:**
+ * - Al escribir, invoca `filterPokemons`, disparando actualizaciones de estado en Redux.
+ *
  * @returns {JSX.Element} Un elemento `div` que contiene un input de texto estilizado para la búsqueda.
  */
 export const SearchBar = () => {

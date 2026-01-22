@@ -7,11 +7,13 @@ import { toggleTheme, setTheme } from "@/features/theme/state/themeSlice";
  * @description Un hook personalizado que encapsula toda la lógica para la gestión del tema de la aplicación.
  *
  * @details
- * Este hook actúa como una fachada (Facade) sobre el estado del tema en Redux. Sus responsabilidades son:
- * 1.  Proporcionar el tema actual (`currentTheme`).
- * 2.  Proporcionar una función para alternar el tema (`toggleAppTheme`).
- * 3.  (Efecto secundario) Escuchar los cambios del tema preferido del sistema operativo y
- *     actualizar el estado de la aplicación si el usuario no ha hecho una selección manual.
+ * **Responsabilidades:**
+ * 1.  **Gestión de Estado:** Provee el tema actual e interfaz para cambiarlo.
+ * 2.  **Detección del Sistema:** Inicializa el tema basándose en las preferencias del sistema si no hay configuración de usuario.
+ *
+ * **Efectos Secundarios:**
+ * - Suscribe un evento (`change`) al `matchMedia` del navegador.
+ * - Despacha acciones de Redux cuando cambia la preferencia del sistema.
  *
  * @returns {{
  *   currentTheme: ('light' | 'dark'),

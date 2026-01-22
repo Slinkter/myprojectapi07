@@ -1,9 +1,14 @@
-
 /**
  * @component PokedexHeader
  * @description
  * Un componente de presentación estático que renderiza el encabezado principal
  * de la página Pokédex, incluyendo el título y el subtítulo.
+ *
+ * **Responsabilidades:**
+ * 1. **Información:** Muestra el título y subtítulo de la aplicación.
+ *
+ * **Efectos Secundarios:**
+ * - No tiene efectos secundarios a otros archivos o funciones (componente estático).
  *
  * @returns {JSX.Element} Un `div` con el título y subtítulo de la página.
  */

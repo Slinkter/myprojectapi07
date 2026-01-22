@@ -6,6 +6,14 @@ import { createSlice } from "@reduxjs/toolkit";
  * Este módulo define el "slice" de Redux para la gestión del tema de la aplicación (claro/oscuro).
  * Es la fuente única de verdad para el estado del tema y maneja la persistencia
  * de la elección del usuario en localStorage.
+ *
+ * **Responsabilidades:**
+ * 1.  **Estado del Tema:** Mantiene el estado actual (`light` | `dark`).
+ * 2.  **Persistencia:** Guarda y carga la preferencia del usuario en `localStorage`.
+ *
+ * **Efectos Secundarios:**
+ * - Lee de `localStorage` durante la inicialización.
+ * - Escribe en `localStorage` cuando el tema cambia.
  */
 
 const THEME_STORAGE_KEY = "app_theme";
@@ -15,12 +23,12 @@ const THEME_STORAGE_KEY = "app_theme";
  * @returns {'dark' | 'light'} El tema preferido del sistema.
  */
 const getSystemTheme = () => {
-  if (typeof window !== "undefined" && window.matchMedia) {
-    return window.matchMedia("(prefers-color-scheme: dark)").matches
-      ? "dark"
-      : "light";
-  }
-  return "light"; // Default a 'light' si no se puede determinar (ej. SSR)
+    if (typeof window !== "undefined" && window.matchMedia) {
+        return window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+    }
+    return "light"; // Default a 'light' si no se puede determinar (ej. SSR)
 };
 
 /**
@@ -31,15 +39,15 @@ const getSystemTheme = () => {
  * @returns {'dark' | 'light'} El tema inicial para la aplicación.
  */
 const getInitialTheme = () => {
-  try {
-    const storedTheme = localStorage.getItem(THEME_STORAGE_KEY);
-    if (storedTheme === "light" || storedTheme === "dark") {
-      return storedTheme;
+    try {
+        const storedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+        if (storedTheme === "light" || storedTheme === "dark") {
+            return storedTheme;
+        }
+    } catch (error) {
+        console.error("No se pudo leer el tema desde localStorage", error);
     }
-  } catch (error) {
-    console.error("No se pudo leer el tema desde localStorage", error);
-  }
-  return getSystemTheme();
+    return getSystemTheme();
 };
 
 /**
@@ -56,7 +64,7 @@ const getInitialTheme = () => {
  * @type {ThemeState}
  */
 const initialState = {
-  currentTheme: getInitialTheme(),
+    currentTheme: getInitialTheme(),
 };
 
 /**
@@ -68,37 +76,44 @@ const initialState = {
  * persisten la elección del usuario en localStorage para mantener la consistencia entre sesiones.
  */
 const themeSlice = createSlice({
-  name: "theme",
-  initialState,
-  reducers: {
-    /**
-     * Alterna el tema actual entre 'light' y 'dark' y guarda la preferencia en localStorage.
-     * @param {ThemeState} state - El estado actual del slice.
-     */
-    toggleTheme: (state) => {
-      state.currentTheme = state.currentTheme === "light" ? "dark" : "light";
-      try {
-        localStorage.setItem(THEME_STORAGE_KEY, state.currentTheme);
-      } catch (error) {
-        console.error("No se pudo guardar el tema en localStorage", error);
-      }
+    name: "theme",
+    initialState,
+    reducers: {
+        /**
+         * Alterna el tema actual entre 'light' y 'dark' y guarda la preferencia en localStorage.
+         * @param {ThemeState} state - El estado actual del slice.
+         */
+        toggleTheme: (state) => {
+            state.currentTheme =
+                state.currentTheme === "light" ? "dark" : "light";
+            try {
+                localStorage.setItem(THEME_STORAGE_KEY, state.currentTheme);
+            } catch (error) {
+                console.error(
+                    "No se pudo guardar el tema en localStorage",
+                    error,
+                );
+            }
+        },
+        /**
+         * Establece el tema actual a un valor específico y guarda la preferencia en localStorage.
+         * @param {ThemeState} state - El estado actual del slice.
+         * @param {import('@reduxjs/toolkit').PayloadAction<Theme>} action - La acción de Redux con el tema a establecer.
+         */
+        setTheme: (state, action) => {
+            if (action.payload === "light" || action.payload === "dark") {
+                state.currentTheme = action.payload;
+                try {
+                    localStorage.setItem(THEME_STORAGE_KEY, state.currentTheme);
+                } catch (error) {
+                    console.error(
+                        "No se pudo guardar el tema en localStorage",
+                        error,
+                    );
+                }
+            }
+        },
     },
-    /**
-     * Establece el tema actual a un valor específico y guarda la preferencia en localStorage.
-     * @param {ThemeState} state - El estado actual del slice.
-     * @param {import('@reduxjs/toolkit').PayloadAction<Theme>} action - La acción de Redux con el tema a establecer.
-     */
-    setTheme: (state, action) => {
-      if (action.payload === "light" || action.payload === "dark") {
-        state.currentTheme = action.payload;
-        try {
-          localStorage.setItem(THEME_STORAGE_KEY, state.currentTheme);
-        } catch (error) {
-          console.error("No se pudo guardar el tema en localStorage", error);
-        }
-      }
-    },
-  },
 });
 
 /**

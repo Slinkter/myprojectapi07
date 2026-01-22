@@ -15,6 +15,9 @@
  *       estado global esté disponible para todos los componentes.
  *     - `<ThemeWrapper>`: Componente que aplica el tema (claro/oscuro) a toda la aplicación.
  *     - `<BrowserRouter>`: Habilita el enrutamiento del lado del cliente con React Router DOM.
+ *
+ * **Efectos Secundarios:**
+ * - Monta la aplicación React en el DOM real.
  */
 import React from "react";
 import ReactDOM from "react-dom/client";
@@ -26,13 +29,13 @@ import AppRoutes from "@/routes/AppRoutes.jsx";
 import "@/index.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
-    <Provider store={store}>
-      <ThemeWrapper>
-        <BrowserRouter basename="/myprojectapi07">
-          <AppRoutes />
-        </BrowserRouter>
-      </ThemeWrapper>
-    </Provider>
-  </React.StrictMode>
+    <React.StrictMode>
+        <Provider store={store}>
+            <ThemeWrapper>
+                <BrowserRouter basename="/myprojectapi07">
+                    <AppRoutes />
+                </BrowserRouter>
+            </ThemeWrapper>
+        </Provider>
+    </React.StrictMode>,
 );
