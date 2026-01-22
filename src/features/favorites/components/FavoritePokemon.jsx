@@ -1,6 +1,6 @@
-import React from "react";
 
-const FavoritePokemon = () => {
+
+const FavoritePokemon = (fav) => {
     return (
         <div
             key={fav.id}
