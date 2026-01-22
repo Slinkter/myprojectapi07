@@ -15,25 +15,25 @@
  * @namespace API_CONFIG
  */
 export const API_CONFIG = {
-  /**
-   * La URL base de la PokéAPI v2. No debe tener una barra al final.
-   * @type {string}
-   */
-  BASE_URL: "https://pokeapi.co/api/v2",
+    /**
+     * La URL base de la PokéAPI v2. No debe tener una barra al final.
+     * @type {string}
+     */
+    BASE_URL: "https://pokeapi.co/api/v2",
 
-  /**
-   * @property {object} ENDPOINTS - Mapa de endpoints relativos a la BASE_URL.
-   * @property {string} ENDPOINTS.POKEMON - Endpoint para los recursos de Pokémon.
-   */
-  ENDPOINTS: {
-    POKEMON: "/pokemon",
-  },
+    /**
+     * @property {object} ENDPOINTS - Mapa de endpoints relativos a la BASE_URL.
+     * @property {string} ENDPOINTS.POKEMON - Endpoint para los recursos de Pokémon.
+     */
+    ENDPOINTS: {
+        POKEMON: "/pokemon",
+    },
 
-  /**
-   * @property {object} DEFAULT_PARAMS - Parámetros por defecto para las peticiones.
-   * @property {number} DEFAULT_PARAMS.LIMIT - El número de resultados por defecto en peticiones paginadas.
-   */
-  DEFAULT_PARAMS: {
-    LIMIT: 20,
-  },
+    /**
+     * @property {object} DEFAULT_PARAMS - Parámetros por defecto para las peticiones.
+     * @property {number} DEFAULT_PARAMS.LIMIT - El número de resultados por defecto en peticiones paginadas.
+     */
+    DEFAULT_PARAMS: {
+        LIMIT: 20,
+    },
 };
