@@ -28,27 +28,27 @@ const PokedexPage = lazy(() => import("@/pages/PokedexPage"));
  * @returns {JSX.Element} El sistema de enrutamiento principal de la aplicación.
  */
 const AppRoutes = () => {
-  return (
-    <Suspense
-      fallback={
-        <div className="flex justify-center items-center h-screen bg-slate-50 dark:bg-slate-900">
-          <div className="w-full max-w-sm p-4">
-            <PokemonSkeleton />
-          </div>
-        </div>
-      }
-    >
-      <Routes>
-        <Route path="/" element={<MainLayout />}>
-          <Route index element={<PokedexPage />} />
-          {/* Aquí se pueden añadir más rutas que compartan el MainLayout,
+    return (
+        <Suspense
+            fallback={
+                <div className="flex justify-center items-center h-screen bg-slate-50 dark:bg-slate-900">
+                    <div className="w-full max-w-sm p-4">
+                        <PokemonSkeleton />
+                    </div>
+                </div>
+            }
+        >
+            <Routes>
+                <Route path="/" element={<MainLayout />}>
+                    <Route index element={<PokedexPage />} />
+                    {/* Aquí se pueden añadir más rutas que compartan el MainLayout,
               por ejemplo: /pokemon/:id, /favorites, etc. */}
-        </Route>
-        {/* Aquí se podrían añadir otras rutas con layouts diferentes,
+                </Route>
+                {/* Aquí se podrían añadir otras rutas con layouts diferentes,
             por ejemplo: /login, /404, etc. */}
-      </Routes>
-    </Suspense>
-  );
+            </Routes>
+        </Suspense>
+    );
 };
 
 export default AppRoutes;

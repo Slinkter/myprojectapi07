@@ -16,7 +16,7 @@ import { createSlice } from "@reduxjs/toolkit";
  * @type {SearchState}
  */
 const initialState = {
-  searchFilter: "",
+    searchFilter: "",
 };
 
 /**
@@ -26,20 +26,20 @@ const initialState = {
  * para manipular el estado del filtro de búsqueda.
  */
 const searchSlice = createSlice({
-  name: "search",
-  initialState,
-  reducers: {
-    /**
-     * @function setSearchFilter
-     * @description Reducer para actualizar el término de búsqueda en el estado.
-     * El texto se convierte a minúsculas para asegurar una búsqueda 'case-insensitive'.
-     * @param {SearchState} state - El estado actual del slice de búsqueda.
-     * @param {import('@reduxjs/toolkit').PayloadAction<string>} action - La acción de Redux que contiene el nuevo término de búsqueda.
-     */
-    setSearchFilter: (state, action) => {
-      state.searchFilter = action.payload.toLowerCase();
+    name: "search",
+    initialState: initialState,
+    reducers: {
+        /**
+         * @function setSearchFilter
+         * @description Reducer para actualizar el término de búsqueda en el estado.
+         * El texto se convierte a minúsculas para asegurar una búsqueda 'case-insensitive'.
+         * @param {SearchState} state - El estado actual del slice de búsqueda.
+         * @param {import('@reduxjs/toolkit').PayloadAction<string>} action - La acción de Redux que contiene el nuevo término de búsqueda.
+         */
+        setSearchFilter: (state, action) => {
+            state.searchFilter = action.payload.toLowerCase();
+        },
     },
-  },
 });
 
 /**

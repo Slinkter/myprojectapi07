@@ -13,7 +13,7 @@
 
 export { useTheme } from "./hooks/useTheme";
 export {
-  default as themeReducer,
-  toggleTheme,
-  setTheme,
+    default as themeReducer,
+    toggleTheme,
+    setTheme,
 } from "./state/themeSlice";

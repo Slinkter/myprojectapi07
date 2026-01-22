@@ -31,12 +31,12 @@ import { themeReducer } from "@/features/theme";
  * ```
  */
 const store = configureStore({
-  reducer: {
-    pokemon: pokemonReducer,
-    search: searchReducer,
-    favorites: favoritesReducer,
-    theme: themeReducer,
-  },
+    reducer: {
+        pokemon: pokemonReducer,
+        search: searchReducer,
+        favorites: favoritesReducer,
+        theme: themeReducer,
+    },
 });
 
 /**

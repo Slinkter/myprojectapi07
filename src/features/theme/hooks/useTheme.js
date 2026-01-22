@@ -19,37 +19,37 @@ import { toggleTheme, setTheme } from "@/features/theme/state/themeSlice";
  * }} Un objeto que contiene el tema actual y la función para alternarlo.
  */
 export const useTheme = () => {
-  const dispatch = useDispatch();
-  const currentTheme = useSelector((state) => state.theme.currentTheme);
+    const dispatch = useDispatch();
+    const currentTheme = useSelector((state) => state.theme.currentTheme);
 
-  useEffect(() => {
-    // Escucha los cambios del tema del sistema
-    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    useEffect(() => {
+        // Escucha los cambios del tema del sistema
+        const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+
+        /**
+         * Maneja los cambios del tema del sistema.
+         * @param {MediaQueryListEvent} e - El evento de media query.
+         */
+        const handleChange = (e) => {
+            const systemTheme = e.matches ? "dark" : "light";
+            // Solo actualiza si el usuario no ha establecido explícitamente un tema
+            if (!localStorage.getItem("app_theme")) {
+                dispatch(setTheme(systemTheme));
+            }
+        };
+        mediaQuery.addEventListener("change", handleChange);
+        return () => mediaQuery.removeEventListener("change", handleChange);
+    }, [dispatch]);
 
     /**
-     * Maneja los cambios del tema del sistema.
-     * @param {MediaQueryListEvent} e - El evento de media query.
+     * Alterna el tema de la aplicación entre 'light' y 'dark'.
      */
-    const handleChange = (e) => {
-      const systemTheme = e.matches ? "dark" : "light";
-      // Solo actualiza si el usuario no ha establecido explícitamente un tema
-      if (!localStorage.getItem("app_theme")) {
-        dispatch(setTheme(systemTheme));
-      }
+    const toggleAppTheme = useCallback(() => {
+        dispatch(toggleTheme());
+    }, [dispatch]);
+
+    return {
+        currentTheme,
+        toggleAppTheme,
     };
-    mediaQuery.addEventListener("change", handleChange);
-    return () => mediaQuery.removeEventListener("change", handleChange);
-  }, [dispatch]);
-
-  /**
-   * Alterna el tema de la aplicación entre 'light' y 'dark'.
-   */
-  const toggleAppTheme = useCallback(() => {
-    dispatch(toggleTheme());
-  }, [dispatch]);
-
-  return {
-    currentTheme,
-    toggleAppTheme,
-  };
 };

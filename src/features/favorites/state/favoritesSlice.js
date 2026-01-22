@@ -8,7 +8,7 @@ import { createSlice } from "@reduxjs/toolkit";
  */
 
 // La clave única para almacenar los favoritos en localStorage.
-const FAVORITES_STORAGE_KEY = 'pokemon_favorites';
+const FAVORITES_STORAGE_KEY = "pokemon_favorites";
 
 /**
  * Carga los IDs de los Pokémon favoritos desde localStorage.
@@ -21,7 +21,10 @@ const getFavoritesFromStorage = () => {
         const storedFavorites = localStorage.getItem(FAVORITES_STORAGE_KEY);
         return storedFavorites ? JSON.parse(storedFavorites) : [];
     } catch (error) {
-        console.error("No se pudieron cargar los favoritos desde localStorage", error);
+        console.error(
+            "No se pudieron cargar los favoritos desde localStorage",
+            error,
+        );
         return [];
     }
 };
@@ -32,9 +35,15 @@ const getFavoritesFromStorage = () => {
  */
 const saveFavoritesToStorage = (favoriteIds) => {
     try {
-        localStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify(favoriteIds));
+        localStorage.setItem(
+            FAVORITES_STORAGE_KEY,
+            JSON.stringify(favoriteIds),
+        );
     } catch (error) {
-        console.error("No se pudieron guardar los favoritos en localStorage", error);
+        console.error(
+            "No se pudieron guardar los favoritos en localStorage",
+            error,
+        );
     }
 };
 
@@ -60,7 +69,7 @@ const initialState = {
  */
 const favoritesSlice = createSlice({
     name: "favorites",
-    initialState,
+    initialState: initialState,
     reducers: {
         /**
          * @function toggleFavorite
@@ -75,7 +84,9 @@ const favoritesSlice = createSlice({
             const isFavorite = state.favoriteIds.includes(id);
 
             if (isFavorite) {
-                state.favoriteIds = state.favoriteIds.filter(favId => favId !== id);
+                state.favoriteIds = state.favoriteIds.filter(
+                    (favId) => favId !== id,
+                );
             } else {
                 state.favoriteIds.push(id);
             }
