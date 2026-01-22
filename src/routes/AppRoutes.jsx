@@ -1,7 +1,7 @@
 import { Suspense, lazy } from "react";
 import { Routes, Route } from "react-router-dom";
 import { PokemonSkeleton } from "@/features/pokemon";
-import MainLayout from "@/components/layout/MainLayout";
+import MainLayout from "@/shared/components/layout/MainLayout.jsx";
 
 // Carga perezosa (Lazy Loading) de las páginas para optimizar el rendimiento inicial.
 // El código de PokedexPage no se incluirá en el bundle principal y se cargará bajo demanda.
