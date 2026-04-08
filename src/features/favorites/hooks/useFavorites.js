@@ -6,8 +6,8 @@ import { pokemonApi } from "@/features/pokemon/api/pokemonApi";
 /**
  * @hook useFavorites
  * @description
- * Fachada para interactuar con los favoritos. Ahora incluye la capacidad de
- * resolver los detalles de los Pokémon favoritos independientemente de la paginación.
+ * Patrón Fachada: Centraliza el acceso a los favoritos y la resolución de entidades de dominio.
+ * Separa la persistencia de localStorage y Redux de la representación visual.
  */
 export const useFavorites = () => {
     const favoriteIds = useSelector((state) => state.favorites.favoriteIds);
@@ -21,8 +21,7 @@ export const useFavorites = () => {
     );
 
     /**
-     * Resuelve los detalles completos de todos los Pokémon marcados como favoritos.
-     * Utiliza la capa de API optimizada con caché para evitar peticiones redundantes.
+     * Resuelve los detalles de los Pokémon favoritos utilizando el caché de la API.
      * @returns {Promise<Array<import("@/lib/domainTypes").Pokemon>>}
      */
     const getFavoritePokemons = useCallback(async () => {
