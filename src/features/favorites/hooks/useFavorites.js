@@ -1,34 +1,18 @@
 import { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleFavorite } from "@/features/favorites";
+import { pokemonApi } from "@/features/pokemon/api/pokemonApi";
 
 /**
  * @hook useFavorites
  * @description
- * Un hook personalizado que actúa como una "Fachada" (Facade) para interactuar con el estado
- * de los Pokémon favoritos en Redux (`favoritesSlice`).
- *
- *
- * **Responsabilidades:**
- * 1.  **Acceso al Estado:** Selecciona y devuelve la lista de IDs de favoritos desde el store de Redux.
- * 2.  **Abstracción de Acciones:** Proporciona una función simplificada `togglePokemonFavorite` para modificar los favoritos, ocultando el uso de `dispatch`.
- *
- * **Efectos Secundarios:**
- * - Al invocar `togglePokemonFavorite`, se despacha una acción que modifica el estado global de Redux y actualiza el `localStorage` (a través del reducer).
- *
- * @returns {{
- *   favoriteIds: number[],
- *   togglePokemonFavorite: (pokemonId: number) => void
- * }} Un objeto que contiene la lista de IDs favoritos y la función para alternar un favorito.
+ * Fachada para interactuar con los favoritos. Ahora incluye la capacidad de
+ * resolver los detalles de los Pokémon favoritos independientemente de la paginación.
  */
 export const useFavorites = () => {
     const favoriteIds = useSelector((state) => state.favorites.favoriteIds);
     const dispatch = useDispatch();
 
-    /**
-     * Alterna el estado de favorito para un Pokémon específico por su ID.
-     * @param {number} pokemonId - El ID del Pokémon a añadir o quitar de favoritos.
-     */
     const togglePokemonFavorite = useCallback(
         (pokemonId) => {
             dispatch(toggleFavorite(pokemonId));
@@ -36,8 +20,26 @@ export const useFavorites = () => {
         [dispatch],
     );
 
+    /**
+     * Resuelve los detalles completos de todos los Pokémon marcados como favoritos.
+     * Utiliza la capa de API optimizada con caché para evitar peticiones redundantes.
+     * @returns {Promise<Array<import("@/lib/domainTypes").Pokemon>>}
+     */
+    const getFavoritePokemons = useCallback(async () => {
+        try {
+            const detailPromises = favoriteIds.map((id) => 
+                pokemonApi.getPokemonDetails(id)
+            );
+            return await Promise.all(detailPromises);
+        } catch (error) {
+            console.error("SDR-01: Error resolving favorite pokemons", error);
+            return [];
+        }
+    }, [favoriteIds]);
+
     return {
         favoriteIds,
         togglePokemonFavorite,
+        getFavoritePokemons,
     };
 };

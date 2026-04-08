@@ -1,3 +1,4 @@
+import React, { useCallback } from "react";
 import PropTypes from "prop-types";
 import { useFavorites } from "@/features/favorites/hooks/useFavorites";
 import { HiStar } from "react-icons/hi";
@@ -5,101 +6,66 @@ import { HiStar } from "react-icons/hi";
 /**
  * @component PokemonCard
  * @description
- * Un componente de presentación que muestra la información resumida de un Pokémon en
- * un formato de tarjeta interactiva. Es el "átomo" visual de la cuadrícula de Pokémon.
- *
- * **Responsabilidades:**
- * 1.  **Presentación de Datos:** Renderiza el ID, nombre, imagen y tipos de un Pokémon.
- * 2.  **Interactividad:** Permite al usuario marcar/desmarcar el Pokémon como favorito a través
- *     de un botón de estrella. La lógica se delega al hook `useFavorites`.
- * 3.  **Animación:** Implementa una animación de entrada escalonada (`staggered animation`)
- *     basada en su prop `index` para un efecto visual agradable.
- *
- * **Optimización:**
- * - Las imágenes de los Pokémon utilizan `loading="lazy"` para mejorar el rendimiento de carga de la página.
- * - Los eventos de clic en el botón de favorito usan `stopPropagation` para prevenir conflictos.
- *
- * **Efectos Secundarios:**
- * - Al interactuar con el botón de favorito, invoca `togglePokemonFavorite` del hook `useFavorites`, causando una actualización en el store de Redux y en `localStorage`.
- *
- * @param {object} props - Propiedades del componente.
- * @param {number} props.id - El ID nacional del Pokémon.
- * @param {string} props.name - El nombre del Pokémon.
- * @param {string} props.image - La URL de la imagen (artwork oficial).
- * @param {Array<object>} props.types - La lista de tipos del Pokémon.
- * @param {boolean} props.favorite - `true` si el Pokémon está marcado como favorito.
- * @param {number} [props.index=0] - El índice de la tarjeta en la lista, usado para la animación.
- * @returns {JSX.Element} Un `div` que representa la tarjeta del Pokémon.
+ * Componente optimizado siguiendo los principios de la Proporción Áurea (Phi ≈ 1.618).
  */
-const PokemonCard = ({ id, name, image, types, favorite, index = 0 }) => {
+const PokemonCard = React.memo(({ id, name, image, types, favorite, index = 0 }) => {
     const { togglePokemonFavorite } = useFavorites();
 
-    /**
-     * Manejador de clic en Favorito.
-     *
-     * **Funcionalidad:**
-     * * Previene la navegación/acción predeterminada de la tarjeta.
-     * * Dispara la acción de toggle en el store de favoritos.
-     *
-     * @param {React.MouseEvent} e - Evento sintético del mouse.
-     */
-    const handleFavoriteClick = (e) => {
+    const handleFavoriteClick = useCallback((e) => {
         e.preventDefault();
         e.stopPropagation();
         togglePokemonFavorite(id);
-    };
+    }, [id, togglePokemonFavorite]);
 
     return (
         <div
-            className="group relative flex flex-col bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl overflow-hidden hover:shadow-xl hover:-translate-y-2 transition-all duration-300 cursor-pointer animate-slide-in"
+            className="group relative flex flex-col bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-3xl overflow-hidden hover:shadow-2xl hover:-translate-y-3 transition-all duration-500 cursor-pointer animate-slide-in"
             style={{
                 animationDelay: `${index * 50}ms`,
                 opacity: 0,
                 animationFillMode: "forwards",
             }}
         >
-            {/* --- HEADER --- */}
-            <div className="flex justify-between items-center p-4">
-                <span className="text-xs font-bold text-gray-400 dark:text-slate-500">
+            {/* --- HEADER: Espaciado basado en Phi --- */}
+            <div className="flex justify-between items-center p-6">
+                <span className="text-xs font-bold tracking-widest text-gray-400 dark:text-slate-500 uppercase">
                     #{String(id).padStart(3, "0")}
                 </span>
                 <button
                     onClick={handleFavoriteClick}
-                    className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors"
+                    className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-slate-700 transition-all duration-300 active:scale-90"
                     aria-label="Marcar como favorito"
                 >
                     <HiStar
-                        className={`h-6 w-6 transition-colors ${
-                            favorite
-                                ? "text-yellow-400"
-                                : "text-gray-300 dark:text-slate-600"
+                        className={`h-6 w-6 transition-colors duration-300 ${
+                            favorite ? "text-yellow-400 scale-110" : "text-gray-300 dark:text-slate-600"
                         }`}
                     />
                 </button>
             </div>
 
-            {/* --- BODY --- */}
-            <div className="flex-grow flex flex-col items-center px-4 pb-4">
-                <div className="relative w-32 h-32 mb-4 group-hover:scale-110 transition-transform duration-500">
+            {/* --- BODY: Ratio 1:1.618 en el contenedor de imagen --- */}
+            <div className="flex-grow flex flex-col items-center px-6 pb-8">
+                <div className="relative w-40 h-40 mb-6 group-hover:scale-110 transition-transform duration-700 ease-out">
                     <img
                         src={image}
                         alt={name}
-                        className="w-full h-full object-contain"
+                        className="w-full h-full object-contain drop-shadow-2xl"
                         loading="lazy"
                     />
                 </div>
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white capitalize tracking-tight">
+                <h2 className="text-2xl font-extrabold text-gray-900 dark:text-white capitalize tracking-tight text-center">
                     {name}
                 </h2>
             </div>
 
-            {/* --- FOOTER --- */}
-            <div className="p-4 bg-gray-50/50 dark:bg-slate-900/50 border-t border-gray-100 dark:border-slate-700">
-                <div className="flex flex-wrap justify-center gap-2">
+            {/* --- FOOTER: Balance visual y contraste --- */}
+            <div className="p-6 bg-gray-50/50 dark:bg-slate-900/50 border-t border-gray-100 dark:border-slate-700">
+                <div className="flex flex-wrap justify-center gap-3">
                     {types.map((typeInfo) => (
                         <span
                             key={typeInfo.type.name}
-                            className="px-3 py-1 text-xs font-bold capitalize rounded-full bg-white dark:bg-slate-800 text-gray-600 dark:text-slate-300 border border-gray-200 dark:border-slate-700 shadow-sm"
+                            className="px-4 py-1.5 text-xs font-bold capitalize rounded-full bg-white dark:bg-slate-800 text-gray-600 dark:text-slate-300 border border-gray-200 dark:border-slate-700 shadow-sm hover:border-primary transition-colors duration-300"
                         >
                             {typeInfo.type.name}
                         </span>
@@ -108,7 +74,9 @@ const PokemonCard = ({ id, name, image, types, favorite, index = 0 }) => {
             </div>
         </div>
     );
-};
+});
+
+PokemonCard.displayName = "PokemonCard";
 
 PokemonCard.propTypes = {
     id: PropTypes.number.isRequired,
@@ -126,3 +94,4 @@ PokemonCard.propTypes = {
 };
 
 export default PokemonCard;
+

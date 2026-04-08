@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useSelector } from "react-redux";
 import {
     usePokemon,
@@ -8,42 +8,45 @@ import {
 } from "@/features/pokemon";
 import { usePagination } from "@/shared/hooks/usePagination";
 import { SearchBar } from "@/features/search";
-import { FavoritesBar } from "@/features/favorites";
+import { FavoritesBar, useFavorites } from "@/features/favorites";
 import Pagination from "@/components/common/Pagination";
 
 /**
  * @component PokedexPage
  * @description
- * **Responsabilidades:**
- * 1.  **Orquestación:** Coordina y conecta los hooks de features (`usePokemon`, `useSearch`, `usePagination`) con la UI.
- * 2.  **Gestión de Datos:** Recupera y procesa la lista de Pokémon usando selectores memoizados.
- * 3.  **Composición:** Ensambla la estructura visual de la página principal.
- *
- * **Efectos Secundarios:**
- * - Despacha la acción de carga de Pokémon (`fetchPokemons`) cada vez que cambia la página actual.
- *
- * @returns {JSX.Element} El layout completo y funcional de la página Pokédex.
- *
- * @returns {JSX.Element} El layout completo y funcional de la página Pokédex.
+ * Página principal que orquesta la visualización de la Pokédex.
+ * Ahora gestiona los favoritos de forma global e independiente de la paginación.
  */
 function PokedexPage() {
     // 1. Consumo de Hooks y Selectores
     const { totalCount, isLoading, error, fetchPokemons } = usePokemon();
     const { currentPage, totalPages, goToPage } = usePagination({ totalCount });
-
-    // El selector se encarga de la lógica de negocio compleja (favoritos, búsqueda)
+    const { getFavoritePokemons } = useFavorites();
+    
     const processedPokemons = useSelector(selectProcessedPokemons);
+    const [globalFavorites, setGlobalFavorites] = useState([]);
 
-    // 2. Efecto para cargar datos
+    // 2. Efecto para cargar la lista paginada de Pokémon
     useEffect(() => {
         fetchPokemons({ page: currentPage });
     }, [fetchPokemons, currentPage]);
 
-    // 3. Composición de Datos Adicional (Lógica de Presentación Menor)
-    const favoritePokemons = useMemo(
-        () => processedPokemons.filter((p) => p.favorite),
-        [processedPokemons],
-    );
+    // 3. Efecto Crítico: Carga de Favoritos Globales
+    // Este efecto se ejecuta cada vez que la lista de IDs de favoritos cambia.
+    // Resuelve los detalles de los Pokémon favoritos independientemente de la página actual.
+    useEffect(() => {
+        let isMounted = true;
+        
+        const loadFavorites = async () => {
+            const favs = await getFavoritePokemons();
+            if (isMounted) {
+                setGlobalFavorites(favs);
+            }
+        };
+
+        loadFavorites();
+        return () => { isMounted = false; };
+    }, [getFavoritePokemons]);
 
     // 4. Renderizado del Componente
     return (
@@ -55,7 +58,8 @@ function PokedexPage() {
                     <SearchBar />
                 </div>
 
-                <FavoritesBar favoritePokemons={favoritePokemons} />
+                {/* Ahora pasamos globalFavorites en lugar de filtrar la página actual */}
+                <FavoritesBar favoritePokemons={globalFavorites} />
 
                 <div className="w-full">
                     <PokemonContent

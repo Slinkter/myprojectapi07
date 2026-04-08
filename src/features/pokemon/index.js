@@ -11,8 +11,7 @@
  * - **Encapsulación:** Permite cambiar la estructura de archivos interna de la feature sin
  *   romper las importaciones en otras partes del código.
  * - **Importaciones Simplificadas:** Permite a los consumidores importar todo lo relacionado
- *   con Pokémon desde una única ubicación. Por ejemplo:
- *   `import { usePokemon, PokemonCard, selectProcessedPokemons } from '@/features/pokemon';`
+ *   con Pokémon desde una única ubicación.
  */
 
 // Export hooks
@@ -27,4 +26,4 @@ export { default as PokedexHeader } from "./components/PokedexHeader";
 
 // Export state logic and selectors
 export { default as pokemonReducer, fetchPokemons } from "./state/pokemonSlice";
-export { selectProcessedPokemons } from "./state/pokemonSelectors";
+export { selectProcessedPokemons } from "@/entities/pokemon/model/selectors";
