@@ -46,7 +46,7 @@ const FavoritesBar = ({ favoritePokemons }) => {
 FavoritesBar.propTypes = {
     favoritePokemons: PropTypes.arrayOf(
         PropTypes.shape({
-            id: PropTypes.number.isRequired,
+            id: [PropTypes.number, PropTypes.string],
             name: PropTypes.string.isRequired,
             sprites: PropTypes.shape({
                 front_default: PropTypes.string,

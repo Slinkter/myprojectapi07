@@ -20,19 +20,22 @@ import PokemonCard from "@/features/pokemon/components/PokemonCard";
 const PokemonList = ({ pokemons }) => {
     return (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
-            {pokemons.map((pokemon, index) => (
-                <PokemonCard
-                    index={index}
-                    key={pokemon.id}
-                    id={pokemon.id}
-                    name={pokemon.name}
-                    types={pokemon.types}
-                    favorite={pokemon.favorite || false}
-                    image={
-                        pokemon.sprites.other["official-artwork"].front_default
-                    }
-                />
-            ))}
+            {pokemons.map((pokemon, index) => {
+                const image = pokemon.sprites?.other?.["official-artwork"]?.front_default 
+                    || pokemon.sprites?.front_default 
+                    || "";
+                return (
+                    <PokemonCard
+                        index={index}
+                        key={pokemon.id}
+                        id={pokemon.id}
+                        name={pokemon.name}
+                        types={pokemon.types}
+                        favorite={pokemon.favorite || false}
+                        image={image}
+                    />
+                );
+            })}
         </div>
     );
 };
@@ -40,15 +43,9 @@ const PokemonList = ({ pokemons }) => {
 PokemonList.propTypes = {
     pokemons: PropTypes.arrayOf(
         PropTypes.shape({
-            id: PropTypes.number.isRequired,
+            id: [PropTypes.number, PropTypes.string],
             name: PropTypes.string.isRequired,
-            sprites: PropTypes.shape({
-                other: PropTypes.shape({
-                    "official-artwork": PropTypes.shape({
-                        front_default: PropTypes.string,
-                    }).isRequired,
-                }).isRequired,
-            }).isRequired,
+            sprites: PropTypes.object,
             types: PropTypes.arrayOf(
                 PropTypes.shape({
                     type: PropTypes.shape({
