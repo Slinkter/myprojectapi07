@@ -59,18 +59,29 @@ src/
 | Vite | 5.4 | Build tool moderno y rápido |
 | Tailwind CSS | 3.4 | Framework de estilos |
 | Redux Toolkit | 2.11 | Gestión de estado |
-| React Router | 7.14 | Enrutamiento |
-| Motion | 12.38 | Animaciones |
+| React Router | 7 | Enrutamiento (Hash) |
+| Motion | 12 | Animaciones |
+
+### Plugins y Librerías
+
+| Paquete | Propósito |
+|---------|-----------|
+| `clsx` + `tailwind-merge` | Utilidad para clases condicionales |
+| `react-hot-toast` | Notificaciones toast |
+| `react-lazy-load-image` | Lazy loading de imágenes |
+| `react-icons` | Iconos (Heroicons) |
+| `axios` | Cliente HTTP |
+| `prop-types` | Validación de props |
 
 ### Herramientas de Desarrollo
 
 | Herramienta | Propósito |
 |-------------|-----------|
-| pnpm | Gestor de paquetes (más rápido que npm/yarn) |
+| pnpm | Gestor de paquetes |
 | ESLint | Linting y análisis estático |
 | Prettier | Formateo de código |
 | Storybook | Desarrollo de componentes aislados |
-| TypeScript (PropTypes) | Tipado para validación |
+| gh-pages | Despliegue a GitHub Pages |
 
 ### ¿Por qué Vite en lugar de CRA?
 
@@ -139,6 +150,12 @@ pnpm build-storybook
 - **Componentes**: Funcionales con `React.memo` para optimización
 - **Hooks**: Custom hooks en carpeta `hooks/` de cada feature
 
+## 🌍 Demo
+
+🔗 **https://slinkter.github.io/myprojectapi07**
+
+> Nota: La app usa hash router (`/#/`) para compatibilidad con GitHub Pages.
+
 ## 🚀 Comandos de Inicio
 
 ### Prerrequisitos
@@ -163,13 +180,39 @@ pnpm dev
 ### Scripts Disponibles
 
 ```bash
-pnpm dev              # Iniciar servidor de desarrollo
+pnpm dev              # Iniciar servidor de desarrollo (http://localhost:5173)
 pnpm build            # Build para producción
 pnpm preview          # Previsualizar build
 pnpm lint             # Ejecutar ESLint
-pnpm storybook       # Iniciar Storybook
+pnpm storybook       # Iniciar Storybook (http://localhost:6006)
 pnpm build-storybook # Build de Storybook
 pnpm deploy           # Desplegar a GitHub Pages
+```
+
+## ✨ Características
+
+- 🔍 **Búsqueda** - Filtrado de Pokémon en tiempo real
+- ⭐ **Favoritos** - Sistema de favoritos con persistencia (localStorage)
+- 🌙 **Dark Mode** - Tema claro/oscuro conmutador
+- 📱 **Responsive** - Diseño mobile-first optimizado
+- 🎬 **Animaciones** - Transiciones fluidas con Motion
+- 📄 **Paginación** - Navegación eficiente entre páginas
+- 📖 **Detalle** - Vista detallada de cada Pokémon
+- 🔄 **404** - Página de error personalizada
+
+## 📂 Estructura de Documentación
+
+```
+src/docs/
+├── README.md          ← Este archivo
+├── changelog.md       ← Historial de versiones
+├── architecture/     ← Documentación de arquitectura
+├── development/      ← Guías de desarrollo
+├── requirements/     ← Requerimientos funcionales/no funcionales
+├── quality/          ← Testing
+├── maintenance/      ← Troubleshooting y roadmap
+├── deployment/       ← Proceso de despliegue
+└── security/         ← Guías de seguridad
 ```
 
 ## 🗺️ Roadmap
@@ -184,6 +227,7 @@ pnpm deploy           # Desplegar a GitHub Pages
 - [x] Animaciones con Motion
 - [x] Integración de Storybook
 - [x] Optimización mobile-first
+- [x] Página 404 personalizada
 - [ ] Migración a Next.js + TypeScript
 - [ ] Implementación de tests E2E
 - [ ] Optimización de performance
