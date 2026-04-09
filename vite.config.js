@@ -8,7 +8,7 @@ const __dirname = path.dirname(__filename);
 
 export default defineConfig({
   plugins: [react()],
-  base: "https://slinkter.github.io/myprojectapi07",
+  base: "/myprojectapi07",
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src")

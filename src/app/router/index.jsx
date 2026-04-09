@@ -4,7 +4,7 @@
  */
 
 import { lazy, Suspense } from "react";
-import { createBrowserRouter, Outlet } from "react-router-dom";
+import { createHashRouter, Outlet } from "react-router-dom";
 import { PokemonSkeleton } from "@/features/pokemon";
 import Navbar from "@/shared/components/layout/Navbar";
 
@@ -26,7 +26,7 @@ const DetailLayout = () => (
     </div>
 );
 
-const router = createBrowserRouter(
+const router = createHashRouter(
     [
         {
             element: <MainLayout />,
@@ -54,10 +54,7 @@ const router = createBrowserRouter(
                 },
             ],
         },
-    ],
-    {
-        basename: "/myprojectapi07",
-    }
+    ]
 );
 
 export default router;

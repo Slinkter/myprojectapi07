@@ -13,6 +13,11 @@ Este proyecto es una aplicación web interactiva que simula una Pokédex, permit
 - **Gestión de API:** Axios
 - **Bundler:** Vite (v5+)
 - **Iconos:** React Icons, Heroicons
+- **Animaciones:** Motion (Framer Motion)
+- **Documentación:** Storybook 10
+- **Notificaciones:** React Hot Toast
+- **Lazy Loading:** React Lazy Load Image
+- **Clases CSS:** clsx + tailwind-merge
 - **Control de Versiones:** Git
 
 ## Características Principales
