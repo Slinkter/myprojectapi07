@@ -105,7 +105,7 @@ const PokemonDetailPage = () => {
             initial="initial"
             animate="animate"
             exit="exit"
-            className="min-h-screen bg-slate-50 dark:bg-slate-900 p-4 md:p-8"
+            className="p-4 md:p-8"
         >
             <div className="max-w-2xl mx-auto">
                 <motion.button
@@ -113,10 +113,10 @@ const PokemonDetailPage = () => {
                     whileHover="hover"
                     whileTap="tap"
                     variants={backButtonVariants}
-                    className="flex items-center gap-2 mb-6 px-4 py-2 text-gray-600 dark:text-slate-400 hover:text-primary transition-colors"
+                    className="flex items-center gap-2 mb-4 sm:mb-6 px-3 sm:px-4 py-2 text-gray-600 dark:text-slate-400 hover:text-primary transition-colors"
                 >
                     <HiArrowLeft className="w-5 h-5" />
-                    Volver
+                    <span className="text-sm sm:text-base">Volver</span>
                 </motion.button>
                 <AnimatePresence mode="wait">
                     <motion.div
