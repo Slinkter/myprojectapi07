@@ -1,42 +1,24 @@
-/**
- * @component FavoritePokemon
- * @description
- * Un componente de presentación que muestra un Pokémon favorito individual
- * con su imagen y nombre, diseñado para ser parte de una lista de favoritos.
- *
- * **Responsabilidades:**
- * 1. **Visualización:** Muestra la imagen y el nombre de un Pokémon favorito.
- * 2. **Estilo:** Aplica estilos para que parezca una "píldora" o etiqueta.
- *
- * **Efectos Secundarios:**
- * - No tiene efectos secundarios a otros archivos o funciones (es un componente puro de presentación).
- *
- * @param {object} props - Las propiedades del componente.
- * @param {object} props.fav - El objeto Pokémon favorito a mostrar.
- * @param {number} props.fav.id - El ID del Pokémon.
- * @param {string} props.fav.name - El nombre del Pokémon.
- * @param {object} props.fav.sprites - Objeto de sprites del Pokémon.
- * @param {string} props.fav.sprites.front_default - URL del sprite frontal del Pokémon.
- *
- * @returns {JSX.Element} Un `div` estilizado que contiene la imagen y el nombre del Pokémon.
- */
 import PropTypes from "prop-types";
+import { motion } from "motion/react";
 
 const FavoritePokemon = ({ fav }) => {
     return (
-        <div
-            key={fav.id}
-            className="inline-flex items-center gap-2 bg-gray-100 dark:bg-slate-700 hover:bg-gray-200 dark:hover:bg-slate-600 border border-transparent rounded-full px-3 py-1 transition-colors group cursor-default"
+        <motion.div
+            layout
+            whileHover={{ scale: 1.08 }}
+            whileTap={{ scale: 0.95 }}
+            className="inline-flex items-center gap-2 sm:gap-3 bg-gray-100 dark:bg-slate-700 hover:bg-gray-200 dark:hover:bg-slate-600 border border-gray-200 dark:border-slate-600 rounded-full px-4 py-2 sm:px-5 sm:py-2.5 cursor-pointer shadow-sm hover:shadow-md transition-all"
         >
-            <img
+            <motion.img
                 src={fav.sprites?.front_default || "/placeholder-pokemon.png"}
                 alt={fav.name}
-                className="w-6 h-6 object-contain"
+                className="w-8 h-8 sm:w-10 sm:h-10 object-contain"
+                whileHover={{ rotate: [0, -10, 10, 0], transition: { duration: 0.3 } }}
             />
-            <span className="text-sm font-medium capitalize text-gray-700 dark:text-gray-200">
+            <span className="text-sm sm:text-base font-semibold capitalize text-gray-800 dark:text-gray-100">
                 {fav.name}
             </span>
-        </div>
+        </motion.div>
     );
 };
 

@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { toggleFavorite } from "@/features/favorites";
+import { toggleFavorite } from "@/features/favorites/state/favoritesSlice";
 import { pokemonApi } from "@/features/pokemon/api/pokemonApi";
 
 /**

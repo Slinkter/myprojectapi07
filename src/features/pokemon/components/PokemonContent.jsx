@@ -1,76 +1,133 @@
+import { memo } from "react";
 import { UI_CONSTANTS } from "@/utils/constants";
 import PropTypes from "prop-types";
-import { HiExclamationCircle, HiRefresh } from "react-icons/hi";
+import { motion, AnimatePresence } from "motion/react";
+import { HiExclamationCircle, HiRefresh, HiOutlineSearch } from "react-icons/hi";
 import PokemonSkeleton from "./PokemonSkeleton";
 import PokemonList from "./PokemonList";
 
-/**
- * @component PokemonContent
- * @description
- * Un componente de presentación que gestiona y renderiza la UI correspondiente
- * a los diferentes estados de una petición de datos (carga, error, éxito, vacío).
- *
- * **Responsabilidades:**
- * 1.  **Manejo de Estados de UI:** Determina qué vista mostrar basada en el estado de la petición (Carga, Error, Vacío, Datos).
- * 2.  **Delegación de Renderizado:** Pasa los datos a `PokemonList` o muestra componentes de feedback visual correspondientes.
- *
- * **Efectos Secundarios:**
- * - Al hacer clic en "Reintentar", ejecuta la función `onRetry` proporcionada por el padre (que usualmente dispara una nueva petición de red).
- *
- * @param {object} props - Las props del componente.
- * @param {boolean} props.isLoading - Indica si los datos se están cargando.
- * @param {string|null} props.error - Contiene un mensaje de error si la carga falló.
- * @param {Array<object>} props.pokemons - El array de datos de Pokémon a mostrar.
- * @param {() => void} props.onRetry - Una función de callback para ser invocada cuando el usuario
- *   hace clic en el botón "Reintentar" en el estado de error.
- *
- * @returns {JSX.Element} La UI correspondiente al estado actual de los datos.
- */
-const PokemonContent = ({ isLoading, error, pokemons, onRetry }) => {
+const skeletonVariants = {
+    initial: { opacity: 0 },
+    animate: { 
+        opacity: 1,
+        transition: { staggerChildren: 0.1 }
+    }
+};
+
+const errorVariants = {
+    initial: { opacity: 0, scale: 0.9, y: 20 },
+    animate: { 
+        opacity: 1, 
+        scale: 1, 
+        y: 0,
+        transition: { type: "spring", stiffness: 200, damping: 20 }
+    }
+};
+
+const emptyVariants = {
+    initial: { opacity: 0, scale: 0.95 },
+    animate: { 
+        opacity: 1, 
+        scale: 1,
+        transition: { duration: 0.4, ease: "easeOut" }
+    }
+};
+
+const buttonVariants = {
+    hover: { scale: 1.05 },
+    tap: { scale: 0.95 }
+};
+
+const PokemonContent = memo(({ isLoading, error, pokemons, onRetry }) => {
     if (error) {
         return (
-            <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/50 p-6 rounded-2xl flex flex-col items-center gap-4 text-center">
-                <HiExclamationCircle className="text-red-500 h-12 w-12" />
+            <motion.div
+                variants={errorVariants}
+                initial="initial"
+                animate="animate"
+                className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/50 p-4 sm:p-6 rounded-xl sm:rounded-2xl flex flex-col items-center gap-3 sm:gap-4 text-center"
+            >
+                <motion.div
+                    animate={{ rotate: [0, -10, 10, 0] }}
+                    transition={{ duration: 0.5, delay: 0.3 }}
+                >
+                    <HiExclamationCircle className="text-red-500 h-10 w-10 sm:h-12 sm:w-12" />
+                </motion.div>
                 <div>
-                    <h3 className="text-red-800 dark:text-red-400 font-bold text-lg">
+                    <h3 className="text-red-800 dark:text-red-400 font-bold text-base sm:text-lg">
                         Error de Carga
                     </h3>
-                    <p className="text-red-700 dark:text-red-500/80">{error}</p>
+                    <p className="text-red-700 dark:text-red-500/80 text-sm sm:text-base">{error}</p>
                 </div>
-                <button
+                <motion.button
                     onClick={onRetry}
-                    className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-xl font-bold transition-all shadow-lg shadow-red-600/20 active:scale-95"
+                    whileHover="hover"
+                    whileTap="tap"
+                    variants={buttonVariants}
+                    className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-5 py-2 sm:px-6 sm:py-2 rounded-xl font-bold transition-all shadow-lg shadow-red-600/20"
                 >
-                    <HiRefresh /> Reintentar
-                </button>
-            </div>
+                    <HiRefresh className="w-4 h-4 sm:w-5 sm:h-5" />
+                    <span className="text-sm sm:text-base">Reintentar</span>
+                </motion.button>
+            </motion.div>
         );
     }
 
     if (isLoading) {
         return (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
+            <motion.div 
+                variants={skeletonVariants}
+                initial="initial"
+                animate="animate"
+                className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-6 px-2 sm:px-4"
+            >
                 {[...Array(UI_CONSTANTS.POKEMON_GRID.SKELETON_COUNT)].map(
                     (_, index) => (
                         <PokemonSkeleton key={index} />
                     ),
                 )}
-            </div>
+            </motion.div>
         );
     }
 
     if (pokemons.length === 0) {
         return (
-            <div className="text-center py-20 bg-gray-50 dark:bg-slate-800/50 rounded-3xl border-2 border-dashed border-gray-200 dark:border-slate-700">
-                <p className="text-gray-500 dark:text-slate-400 text-lg font-medium">
+            <motion.div
+                variants={emptyVariants}
+                initial="initial"
+                animate="animate"
+                className="text-center py-12 sm:py-20 bg-gray-50 dark:bg-slate-800/50 rounded-xl sm:rounded-3xl border-2 border-dashed border-gray-200 dark:border-slate-700"
+            >
+                <motion.div
+                    animate={{ y: [0, -5, 0] }}
+                    transition={{ repeat: Infinity, duration: 2 }}
+                    className="flex justify-center mb-4"
+                >
+                    <HiOutlineSearch className="w-12 h-12 sm:w-16 sm:h-16 text-gray-300 dark:text-slate-600" />
+                </motion.div>
+                <p className="text-gray-500 dark:text-slate-400 text-sm sm:text-lg font-medium px-4">
                     No se encontraron Pokémon que coincidan con tu búsqueda.
                 </p>
-            </div>
+            </motion.div>
         );
     }
 
-    return <PokemonList pokemons={pokemons} />;
-};
+    return (
+        <AnimatePresence mode="popLayout">
+            <motion.div
+                key="pokemon-list"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3 }}
+            >
+                <PokemonList pokemons={pokemons} />
+            </motion.div>
+        </AnimatePresence>
+    );
+});
+
+PokemonContent.displayName = "PokemonContent";
 
 PokemonContent.propTypes = {
     isLoading: PropTypes.bool.isRequired,

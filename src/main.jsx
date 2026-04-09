@@ -2,39 +2,46 @@
  * @file main.jsx
  * @description
  * Punto de entrada principal y raíz de la aplicación React.
- *
- * **Responsabilidades:**
- * 1.  **Renderizado Raíz:** Utiliza `ReactDOM.createRoot` para montar la aplicación en el
- *     elemento `<div id="root">` del `index.html`.
- * 2.  **Configuración de Providers:** Envuelve toda la aplicación en un conjunto de "Providers"
- *     esenciales que habilitan funcionalidades globales:
- *
- *     - `<React.StrictMode>`: Activa chequeos y advertencias adicionales en modo de desarrollo
- *       para detectar problemas potenciales.
- *     - `<Provider store={store}>`: Conecta la aplicación con el store de Redux, haciendo que el
- *       estado global esté disponible para todos los componentes.
- *     - `<ThemeWrapper>`: Componente que aplica el tema (claro/oscuro) a toda la aplicación.
- *     - `<BrowserRouter>`: Habilita el enrutamiento del lado del cliente con React Router DOM.
- *
- * **Efectos Secundarios:**
- * - Monta la aplicación React en el DOM real.
  */
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { Provider } from "react-redux";
-import { BrowserRouter } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
 import store from "@/store";
 import ThemeWrapper from "@/features/theme/components/ThemeWrapper.jsx";
-import AppRoutes from "@/routes/AppRoutes.jsx";
+import router from "@/app/router/index.jsx";
+import { RouterProvider } from "react-router-dom";
 import "@/index.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
     <React.StrictMode>
         <Provider store={store}>
             <ThemeWrapper>
-                <BrowserRouter basename="/myprojectapi07">
-                    <AppRoutes />
-                </BrowserRouter>
+                <RouterProvider router={router} />
+                <Toaster
+                    position="bottom-center"
+                    toastOptions={{
+                        duration: 3000,
+                        style: {
+                            background: "#1e293b",
+                            color: "#f8fafc",
+                            borderRadius: "12px",
+                            padding: "12px 16px",
+                        },
+                        success: {
+                            iconTheme: {
+                                primary: "#22c55e",
+                                secondary: "#1e293b",
+                            },
+                        },
+                        error: {
+                            iconTheme: {
+                                primary: "#ef4444",
+                                secondary: "#1e293b",
+                            },
+                        },
+                    }}
+                />
             </ThemeWrapper>
         </Provider>
     </React.StrictMode>,

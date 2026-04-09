@@ -11,14 +11,7 @@ import { SearchBar } from "@/features/search";
 import { FavoritesBar, useFavorites } from "@/features/favorites";
 import Pagination from "@/components/common/Pagination";
 
-/**
- * @component PokedexPage
- * @description
- * Página principal que orquesta la visualización de la Pokédex.
- * Ahora gestiona los favoritos de forma global e independiente de la paginación.
- */
 function PokedexPage() {
-    // 1. Consumo de Hooks y Selectores
     const { totalCount, isLoading, error, fetchPokemons } = usePokemon();
     const { currentPage, totalPages, goToPage } = usePagination({ totalCount });
     const { getFavoritePokemons } = useFavorites();
@@ -26,14 +19,10 @@ function PokedexPage() {
     const processedPokemons = useSelector(selectProcessedPokemons);
     const [globalFavorites, setGlobalFavorites] = useState([]);
 
-    // 2. Efecto para cargar la lista paginada de Pokémon
     useEffect(() => {
         fetchPokemons({ page: currentPage });
     }, [fetchPokemons, currentPage]);
 
-    // 3. Efecto Crítico: Carga de Favoritos Globales
-    // Este efecto se ejecuta cada vez que la lista de IDs de favoritos cambia.
-    // Resuelve los detalles de los Pokémon favoritos independientemente de la página actual.
     useEffect(() => {
         let isMounted = true;
         
@@ -48,18 +37,18 @@ function PokedexPage() {
         return () => { isMounted = false; };
     }, [getFavoritePokemons]);
 
-    // 4. Renderizado del Componente
     return (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
-            <div className="flex flex-col items-center space-y-12">
+        <div className="max-w-7xl mx-auto px-2 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 md:py-12">
+            <div className="flex flex-col items-center space-y-6 sm:space-y-8 md:space-y-12">
                 <PokedexHeader />
 
-                <div className="w-full max-w-xl">
+                <div className="w-full max-w-xl px-2 sm:px-0">
                     <SearchBar />
                 </div>
 
-                {/* Ahora pasamos globalFavorites en lugar de filtrar la página actual */}
-                <FavoritesBar favoritePokemons={globalFavorites} />
+                <div className="w-full px-2 sm:px-0">
+                    <FavoritesBar favoritePokemons={globalFavorites} />
+                </div>
 
                 <div className="w-full">
                     <PokemonContent

@@ -3,57 +3,161 @@
  * @description
  * Sistema de telemetría de arquitectura para monitorear el flujo de datos,
  * ciclos de vida de componentes y transiciones de estado.
+ * 
+ * Mejoras:
+ * - Soporte para ambiente (dev/prod)
+ * - Niveles de log configurables
+ * - Filtering por categorías
+ * - Performance optimizado
  */
 
-const COLORS = {
-    STATE: 'color: #3B82F6; font-weight: bold;', // Blue
-    UI: 'color: #10B981; font-weight: bold;',    // Green
-    API: 'color: #EF4444; font-weight: bold;',    // Red
-    FLOW: 'color: #F59E0B; font-weight: bold;',   // Amber
-    PERF: 'color: #8B5CF6; font-weight: bold;',   // Purple
+const LOG_LEVELS = {
+    DEBUG: 0,
+    INFO: 1,
+    WARN: 2,
+    ERROR: 3,
+    NONE: 4,
 };
 
-const TAGS = {
-    STATE: '[SDR-LOG][STATE]',
-    UI: '[SDR-LOG][UI]',
-    API: '[SDR-LOG][API]',
-    FLOW: '[SDR-LOG][FLOW]',
-    PERF: '[SDR-LOG][PERF]',
+const DEFAULT_CONFIG = {
+    minLevel: process.env.NODE_ENV === "production" ? LOG_LEVELS.WARN : LOG_LEVELS.DEBUG,
+    enabledCategories: {
+        STATE: true,
+        UI: true,
+        API: true,
+        FLOW: true,
+        PERF: true,
+    },
+    enableTimestamp: process.env.NODE_ENV !== "production",
+    maxDataDepth: 3,
 };
+
+let config = { ...DEFAULT_CONFIG };
 
 export const logger = {
-    state: (prev, next, action) => {
+    configure(newConfig) {
+        config = { ...config, ...newConfig };
+    },
+
+    getConfig() {
+        return { ...config };
+    },
+
+    setCategory(category, enabled) {
+        if (config.enabledCategories !== undefined) {
+            config.enabledCategories[category] = enabled;
+        }
+    },
+
+    setLevel(level) {
+        config.minLevel = level;
+    },
+
+    _shouldLog(level, category) {
+        if (level < config.minLevel) return false;
+        if (config.enabledCategories && !config.enabledCategories[category]) return false;
+        return true;
+    },
+
+    _formatTime() {
+        if (!config.enableTimestamp) return "";
+        return new Date().toISOString().split("T")[1].slice(0, -1);
+    },
+
+    _formatData(data, depth = 0) {
+        if (depth > config.maxDataDepth) return "[MAX_DEPTH]";
+        if (data === null) return null;
+        if (data === undefined) return undefined;
+        if (typeof data === "function") return "[Function]";
+        if (typeof data !== "object") return data;
+        if (Array.isArray(data)) {
+            return data.slice(0, 50).map((item) => logger._formatData(item, depth + 1));
+        }
+        const result = {};
+        for (const key of Object.keys(data).slice(0, 20)) {
+            result[key] = logger._formatData(data[key], depth + 1);
+        }
+        return result;
+    },
+
+    state(prev, next, action) {
+        if (!logger._shouldLog(LOG_LEVELS.DEBUG, "STATE")) return;
         console.log(
-            `%c${TAGS.STATE} %cState Transition: %c${action} %c\nPrev:`, 
-            COLORS.STATE, '', COLORS.FLOW, '', 
-            prev, 
-            `\nNext:`, COLORS.UIB, next
+            (config.enableTimestamp ? "[" + logger._formatTime() + "] " : "") + "[STATE] Transition: " + action,
+            "\nPrev:", logger._formatData(prev),
+            "\nNext:", logger._formatData(next)
         );
     },
-    ui: (component, event, detail = "") => {
+
+    ui(component, event, detail = "") {
+        if (!logger._shouldLog(LOG_LEVELS.DEBUG, "UI")) return;
         console.log(
-            `%c${TAGS.UI} %c${component} %c${event} ${detail}`, 
-            COLORS.UI, COLORS.FLOW, ''
+            (config.enableTimestamp ? "[" + logger._formatTime() + "] " : "") + "[UI] " + component + " " + event + " " + detail
         );
     },
-    api: (endpoint, status, duration) => {
+
+    api(endpoint, status, duration) {
+        if (!logger._shouldLog(LOG_LEVELS.INFO, "API")) return;
         console.log(
-            `%c${TAGS.API} %c${endpoint} %cStatus: ${status} %cTime: ${duration}ms`, 
-            COLORS.API, COLORS.FLOW, COLORS.UI, COLORS.PERF
+            (config.enableTimestamp ? "[" + logger._formatTime() + "] " : "") + "[API] " + endpoint + " | Status: " + status + " | Time: " + (duration ? duration.toFixed(2) : 0) + "ms"
         );
     },
-    flow: (step, data) => {
+
+    flow(step, data) {
+        if (!logger._shouldLog(LOG_LEVELS.DEBUG, "FLOW")) return;
         console.log(
-            `%c${TAGS.FLOW} %cStep: ${step} %cData:`, 
-            COLORS.FLOW, COLORS.UI, ''
-        , data);
-    },
-    perf: (name, time) => {
-        console.log(
-            `%c${TAGS.PERF} %c${name}: %ctime`, 
-            COLORS.PERF, COLORS.FLOW, '', time
+            (config.enableTimestamp ? "[" + logger._formatTime() + "] " : "") + "[FLOW] Step: " + step,
+            "Data:", logger._formatData(data)
         );
-    }
+    },
+
+    perf(name, time) {
+        if (!logger._shouldLog(LOG_LEVELS.INFO, "PERF")) return;
+        const timeMs = typeof time === "number" ? time.toFixed(2) : time;
+        console.log(
+            (config.enableTimestamp ? "[" + logger._formatTime() + "] " : "") + "[PERF] " + name + ": " + timeMs + "ms"
+        );
+    },
+
+    debug(message, ...args) {
+        if (!logger._shouldLog(LOG_LEVELS.DEBUG, "FLOW")) return;
+        console.debug(
+            (config.enableTimestamp ? "[" + logger._formatTime() + "] " : "") + "[DEBUG] " + message, ...args
+        );
+    },
+
+    info(message, ...args) {
+        if (!logger._shouldLog(LOG_LEVELS.INFO, "UI")) return;
+        console.info(
+            (config.enableTimestamp ? "[" + logger._formatTime() + "] " : "") + "[INFO] " + message, ...args
+        );
+    },
+
+    warn(message, ...args) {
+        if (!logger._shouldLog(LOG_LEVELS.WARN, "API")) return;
+        console.warn(
+            (config.enableTimestamp ? "[" + logger._formatTime() + "] " : "") + "[WARN] " + message, ...args
+        );
+    },
+
+    error(message, ...args) {
+        if (!logger._shouldLog(LOG_LEVELS.ERROR, "API")) return;
+        console.error(
+            (config.enableTimestamp ? "[" + logger._formatTime() + "] " : "") + "[ERROR] " + message, ...args
+        );
+    },
+
+    group(label) {
+        console.group(label);
+    },
+
+    groupEnd() {
+        console.groupEnd();
+    },
+
+    table(data) {
+        console.table(logger._formatData(data));
+    },
 };
 
 export default logger;
