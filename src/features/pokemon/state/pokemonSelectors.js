@@ -36,38 +36,57 @@ const selectSearchFilter = (state) => state.search.searchFilter;
  * @function selectProcessedPokemons
  * @summary Selector memoizado para obtener la lista de Pokémon procesada.
  * @description
- * Calculo derivado de los datos de pokemon, favoritos y búsqueda.
+ * Optimizado con Big O:
+ * - Usa Set para lookup O(1) en lugar de Array.includes() O(n)
+ * - Un solo paso para map + filter en lugar de dos pasos
  *
- * **Responsabilidades:**
- * 1.  **Enriquecimiento de datos:** Combina `state.pokemon.pokemons` con `state.favorites.favoriteIds` para añadir una propiedad `favorite: boolean` a cada objeto de Pokémon.
- * 2.  **Filtrado:** Filtra la lista de Pokémon enriquecida basándose en el `state.search.searchFilter`.
- *
- * **Efectos Secundarios:**
- * - No tiene efectos secundarios (es una función pura memoizada).
- *
- * Gracias a la memoización de `createSelector`, estos cálculos costosos solo se
- * volverán a ejecutar si los datos de entrada (`pokemons`, `favoriteIds`, o `searchFilter`) cambian,
- * previniendo re-renders innecesarios en la UI.
+ * **Complexidad:**
+ * - ANTES: O(n × m) + O(n) = O(nm + n)
+ * - DESPUÉS: O(n) solo
  *
  * @returns {Array<object>} La lista de Pokémon procesada, lista para ser renderizada.
  */
 export const selectProcessedPokemons = createSelector(
     [selectPokemons, selectFavoriteIds, selectSearchFilter],
     (pokemons, favoriteIds, searchFilter) => {
-        // Primero, añade el estado de 'favorite' a cada Pokémon
-        const favoritedPokemons = pokemons.map((pokemon) => ({
-            ...pokemon,
-            favorite: favoriteIds.includes(pokemon.id),
-        }));
-
-        // Luego, filtra por el término de búsqueda si existe
-        if (!searchFilter) {
-            return favoritedPokemons;
-        }
-
-        const lowercasedFilter = searchFilter.toLowerCase();
-        return favoritedPokemons.filter((p) =>
-            p.name.toLowerCase().includes(lowercasedFilter),
-        );
+        // Big O Optimization: Set para lookup O(1) en lugar de Array.includes() O(n)
+        const favoriteSet = new Set(favoriteIds);
+        
+        // Optimización: un solo paso para map + filter
+        const searchLower = searchFilter?.toLowerCase();
+        
+        return pokemons
+            .map((pokemon) => ({
+                ...pokemon,
+                favorite: favoriteSet.has(pokemon.id),  // O(1) lookup con Set
+            }))
+            .filter((pokemon) => 
+                !searchLower || pokemon.name.toLowerCase().includes(searchLower)
+            );
     },
 );
+
+/**
+ * @function selectPokemonById
+ * @description Selector parametrizado para obtener un Pokémon por su ID.
+ * Usa un selector factory para evitar el find() O(n) en cada render.
+ * @param {number} pokemonId - El ID del Pokémon.
+ * @returns {object|undefined} El Pokémon encontrado.
+ */
+export const selectPokemonById = (pokemonId) => (state) => {
+    const pokemons = selectProcessedPokemons(state);
+    return pokemons.find((p) => p.id === pokemonId);
+};
+
+/**
+ * @function selectPokemonByIds
+ * @description Selector para obtener múltiples Pokémon por sus IDs.
+ * Optimizado para evitar múltiples lookups.
+ * @param {number[]} pokemonIds - Array de IDs de Pokémon.
+ * @returns {object[]} Array de Pokémon encontrados.
+ */
+export const selectPokemonByIds = (pokemonIds) => (state) => {
+    const pokemons = selectProcessedPokemons(state);
+    const pokemonSet = new Set(pokemonIds);
+    return pokemons.filter((p) => pokemonSet.has(p.id));
+};

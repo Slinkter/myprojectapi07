@@ -1,3 +1,8 @@
+/**
+ * @module shared/components/Pagination
+ * @description Componente de paginación con animaciones.
+ */
+
 import PropTypes from "prop-types";
 import { motion } from "motion/react";
 import {

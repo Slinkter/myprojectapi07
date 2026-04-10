@@ -204,15 +204,38 @@ pnpm deploy           # Desplegar a GitHub Pages
 
 ```
 src/docs/
-├── README.md          ← Este archivo
-├── changelog.md       ← Historial de versiones
-├── architecture/     ← Documentación de arquitectura
-├── development/      ← Guías de desarrollo
-├── requirements/     ← Requerimientos funcionales/no funcionales
-├── quality/          ← Testing
-├── maintenance/      ← Troubleshooting y roadmap
-├── deployment/       ← Proceso de despliegue
-└── security/         ← Guías de seguridad
+├── 00.INDEX.md         ← 📘 ÍNDICE PRINCIPAL (START HERE)
+├── 00.changelog.md    ← Historial de versiones
+├── 01.TECHNICAL_GUIDE.md ← Guía de Estudio Técnica
+│
+├── 02.architecture/  ← 🏛️ ARQUITECTURA (4 archivos)
+│   ├── 02.01.overview.md
+│   ├── 02.02.patterns.md
+│   ├── 02.03.imports.md
+│   └── 02.04.decisions.md
+│
+├── 03.development/   ← 💻 DESARROLLO (4 archivos)
+│   ├── 03.01.setup.md
+│   ├── 03.02.conventions.md
+│   ├── 03.03.state-management.md
+│   └── 03.04.api-integration.md
+│
+├── 04.requirements/  ← 🎯 REQUERIMIENTOS (2 archivos)
+│   ├── 04.01.functional.md
+│   └── 04.02.non-functional.md
+│
+├── 05.quality/       ← ✅ CALIDAD (1 archivo)
+│   └── 05.01.testing.md
+│
+├── 06.maintenance/   ← 🔧 MANTENIMIENTO (2 archivos)
+│   ├── 06.01.troubleshooting.md
+│   └── 06.02.roadmap.md
+│
+├── 07.deployment/    ← 🚀 DESPLIEGUE (1 archivo)
+│   └── 07.01.process.md
+│
+└── 08.security/     ← 🔒 SEGURIDAD (1 archivo)
+    └── 08.01.guidelines.md
 ```
 
 ## 🗺️ Roadmap

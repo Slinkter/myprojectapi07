@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleFavorite } from "@/features/favorites";
-import { selectProcessedPokemons } from "@/entities/pokemon/model/selectors";
+import { selectPokemonById } from "@/features/pokemon/state/pokemonSelectors";
 
 /**
  * @hook usePokemonCard
@@ -18,14 +18,12 @@ import { selectProcessedPokemons } from "@/entities/pokemon/model/selectors";
  */
 export const usePokemonCard = (pokemonId) => {
     const dispatch = useDispatch();
-    const pokemons = useSelector(selectProcessedPokemons);
     
-    // Buscamos la entidad procesada en el estado global
-    const pokemon = pokemons.find(p => p.id === pokemonId);
+    // Optimización: usa selector parametrizado para evitar find() O(n) en cada render
+    const pokemon = useSelector(selectPokemonById(pokemonId));
     const isFavorite = pokemon?.favorite || false;
 
     const onToggleFavorite = useCallback((e) => {
-        // Manejo de eventos común para evitar propagación
         if (e && e.stopPropagation) e.stopPropagation();
         if (e && e.preventDefault) e.preventDefault();
         

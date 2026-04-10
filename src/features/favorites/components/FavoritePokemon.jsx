@@ -10,6 +10,7 @@ const FavoritePokemon = ({ fav }) => {
             className="inline-flex items-center gap-2 sm:gap-3 bg-gray-100 dark:bg-slate-700 hover:bg-gray-200 dark:hover:bg-slate-600 border border-gray-200 dark:border-slate-600 rounded-full px-4 py-2 sm:px-5 sm:py-2.5 cursor-pointer shadow-sm hover:shadow-md transition-all"
         >
             <motion.img
+                key={`img-${fav.id}`}
                 src={fav.sprites?.front_default || "/placeholder-pokemon.png"}
                 alt={fav.name}
                 className="w-8 h-8 sm:w-10 sm:h-10 object-contain"

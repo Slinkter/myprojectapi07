@@ -8,13 +8,22 @@ const CACHE_TTL = 1000 * 60 * 15;
 
 const memoryCache = new Map();
 
+/**
+ * @function createSeedLookup
+ * @description Crea Maps para O(1) lookup por ID y nombre.
+ * Big O Optimization: O(n) → O(1) por búsqueda
+ */
 const createSeedLookup = () => {
-    const lookup = new Map();
-    POKEMON_SEED.forEach(p => lookup.set(p.id, p));
-    return lookup;
+    const idLookup = new Map();
+    const nameLookup = new Map();
+    POKEMON_SEED.forEach(p => {
+        idLookup.set(p.id, p);
+        nameLookup.set(p.name.toLowerCase(), p);
+    });
+    return { idLookup, nameLookup };
 };
 
-const SEED_LOOKUP = createSeedLookup();
+const { idLookup: SEED_ID_LOOKUP, nameLookup: SEED_NAME_LOOKUP } = createSeedLookup();
 
 const getCacheFromStorage = () => {
     try {
@@ -51,12 +60,18 @@ const extractIdFromUrl = (url) => {
     return Number(parts[parts.length - 1]) || 0;
 };
 
+/**
+ * @function findInSeed
+ * @description Busca en seed data usando Maps O(1)
+ * Big O: ANTES O(n) → DESPUÉS O(1)
+ */
 const findInSeed = (idOrName) => {
     const id = Number(idOrName);
-    if (!Number.isNaN(id)) {
-        return SEED_LOOKUP.get(id);
+    if (!Number.isNaN(id) && id > 0) {
+        return SEED_ID_LOOKUP.get(id);  // O(1) lookup por ID
     }
-    return POKEMON_SEED.find(p => p.name === String(idOrName).toLowerCase());
+    const nameLower = String(idOrName).toLowerCase();
+    return SEED_NAME_LOOKUP.get(nameLower);  // O(1) lookup por nombre
 };
 
 const getCache = (key) => {
@@ -125,7 +140,7 @@ export const pokemonApi = {
                         return cached;
                     }
 
-                    const seedPokemon = SEED_LOOKUP.get(extractedId);
+                    const seedPokemon = SEED_ID_LOOKUP.get(extractedId);
                     if (seedPokemon) {
                         logger.flow("SeedMatch", { id: extractedId });
                         return transformPokemonData(seedPokemon);

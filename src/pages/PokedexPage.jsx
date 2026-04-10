@@ -9,7 +9,7 @@ import {
 import { usePagination } from "@/shared/hooks/usePagination";
 import { SearchBar } from "@/features/search";
 import { FavoritesBar, useFavorites } from "@/features/favorites";
-import Pagination from "@/components/common/Pagination";
+import Pagination from "@/shared/components/Pagination";
 
 function PokedexPage() {
     const { totalCount, isLoading, error, fetchPokemons } = usePokemon();
