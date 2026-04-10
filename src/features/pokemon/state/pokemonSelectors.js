@@ -67,16 +67,20 @@ export const selectProcessedPokemons = createSelector(
 );
 
 /**
- * @function selectPokemonById
- * @description Selector parametrizado para obtener un Pokémon por su ID.
- * Usa un selector factory para evitar el find() O(n) en cada render.
- * @param {number} pokemonId - El ID del Pokémon.
- * @returns {object|undefined} El Pokémon encontrado.
+ * @function makeSelectPokemonById
+ * @description Selector factory para obtener un Pokémon por su ID.
+ * Usa createSelector factory pattern para evitar crear una nueva función selector en cada llamada,
+ * lo que rompería la memoización de useSelector.
+ * @returns {function} Un selector memoizado que acepta (state, pokemonId).
+ * @example
+ * const selectPokemon = makeSelectPokemonById();
+ * const pokemon = useSelector((state) => selectPokemon(state, pokemonId));
  */
-export const selectPokemonById = (pokemonId) => (state) => {
-    const pokemons = selectProcessedPokemons(state);
-    return pokemons.find((p) => p.id === pokemonId);
-};
+export const makeSelectPokemonById = () =>
+    createSelector(
+        [selectProcessedPokemons, (state, pokemonId) => pokemonId],
+        (pokemons, pokemonId) => pokemons.find((p) => p.id === pokemonId)
+    );
 
 /**
  * @function selectPokemonByIds

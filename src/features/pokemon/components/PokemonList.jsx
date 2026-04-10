@@ -8,7 +8,7 @@ const getPokemonImage = (pokemon) =>
     || "";
 
 const PokemonList = memo(({ pokemons }) => {
-    const pokemonCards = useMemo(() => 
+    const pokemonCards = useMemo(() =>
         pokemons.map((pokemon, index) => (
             <PokemonCard
                 index={index}
@@ -19,7 +19,7 @@ const PokemonList = memo(({ pokemons }) => {
                 favorite={pokemon.favorite || false}
                 image={getPokemonImage(pokemon)}
             />
-        )), 
+        )),
         [pokemons]
     );
 
@@ -28,6 +28,9 @@ const PokemonList = memo(({ pokemons }) => {
             {pokemonCards}
         </div>
     );
+}, (prevProps, nextProps) => {
+    return prevProps.pokemons.length === nextProps.pokemons.length &&
+        prevProps.pokemons.every((p, i) => p.id === nextProps.pokemons[i]?.id);
 });
 
 PokemonList.displayName = "PokemonList";

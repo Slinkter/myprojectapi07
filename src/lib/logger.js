@@ -20,15 +20,16 @@ const LOG_LEVELS = {
 };
 
 const DEFAULT_CONFIG = {
-    minLevel: process.env.NODE_ENV === "production" ? LOG_LEVELS.WARN : LOG_LEVELS.DEBUG,
+    minLevel: import.meta.env.PROD ? LOG_LEVELS.WARN : LOG_LEVELS.DEBUG,
     enabledCategories: {
         STATE: true,
         UI: true,
         API: true,
         FLOW: true,
         PERF: true,
+        ERROR: true,
     },
-    enableTimestamp: process.env.NODE_ENV !== "production",
+    enableTimestamp: !import.meta.env.PROD,
     maxDataDepth: 3,
 };
 
@@ -141,7 +142,7 @@ export const logger = {
     },
 
     error(message, ...args) {
-        if (!logger._shouldLog(LOG_LEVELS.ERROR, "API")) return;
+        if (!logger._shouldLog(LOG_LEVELS.ERROR, "ERROR")) return;
         console.error(
             (config.enableTimestamp ? "[" + logger._formatTime() + "] " : "") + "[ERROR] " + message, ...args
         );

@@ -5,8 +5,24 @@ import { logger } from "@/lib/logger";
 
 const STORAGE_KEY = "pokemon_cache";
 const CACHE_TTL = 1000 * 60 * 15;
+const MAX_CACHE_SIZE = 50;
 
 const memoryCache = new Map();
+
+// Throttle localStorage persist to avoid serializing entire cache on every write
+const throttleSave = (() => {
+    let timeout = null;
+    let pendingCache = null;
+    return (cache) => {
+        pendingCache = cache;
+        if (timeout) return;
+        timeout = setTimeout(() => {
+            if (pendingCache) saveCacheToStorage(pendingCache);
+            pendingCache = null;
+            timeout = null;
+        }, 2000);
+    };
+})();
 
 /**
  * @function createSeedLookup
@@ -88,9 +104,16 @@ const getCache = (key) => {
 
 const setCache = (key, data) => {
     memoryCache.set(key, data);
+
+    // LRU eviction: if cache exceeds MAX_CACHE_SIZE, delete oldest entry
+    if (memoryCache.size > MAX_CACHE_SIZE) {
+        const oldestKey = memoryCache.keys().next().value;
+        memoryCache.delete(oldestKey);
+    }
+
     const storageCache = getCacheFromStorage();
     storageCache.set(key, data);
-    saveCacheToStorage(storageCache);
+    throttleSave(storageCache);
 };
 
 const extractSimpleTypes = (types) => {
@@ -158,7 +181,7 @@ export const pokemonApi = {
             return { count: listData.count, results };
         } catch (error) {
             logger.api(API_CONFIG.ENDPOINTS.POKEMON, "ERROR", 0);
-            console.error("SDR-01: API Error", error);
+            logger.error("API Error fetching pokemons", error?.message || error);
             return { count: 0, results: [] };
         }
     },
@@ -189,7 +212,7 @@ export const pokemonApi = {
             return transformed;
         } catch (error) {
             logger.api(url, "ERROR", 0);
-            console.error("SDR-01: Detail Error", error);
+            logger.error("API Error fetching pokemon details", error?.message || error);
             return {
                 id: 0,
                 name: "Unknown",

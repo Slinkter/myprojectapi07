@@ -51,25 +51,46 @@ export const UI_CONSTANTS = {
 
 /**
  * @constant {object} TYPE_COLORS
- * @description Colores Tailwind para cada tipo de Pokémon.
- * DRY: Compartido con PokemonCard y PokemonDetail.
+ * @description Colores Tailwind para cada tipo de Pokémon (bg + text).
+ * DRY: Fuente única de verdad — usado por PokemonCard y PokemonDetail.
  */
 export const TYPE_COLORS = {
-    normal: "bg-gray-400",
-    fire: "bg-orange-500",
-    water: "bg-blue-500",
-    electric: "bg-yellow-400",
-    grass: "bg-green-500",
-    ice: "bg-cyan-300",
-    fighting: "bg-red-600",
-    poison: "bg-purple-500",
-    ground: "bg-amber-600",
-    flying: "bg-indigo-400",
-    psychic: "bg-pink-500",
-    bug: "bg-lime-500",
-    rock: "bg-stone-500",
-    ghost: "bg-purple-700",
-    dragon: "bg-indigo-700",
-    steel: "bg-slate-400",
-    fairy: "bg-pink-300",
+    normal: "bg-stone-300 text-stone-800",
+    fire: "bg-orange-500 text-white",
+    water: "bg-blue-500 text-white",
+    electric: "bg-yellow-400 text-yellow-900",
+    grass: "bg-green-500 text-white",
+    ice: "bg-cyan-300 text-cyan-900",
+    fighting: "bg-red-700 text-white",
+    poison: "bg-purple-600 text-white",
+    ground: "bg-amber-600 text-white",
+    flying: "bg-indigo-300 text-indigo-900",
+    psychic: "bg-pink-500 text-white",
+    bug: "bg-lime-500 text-lime-900",
+    rock: "bg-stone-500 text-white",
+    ghost: "bg-violet-700 text-white",
+    dragon: "bg-indigo-700 text-white",
+    dark: "bg-slate-800 text-white",
+    steel: "bg-slate-400 text-slate-900",
+    fairy: "bg-pink-300 text-pink-900",
 };
+
+/**
+ * @constant {object} LAYOUT
+ * @description Clases Tailwind compartidas para layouts.
+ */
+export const LAYOUT = {
+    ROOT_CLASSES: "min-h-screen bg-slate-50 dark:bg-slate-900 transition-colors duration-300",
+};
+
+/**
+ * @constant {object} FALLBACKS
+ * @description Objetos fallback para datos inválidos.
+ */
+export const INVALID_POKEMON_FALLBACK = Object.freeze({
+    id: 0,
+    name: "Unknown",
+    types: [],
+    sprites: {},
+    stats: [],
+});

@@ -5,12 +5,16 @@
 
 import { Outlet } from "react-router-dom";
 import Navbar from "@/shared/components/layout/Navbar";
+import GlobalErrorBoundary from "@/shared/components/layout/GlobalErrorBoundary";
+import { LAYOUT } from "@/utils/constants";
 
 const MainLayout = () => (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 transition-colors duration-300">
+    <div className={LAYOUT.ROOT_CLASSES}>
         <Navbar />
         <main>
-            <Outlet />
+            <GlobalErrorBoundary>
+                <Outlet />
+            </GlobalErrorBoundary>
         </main>
     </div>
 );

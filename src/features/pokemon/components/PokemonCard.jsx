@@ -5,28 +5,9 @@ import { useFavorites } from "@/features/favorites/hooks/useFavorites";
 import { HiStar } from "react-icons/hi";
 import { motion } from "motion/react";
 import { LazyLoadImage } from "react-lazy-load-image-component";
+import { useReducedMotion } from "@/shared/hooks/useReducedMotion";
+import { TYPE_COLORS } from "@/utils/constants";
 import "react-lazy-load-image-component/src/effects/blur.css";
-
-const typeColors = {
-    normal: "bg-stone-300 text-stone-800",
-    fire: "bg-orange-500 text-white",
-    water: "bg-blue-500 text-white",
-    electric: "bg-yellow-400 text-yellow-900",
-    grass: "bg-green-500 text-white",
-    ice: "bg-cyan-300 text-cyan-900",
-    fighting: "bg-red-700 text-white",
-    poison: "bg-purple-600 text-white",
-    ground: "bg-amber-600 text-white",
-    flying: "bg-indigo-300 text-indigo-900",
-    psychic: "bg-pink-500 text-white",
-    bug: "bg-lime-500 text-lime-900",
-    rock: "bg-stone-500 text-white",
-    ghost: "bg-violet-700 text-white",
-    dragon: "bg-indigo-700 text-white",
-    dark: "bg-slate-800 text-white",
-    steel: "bg-slate-400 text-slate-900",
-    fairy: "bg-pink-300 text-pink-900",
-};
 
 const cardVariants = {
     hidden: { opacity: 0, y: 30, scale: 0.95 },
@@ -47,10 +28,6 @@ const cardVariants = {
     },
 };
 
-const imageVariants = {
-    hover: { scale: 1.15, rotate: [0, -5, 5, 0], transition: { duration: 0.6 } },
-};
-
 const starVariants = {
     initial: { scale: 1, rotate: 0 },
     tappable: { scale: 0.85, rotate: -15, transition: { duration: 0.1 } },
@@ -60,11 +37,14 @@ const starVariants = {
 /**
  * @component PokemonCard
  * @description
- * Componente optimizado con animaciones Motion para entrada, hover y presiones.
+ * Componente optimizado con animaciones Motion para entrada y hover.
+ * motion se usa solo para: card entrance animation y favorite star spring animation.
+ * El resto usa CSS transitions para evitar 80+ instancias de animación.
  */
 const PokemonCard = React.memo(({ id, name, image, types, favorite, index = 0 }) => {
     const navigate = useNavigate();
     const { togglePokemonFavorite } = useFavorites();
+    const reducedMotion = useReducedMotion();
 
     const handleCardClick = useCallback(() => {
         navigate(`/pokemon/${id}`);
@@ -76,33 +56,41 @@ const PokemonCard = React.memo(({ id, name, image, types, favorite, index = 0 })
         togglePokemonFavorite(id);
     }, [id, togglePokemonFavorite]);
 
-    const getTypeClass = (typeName) => typeColors[typeName?.toLowerCase()] || "bg-gray-300 text-gray-800";
+    const handleKeyDown = useCallback((e) => {
+        if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            handleCardClick();
+        }
+    }, [handleCardClick]);
+
+    const getTypeClass = (typeName) => TYPE_COLORS[typeName?.toLowerCase()] || "bg-gray-300 text-gray-800";
 
     return (
         <motion.div
             custom={index}
             variants={cardVariants}
-            initial="hidden"
-            animate="visible"
-            whileHover="hover"
+            initial={reducedMotion ? false : "hidden"}
+            animate={reducedMotion ? false : "visible"}
+            whileHover={reducedMotion ? undefined : "hover"}
             onClick={handleCardClick}
+            onKeyDown={handleKeyDown}
+            role="button"
+            tabIndex={0}
             className="group relative flex flex-col bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl sm:rounded-3xl overflow-hidden cursor-pointer shadow-md hover:shadow-2xl"
             style={{ overflow: "hidden" }}
         >
             <div className="flex justify-between items-center p-3 sm:p-4 md:p-6">
-                <motion.span 
-                    className="text-[10px] sm:text-xs font-bold tracking-widest text-gray-400 dark:text-slate-500 uppercase"
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.1 + index * 0.05 }}
+                <span
+                    className="text-[10px] sm:text-xs font-bold tracking-widest text-gray-400 dark:text-slate-500 uppercase animate-fade-in-left"
+                    style={{ animationDelay: `${0.1 + index * 0.05}s` }}
                 >
                     #{String(id).padStart(3, "0")}
-                </motion.span>
-                <motion.button
+                </span>
+                <button
                     onClick={handleFavoriteClick}
                     className="p-1.5 sm:p-2 rounded-full hover:bg-gray-100 dark:hover:bg-slate-700"
-                    whileTap={favorite ? "favorite" : "tappable"}
-                    aria-label="Marcar como favorito"
+                    aria-pressed={favorite}
+                    aria-label={favorite ? "Quitar de favoritos" : "Añadir a favoritos"}
                 >
                     <motion.div
                         variants={starVariants}
@@ -114,13 +102,12 @@ const PokemonCard = React.memo(({ id, name, image, types, favorite, index = 0 })
                             }`}
                         />
                     </motion.div>
-                </motion.button>
+                </button>
             </div>
 
             <div className="flex-grow flex flex-col items-center px-3 sm:px-4 md:px-6 pb-4 sm:pb-6 md:pb-8">
-                <motion.div
-                    variants={imageVariants}
-                    className="relative w-20 h-20 sm:w-28 sm:h-28 md:w-32 md:h-32 lg:w-40 lg:h-40 mb-3 sm:mb-4 md:mb-6"
+                <div
+                    className="relative w-20 h-20 sm:w-28 sm:h-28 md:w-32 md:h-32 lg:w-40 lg:h-40 mb-3 sm:mb-4 md:mb-6 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-[3deg]"
                 >
                     <LazyLoadImage
                         src={image}
@@ -129,15 +116,13 @@ const PokemonCard = React.memo(({ id, name, image, types, favorite, index = 0 })
                         className="w-full h-full object-contain drop-shadow-xl"
                         placeholderSrc={`data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiB2aWV3Qm94PSIwIDAgMTAwIDEwMCI+PHJlY3Qgd2lkdGg9IjEwMCIgaGVpZ2h0PSIxMDAiIGZpbGw9IiNlMmU4ZTYiLz48L3N2Zz4=`}
                     />
-                </motion.div>
-                <motion.h2 
-                    className="text-sm sm:text-lg md:text-xl lg:text-2xl font-extrabold text-gray-900 dark:text-white capitalize tracking-tight text-center"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.15 + index * 0.05 }}
+                </div>
+                <h2
+                    className="text-sm sm:text-lg md:text-xl lg:text-2xl font-extrabold text-gray-900 dark:text-white capitalize tracking-tight text-center animate-fade-in-up"
+                    style={{ animationDelay: `${0.15 + index * 0.05}s` }}
                 >
                     {name}
-                </motion.h2>
+                </h2>
             </div>
 
             <div className="p-3 sm:p-4 md:p-6 bg-gray-50/50 dark:bg-slate-900/50 border-t border-gray-100 dark:border-slate-700">
@@ -152,15 +137,13 @@ const PokemonCard = React.memo(({ id, name, image, types, favorite, index = 0 })
                             typeName = typeItem.name;
                         }
                         return (
-                            <motion.span
+                            <span
                                 key={`${typeName}-${idx}`}
-                                initial={{ opacity: 0, scale: 0 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                transition={{ delay: 0.2 + idx * 0.05 + index * 0.05 }}
-                                className={`px-2 py-0.5 sm:px-3 sm:py-1 md:px-4 md:py-1.5 text-[10px] sm:text-xs font-bold capitalize rounded-full shadow-sm ${getTypeClass(typeName)}`}
+                                className={`px-2 py-0.5 sm:px-3 sm:py-1 md:px-4 md:py-1.5 text-[10px] sm:text-xs font-bold capitalize rounded-full shadow-sm animate-scale-in ${getTypeClass(typeName)}`}
+                                style={{ animationDelay: `${0.2 + idx * 0.05 + index * 0.05}s` }}
                             >
                                 {typeName}
-                            </motion.span>
+                            </span>
                         );
                     })}
                 </div>

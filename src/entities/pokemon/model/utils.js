@@ -3,7 +3,6 @@
  * @description
  * Funciones puras de dominio para la entidad Pokemon.
  * Esta capa es agnóstica al estado de la aplicación (Redux) y a la UI (React).
- * Se encarga exclusivamente de la transformación y lógica de negocio de los datos.
  */
 
 /**
@@ -13,6 +12,9 @@
  * @returns {Array} Nueva lista de Pokémon con propiedad `favorite`.
  */
 export const enrichWithFavorites = (pokemons, favoriteIds) => {
+    if (!pokemons || !Array.isArray(pokemons)) return [];
+    if (!favoriteIds || !Array.isArray(favoriteIds)) return pokemons;
+
     return pokemons.map((pokemon) => ({
         ...pokemon,
         favorite: favoriteIds.includes(Number(pokemon.id)),
@@ -26,10 +28,11 @@ export const enrichWithFavorites = (pokemons, favoriteIds) => {
  * @returns {Array} Lista filtrada de Pokémon.
  */
 export const filterBySearch = (pokemons, searchFilter) => {
+    if (!pokemons || !Array.isArray(pokemons)) return [];
     if (!searchFilter) return pokemons;
-    
+
     const lowercasedFilter = searchFilter.toLowerCase();
-    return pokemons.filter((p) => 
+    return pokemons.filter((p) =>
         p.name.toLowerCase().includes(lowercasedFilter)
     );
 };

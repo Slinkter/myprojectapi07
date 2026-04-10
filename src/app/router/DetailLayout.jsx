@@ -4,9 +4,10 @@
  */
 
 import { Outlet } from "react-router-dom";
+import { LAYOUT } from "@/utils/constants";
 
 const DetailLayout = () => (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 transition-colors duration-300">
+    <div className={LAYOUT.ROOT_CLASSES}>
         <Outlet />
     </div>
 );

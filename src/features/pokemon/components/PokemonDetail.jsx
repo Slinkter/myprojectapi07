@@ -2,6 +2,7 @@ import PropTypes from "prop-types";
 import { memo } from "react";
 import { motion } from "motion/react";
 import { TYPE_COLORS } from "@/utils/constants";
+import { useReducedMotion } from "@/shared/hooks/useReducedMotion";
 
 const getTypeColor = (typeName) => TYPE_COLORS[typeName] || "bg-gray-400";
 
@@ -81,6 +82,8 @@ const typeVariants = {
 };
 
 const PokemonDetail = memo(function PokemonDetail({ pokemon }) {
+    const reducedMotion = useReducedMotion();
+
     if (!pokemon) return null;
 
     const { id, name, types, sprites, stats } = pokemon;
@@ -89,23 +92,24 @@ const PokemonDetail = memo(function PokemonDetail({ pokemon }) {
     return (
         <motion.div
             variants={cardVariants}
-            initial="hidden"
-            animate="visible"
+            initial={reducedMotion ? false : "hidden"}
+            animate={reducedMotion ? false : "visible"}
             className="bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl"
         >
             <div className="p-4 sm:p-6 md:p-8">
                 <div className="flex flex-col md:flex-row gap-6 sm:gap-8 items-center">
                     <motion.div
                         variants={imageVariants}
-                        initial="initial"
-                        animate="animate"
-                        whileHover="hover"
+                        initial={reducedMotion ? false : "initial"}
+                        animate={reducedMotion ? false : "animate"}
+                        whileHover={reducedMotion ? undefined : "hover"}
                         className="flex-shrink-0"
                     >
                         <div className="relative w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 lg:w-64 lg:h-64">
                             <img
                                 src={spriteUrl}
-                                alt={name}
+                                alt={`${name} Pokémon sprite`}
+                                role="img"
                                 className="w-full h-full object-contain drop-shadow-2xl"
                             />
                         </div>
