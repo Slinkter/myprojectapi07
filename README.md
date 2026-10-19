@@ -1,266 +1,90 @@
-# Pokédex App
+# ⚡ PokéEngine — High-Performance Pokédex (LRU Cache & Motion)
 
-<p align="center">
-  <img src="https://img.shields.io/badge/React-18.3-61DAFB?style=flat&logo=react" alt="React">
-  <img src="https://img.shields.io/badge/Vite-5.4-646CFF?style=flat&logo=vite" alt="Vite">
-  <img src="https://img.shields.io/badge/Tailwind_CSS-3.4-06B6D2?style=flat&logo=tailwind-css" alt="Tailwind">
-  <img src="https://img.shields.io/badge/pnpm-10.3-F692FF?style=flat&logo=pnpm" alt="pnpm">
-  <img src="https://img.shields.io/badge/Storybook-10.3-FF4785?style=flat&logo=storybook" alt="Storybook">
-  <img src="https://img.shields.io/badge/Redux_Toolkit-2.11-764ABC?style=flat&logo=redux" alt="Redux Toolkit">
-</p>
+[![React](https://img.shields.io/badge/React-18.3-61DAFB?style=flat&logo=react)](https://react.dev)
+[![Vite](https://img.shields.io/badge/Vite-5.4-646CFF?style=flat&logo=vite)](https://vitejs.dev)
+[![Redux Toolkit](https://img.shields.io/badge/Redux_Toolkit-2.2-764ABC?style=flat&logo=redux)](https://redux-toolkit.js.org)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-06B6D4?style=flat&logo=tailwindcss)](https://tailwindcss.com)
+[![Motion](https://img.shields.io/badge/Motion-v12-0055FF?style=flat&logo=framer)](https://motion.dev)
+[![Storybook](https://img.shields.io/badge/Storybook-10.3-FF4785?style=flat&logo=storybook)](https://storybook.js.org)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-Una aplicación React moderna para explorar Pokémon, construida con los más altos estándares de calidad y mejores prácticas de desarrollo frontend.
-
-## 🚀 Arquitectura de Carpetas
-
-El proyecto utiliza **Feature-Sliced Design (FSD)** para una arquitectura escalable y mantenible:
-
-```
-src/
-├── app/                    # Configuración global de la app
-│   └── router/            # Configuración de rutas
-├── components/            # Componentes reutilizables
-│   └── common/           # Componentes genéricos (Pagination, etc.)
-├── entities/              # Entidades de dominio
-│   └── pokemon/          # Entidad Pokemon
-│       ├── api/          # Definiciones de API
-│       ├── data/          # Datos estáticos (seed)
-│       ├── model/        # Selectores y utilitarios
-│       └── types/        # Definiciones de tipos TypeScript
-├── features/              # Features del dominio
-│   ├── favorites/        # Sistema de favoritos
-│   ├── pokemon/         # Feature Pokemon
-│   ├── search/          # Búsqueda y filtrado
-│   └── theme/           # Tema (claro/oscuro)
-├── lib/                   # Utilidades y helpers
-├── pages/                # Páginas de la aplicación
-├── shared/               # Componentes compartidos
-├── store/                # Configuración de Redux
-└── stories/              # Historias de Storybook
-```
-
-### Principios de Organización
-
-| Capa | Responsabilidad |
-|------|-----------------|
-| `app/` | Configuración global (router, providers) |
-| `pages/` | Composición de features para vistas |
-| `features/` | Lógica de negocio encapsulada |
-| `entities/` | Modelos de dominio puros |
-| `shared/` | Componentes UI genéricos |
-
-## 🛠️ Tecnologías y Plugins
-
-### Stack Principal
-
-| Tecnología | Versión | Propósito |
-|------------|---------|-----------|
-| React | 18.3 | Framework UI |
-| Vite | 5.4 | Build tool moderno y rápido |
-| Tailwind CSS | 3.4 | Framework de estilos |
-| Redux Toolkit | 2.11 | Gestión de estado |
-| React Router | 7 | Enrutamiento (Hash) |
-| Motion | 12 | Animaciones |
-
-### Plugins y Librerías
-
-| Paquete | Propósito |
-|---------|-----------|
-| `clsx` + `tailwind-merge` | Utilidad para clases condicionales |
-| `react-hot-toast` | Notificaciones toast |
-| `react-lazy-load-image` | Lazy loading de imágenes |
-| `react-icons` | Iconos (Heroicons) |
-| `axios` | Cliente HTTP |
-| `prop-types` | Validación de props |
-
-### Herramientas de Desarrollo
-
-| Herramienta | Propósito |
-|-------------|-----------|
-| pnpm | Gestor de paquetes |
-| ESLint | Linting y análisis estático |
-| Prettier | Formateo de código |
-| Storybook | Desarrollo de componentes aislados |
-| gh-pages | Despliegue a GitHub Pages |
-
-### ¿Por qué Vite en lugar de CRA?
-
-| Aspecto | Vite | Create React App |
-|---------|------|------------------|
-| Velocidad de inicio | <1s (HMR) | 30-60s |
-| Build producción | Esbuild | Webpack |
-| Experiencia dev | Instantánea | Lenta |
-| Configuración | Minimal | Oculta |
-
-## 🎨 Component Driven Development (CDD)
-
-El proyecto utiliza **Storybook** para desarrollar componentes de forma aislada:
-
-```bash
-# Iniciar Storybook
-pnpm storybook
-
-# Build de documentación
-pnpm build-storybook
-```
-
-### Flujo de Desarrollo CDD
-
-1. **Diseñar** componente en Storybook
-2. **Documentar** props y estados
-3. **Testear** interacciones visualmente
-4. **Integrar** en la aplicación
-
-### Componentes Documentados
-
-- `PokemonCard` - Tarjeta de Pokémon
-- `PokemonSkeleton` - Loading skeleton
-- `PokedexHeader` - Encabezado de la página
-- `Pagination` - Controles de paginación
-- `SearchBar` - Barra de búsqueda
-
-## 💻 Guía de Estilo y Herramientas
-
-### Configuración de VS Code Recomendada
-
-```json
-{
-  "editor.fontFamily": "JetBrains Mono, monospace",
-  "editor.fontLigatures": true,
-  "editor.formatOnSave": true,
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
-  }
-}
-```
-
-### Plugins de VS Code Recomendados
-
-- **ESLint** - Linting automático
-- **Prettier** - Formateo de código
-- **Tailwind CSS IntelliSense** - Autocompletado de clases
-- **Auto Rename Tag** - Renombrar etiquetas HTML/JSX
-- **Error Lens** - Errores inline
-
-### Convenciones de Código
-
-- **Nombramiento**: `camelCase` (funciones/variables), `PascalCase` (componentes)
-- **Imports**: Alias `@/` para imports absolutos desde `src/`
-- **Componentes**: Funcionales con `React.memo` para optimización
-- **Hooks**: Custom hooks en carpeta `hooks/` de cada feature
-
-## 🌍 Demo
-
-🔗 **https://slinkter.github.io/myprojectapi07**
-
-> Nota: La app usa hash router (`/#/`) para compatibilidad con GitHub Pages.
-
-## 🚀 Comandos de Inicio
-
-### Prerrequisitos
-
-- Node.js 18+
-- pnpm 8+
-
-### Instalación
-
-```bash
-# Clonar repositorio
-git clone https://github.com/Slinkter/myprojectapi07.git
-cd myprojectapi07
-
-# Instalar dependencias
-pnpm install
-
-# Ejecutar en desarrollo
-pnpm dev
-```
-
-### Scripts Disponibles
-
-```bash
-pnpm dev              # Iniciar servidor de desarrollo (http://localhost:5173)
-pnpm build            # Build para producción
-pnpm preview          # Previsualizar build
-pnpm lint             # Ejecutar ESLint
-pnpm storybook       # Iniciar Storybook (http://localhost:6006)
-pnpm build-storybook # Build de Storybook
-pnpm deploy           # Desplegar a GitHub Pages
-```
-
-## ✨ Características
-
-- 🔍 **Búsqueda** - Filtrado de Pokémon en tiempo real
-- ⭐ **Favoritos** - Sistema de favoritos con persistencia (localStorage)
-- 🌙 **Dark Mode** - Tema claro/oscuro conmutador
-- 📱 **Responsive** - Diseño mobile-first optimizado
-- 🎬 **Animaciones** - Transiciones fluidas con Motion
-- 📄 **Paginación** - Navegación eficiente entre páginas
-- 📖 **Detalle** - Vista detallada de cada Pokémon
-- 🔄 **404** - Página de error personalizada
-
-## 📂 Estructura de Documentación
-
-```
-src/docs/
-├── 00.INDEX.md         ← 📘 ÍNDICE PRINCIPAL (START HERE)
-├── 00.changelog.md    ← Historial de versiones
-├── 01.TECHNICAL_GUIDE.md ← Guía de Estudio Técnica
-│
-├── 02.architecture/  ← 🏛️ ARQUITECTURA (4 archivos)
-│   ├── 02.01.overview.md
-│   ├── 02.02.patterns.md
-│   ├── 02.03.imports.md
-│   └── 02.04.decisions.md
-│
-├── 03.development/   ← 💻 DESARROLLO (4 archivos)
-│   ├── 03.01.setup.md
-│   ├── 03.02.conventions.md
-│   ├── 03.03.state-management.md
-│   └── 03.04.api-integration.md
-│
-├── 04.requirements/  ← 🎯 REQUERIMIENTOS (2 archivos)
-│   ├── 04.01.functional.md
-│   └── 04.02.non-functional.md
-│
-├── 05.quality/       ← ✅ CALIDAD (1 archivo)
-│   └── 05.01.testing.md
-│
-├── 06.maintenance/   ← 🔧 MANTENIMIENTO (2 archivos)
-│   ├── 06.01.troubleshooting.md
-│   └── 06.02.roadmap.md
-│
-├── 07.deployment/    ← 🚀 DESPLIEGUE (1 archivo)
-│   └── 07.01.process.md
-│
-└── 08.security/     ← 🔒 SEGURIDAD (1 archivo)
-    └── 08.01.guidelines.md
-```
-
-## 🗺️ Roadmap
-
-- [x] Configuración de proyecto con Vite + React
-- [x] Implementación de Tailwind CSS
-- [x] Configuración de Redux Toolkit
-- [x] Integración con PokéAPI
-- [x] Sistema de búsqueda y filtrado
-- [x] Sistema de favoritos con persistencia
-- [x] Tema claro/oscuro
-- [x] Animaciones con Motion
-- [x] Integración de Storybook
-- [x] Optimización mobile-first
-- [x] Página 404 personalizada
-- [ ] Migración a Next.js + TypeScript
-- [ ] Implementación de tests E2E
-- [ ] Optimización de performance
-
-## 📄 Licencia
-
-MIT © 2024
+Pokédex de alto rendimiento y arquitectura Feature-Sliced Design (FSD). Diseñada para ofrecer una experiencia interactiva sin latencia mediante **caché LRU**, animaciones fluidas y documentación interactiva en **Storybook**.
 
 ---
 
-<p align="center">
-  Construido con ❤️ usando React, Tailwind y Motion
-</p>
+## 🎯 Características Principales
+
+- **Caché LRU en Memoria**: Algoritmo de expulsión Least Recently Used que almacena detalles de Pokémon para navegación instantánea sin peticiones repetidas.
+- **Filtro y Búsqueda Reactiva**: Búsqueda por nombre y número de Pokédex con filtrado por tipos elementales.
+- **Ficha Técnica & Gráfico de Estadísticas**: Vista detallada de HP, Ataque, Defensa, Velocidad, habilidades y sprites animados.
+- **Persistencia de Favoritos**: Almacenamiento local seguro de Pokémon favoritos con sincronización en tiempo real.
+- **Storybook Integrado**: Catálogo de componentes visuales documentados y probados de forma aislada.
+- **Lazy Loading de Imágenes**: Carga diferida con `react-lazy-load-image-component` para optimizar ancho de banda.
+
+---
+
+## 🛠️ Stack Tecnológico
+
+| Herramienta | Rol en el Proyecto |
+| :--- | :--- |
+| **React 18.3** | Componentes funcionales y hooks avanzados |
+| **Vite 5.4** | Bundler veloz con recarga rápida de módulos |
+| **Redux Toolkit** | Almacén global de estados de Pokémon y favoritos |
+| **Motion v12** | Animaciones de física y transiciones de tarjetas |
+| **Axios** | Cliente HTTP con interceptores y control de timeout |
+| **Storybook 10** | Entorno de desarrollo y documentación de componentes UI |
+
+---
+
+## 🏗️ Arquitectura (FSD)
+
+```text
+src/
+├── app/            # Configuración de store Redux, rutas y estilos globales
+├── pages/          # Páginas de listado y detalle de Pokémon
+├── widgets/        # Componentes compuestos (Grid de Pokémon, Panel de filtros)
+├── features/       # Casos de uso (favoritos, búsqueda, selector de tipos)
+├── entities/       # Entidad Pokémon: slices, adaptadores y componentes base
+└── shared/         # Hooks de ciclo de vida, utilidades, LRU cache y UI kit
+```
+
+---
+
+## 🚀 Inicio Rápido
+
+### Requisitos Previos
+- **Node.js**: v18.0 o superior
+- **pnpm**: v9.0 o superior
+
+### Instalación y Ejecución
+
+1. **Instalar dependencias:**
+   ```bash
+   pnpm install
+   ```
+
+2. **Configurar variables de entorno:**
+   ```bash
+   cp .env.example .env
+   ```
+
+3. **Iniciar el servidor de desarrollo:**
+   ```bash
+   pnpm run dev
+   ```
+
+4. **Ejecutar Storybook:**
+   ```bash
+   pnpm run storybook
+   ```
+
+5. **Compilar para producción:**
+   ```bash
+   pnpm run build
+   ```
+
+---
+
+## 📄 Licencia
+
+Este proyecto está bajo la Licencia **MIT**. Consulta el archivo `LICENSE` para más información.
